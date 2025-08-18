@@ -1,0 +1,22 @@
+import Category from '#models/category'
+
+export class CategoryService {
+  async all() {
+    const categories = await Category.query()
+    return categories
+  }
+  async getByName(name: string) {
+    const category = await Category.query().where('name', name).first()
+    return category
+  }
+  async create(data) {
+    const newCategory = await Category.create(data)
+    return Category.findOrFail(newCategory.id)
+  }
+  async update(id, data) {
+    const category = await Category.findOrFail(id)
+    category.merge(data)
+    await category.save()
+    return Category.findOrFail(id)
+  }
+}
