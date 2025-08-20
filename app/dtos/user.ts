@@ -3,7 +3,7 @@ import User from '#models/user'
 
 export default class UserDto extends BaseModelDto {
   declare id: number
-  declare fullName: string
+  declare name: string
   declare email: string
   declare password: string
   declare createdAt: string
@@ -16,7 +16,7 @@ export default class UserDto extends BaseModelDto {
 
     if (!user) return
     this.id = user.id
-    this.fullName = user.fullName
+    this.name = user.name
     this.email = user.email
     this.password = user.password
     this.createdAt = user.createdAt.toISO()!

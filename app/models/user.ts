@@ -5,8 +5,17 @@ import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
 import Discussions from './discussion.js'
 import DiscussionsStatus from './discussion_status.js'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
+import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import hash from '@adonisjs/core/services/hash'
+import { compose } from '@adonisjs/core/helpers'
 
-export default class User extends BaseModel {
+
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
+
+export default class User extends compose(BaseModel, AuthFinder) {
   public static table = 'users' // Correct table name
 
   @column({ isPrimary: true })
