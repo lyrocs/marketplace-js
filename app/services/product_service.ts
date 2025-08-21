@@ -86,6 +86,6 @@ export class ProductService {
     if (!source) {
       return null
     }
-    return Product.findOrFail(source.product_id)
+    return Product.findOrFail(source.productId)
   }
 }
