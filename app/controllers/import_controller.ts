@@ -19,13 +19,14 @@ export default class ImportController {
     return inertia.render('import/form')
   }
 
-  async import({ request, response }: HttpContext) {
+  async import({ request, inertia }: HttpContext) {
     const data = request.all()
     const requestData = await importValidator.validate(data)
     const products = requestData.products
     if (!products.length) {
       throw new Error('No products found')
     }
+    let success = 0
 
     for (const payload of products) {
      
@@ -82,7 +83,12 @@ export default class ImportController {
 
       const source = await this.productService.createSource(sourcePayload)
 
+      success++
+
     }
-    return response.redirect().back()
+    return inertia.render('import/form', {
+      total: products.length,
+      success,
+    })
   }
 }

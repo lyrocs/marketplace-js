@@ -8,6 +8,11 @@ const products = ref<any[]>([])
 const error = ref<string | null>(null)
 const form = useForm({ products: [] })
 
+const props = defineProps<{
+    total: number,
+    success: number,
+}>()
+
 // Handle file selection and JSON parsing
 function handleFileChange(event: Event) {
     error.value = null
@@ -50,6 +55,10 @@ function submit() {
 
 <template>
     <div class="flex min-h-screen flex-col items-center justify-center bg-gray-50 py-8 px-4">
+        <div v-if="props.total" class="mb-6 flex flex-col items-center">
+            <p class="text-center text-green-600 text-lg font-bold">{{ props.success }} / {{ props.total }} produits
+                importés</p>
+        </div>
         <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
             <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Importer des produits
