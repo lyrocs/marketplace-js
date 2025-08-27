@@ -19,4 +19,9 @@ export class CategoryService {
     await category.save()
     return Category.findOrFail(id)
   }
+
+  async delete(id: number) {
+    const category = await Category.findOrFail(id)
+    await category.delete()
+  }
 }

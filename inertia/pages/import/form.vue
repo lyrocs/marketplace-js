@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import AdminLayout from '~/layouts/AdminLayout.vue'
 
+defineOptions({
+    layout: AdminLayout
+})
 // File and data state
 const fileInput = ref<HTMLInputElement | null>(null)
 const products = ref<any[]>([])
@@ -54,7 +58,7 @@ function submit() {
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col items-center justify-center bg-gray-50 py-8 px-4">
+    <div class="flex flex-col items-center justify-center bg-gray-50">
         <div v-if="props.total" class="mb-6 flex flex-col items-center">
             <p class="text-center text-green-600 text-lg font-bold">{{ props.success }} / {{ props.total }} produits
                 importés</p>
