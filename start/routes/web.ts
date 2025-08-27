@@ -2,6 +2,7 @@ const HomeController = () => import('#controllers/home_controller')
 const ProductsController = () => import('#controllers/products_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const ImportController = () => import('#controllers/import_controller')
+const AdminController = () => import('#controllers/admin_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -15,10 +16,24 @@ router
     router.get('/products/search/:name', [ProductsController, 'search']).as('products.search')
     router.get('/products/:category', [ProductsController, 'plp']).as('products.plp')
     router.get('/product/:id', [ProductsController, 'pdp']).as('product.pdp')
-    router.get('/import', [ImportController, 'form']).as('import.form')
-    router.post('/import', [ImportController, 'import']).as('import.import')
+
   })
   .use(middleware.guest())
+
+router.group(() => {
+  router.get('/import', [ImportController, 'form']).as('import.form')
+  router.post('/import', [ImportController, 'import']).as('import.import')
+  router.get('/admin', [AdminController, 'home']).as('admin.home')
+  router.get('/admin/products', [AdminController, 'products']).as('admin.products')
+  router.get('/admin/categories', [AdminController, 'categories']).as('admin.categories')
+  router.post('/admin/categories', [AdminController, 'createCategory']).as('admin.categories.create')
+  router.put('/admin/categories/:id', [AdminController, 'updateCategory']).as('admin.categories.update')
+  router.delete('/admin/categories/:id', [AdminController, 'deleteCategory']).as('admin.categories.delete')
+  router.get('/admin/brands', [AdminController, 'brands']).as('admin.brands')
+  router.get('/admin/users', [AdminController, 'users']).as('admin.users')
+
+})
+.use(middleware.auth())
 
 router.get('/auth/login', [AuthController, 'login']).as('auth.login')
 router.post('/auth/login', [AuthController, 'loginPost']).as('auth.login.post')
