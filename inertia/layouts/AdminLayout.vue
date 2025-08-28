@@ -10,7 +10,7 @@ const props = defineProps<{
 <template>
     <div class="flex min-h-screen w-full bg-muted/40">
         <!-- Sidebar -->
-        <aside class="hidden md:flex md:flex-col w-64 bg-background border-r p-0">
+        <aside class="hidden md:flex md:flex-col w-64 bg-background border-r p-0 fixed inset-y-0 left-0 z-50 h-screen">
             <div class="flex items-center justify-center h-16 border-b">
                 <span class="font-bold text-lg">Admin Panel</span>
             </div>
@@ -24,7 +24,7 @@ const props = defineProps<{
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex flex-col flex-1 min-w-0">
+        <div class="flex flex-col flex-1 min-w-0 ml-64">
             <!-- Header -->
             <header class="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background px-6">
                 <div class="flex-1 font-semibold text-xl flex items-center h-16">Admin Dashboard</div>

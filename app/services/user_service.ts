@@ -2,6 +2,12 @@ import Account from '#models/account'
 import User from '#models/user'
 
 export class UserService {
+
+  async all() {
+    const users = await User.query()
+    return users
+  }
+
   async getAccount(accoutId: number) {
     const account = await Account.query()
       .where('provider_account_id', accoutId)

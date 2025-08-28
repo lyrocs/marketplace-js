@@ -3,18 +3,21 @@ import { SpecService } from '#services/spec_service'
 import { ProductService } from '#services/product_service'
 import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
+import { UserService } from '#services/user_service'
 import { importValidator } from '#validators/import'
 import type { HttpContext } from '@adonisjs/core/http'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
 import SpecDto from '#dtos/spec'
+import UserDto from '#dtos/user'
 @inject()
 export default class ImportController {
   constructor(
     private specService: SpecService,
     private productService: ProductService,
     private categoryService: CategoryService,
-    private brandService: BrandService
+    private brandService: BrandService,
+    private userService: UserService
   ) {}
 
   async home({ inertia }: HttpContext) {
@@ -86,7 +89,9 @@ export default class ImportController {
   } 
 
   async users({ inertia }: HttpContext) {
-    return inertia.render('admin/users')
+    const users = await this.userService.all()
+    const usersFormated = users.map((user: any) => new UserDto(user))
+    return inertia.render('admin/users', { users: usersFormated })
   }
 
 }
