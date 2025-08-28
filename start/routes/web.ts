@@ -30,6 +30,9 @@ router.group(() => {
   router.put('/admin/categories/:id', [AdminController, 'updateCategory']).as('admin.categories.update')
   router.delete('/admin/categories/:id', [AdminController, 'deleteCategory']).as('admin.categories.delete')
   router.get('/admin/brands', [AdminController, 'brands']).as('admin.brands')
+  router.post('/admin/brands', [AdminController, 'createBrand']).as('admin.brands.create')
+  router.put('/admin/brands/:id', [AdminController, 'updateBrand']).as('admin.brands.update')
+  router.delete('/admin/brands/:id', [AdminController, 'deleteBrand']).as('admin.brands.delete')
   router.get('/admin/users', [AdminController, 'users']).as('admin.users')
 
 })

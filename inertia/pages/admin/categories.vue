@@ -26,8 +26,8 @@ function deleteCategoryInline(item: CategoryDto) {
             { key: 'name', label: 'Name' },
             { key: 'parentId', label: 'Parent', type: 'select', options: props.categories },
             { key: 'specsTypes', label: 'Specs Types', type: 'array' }
-        ]" @update:item="({ rowIndex, item }) => updateCategoryInline(rowIndex, item)"
-            @create:category="createCategory" @delete:item="deleteCategoryInline" />
+        ]" @update:item="({ rowIndex, item }) => updateCategoryInline(rowIndex, item)" @create:item="createCategory"
+            @delete:item="deleteCategoryInline" />
 
     </div>
 </template>

@@ -6,6 +6,7 @@ import { BrandService } from '#services/brand_service'
 import { importValidator } from '#validators/import'
 import type { HttpContext } from '@adonisjs/core/http'
 import CategoryDto from '#dtos/category'
+import BrandDto from '#dtos/brand'
 @inject()
 export default class ImportController {
   constructor(
@@ -44,7 +45,23 @@ export default class ImportController {
   }
 
   async brands({ inertia }: HttpContext) {
-    return inertia.render('admin/brands')
+    const brands = await this.brandService.all()
+    const brandsFormated = brands.map((brand: any) => new BrandDto(brand))
+    return inertia.render('admin/brands', { brands: brandsFormated })
+  }
+  async createBrand({ request, response }: HttpContext) {
+    const { name } = request.only(['name'])
+    await this.brandService.create({ name })
+    return response.redirect().toRoute('admin.brands')
+  }
+  async updateBrand({ request, response }: HttpContext) {
+    const { name } = request.only(['name'])
+    await this.brandService.update(request.param('id'), { name })
+    return response.redirect().toRoute('admin.brands')
+  }
+  async deleteBrand({ request, response }: HttpContext) {
+    await this.brandService.delete(request.param('id'))
+    return response.redirect().toRoute('admin.brands')
   }
 
   async users({ inertia }: HttpContext) {
