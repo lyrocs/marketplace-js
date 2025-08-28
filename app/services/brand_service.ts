@@ -12,4 +12,13 @@ export class BrandService {
     }
     return Brand.create(data)
   }
+  async update(id: number, data: { name: string }) {
+    const brand = await Brand.findOrFail(id)
+    brand.merge(data)
+    return brand.save()
+  }
+  async delete(id: number) {
+    const brand = await Brand.findOrFail(id)
+    return brand.delete()
+  }
 }

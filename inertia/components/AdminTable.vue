@@ -133,7 +133,7 @@ const props = defineProps({
         // [{ key: 'name', label: 'Name', type: 'text', editable: true }, ...]
     },
 })
-const emit = defineEmits(['update:item', 'create:category', 'delete:item'])
+const emit = defineEmits(['update:item', 'create:item', 'delete:item'])
 const editingRow = ref<number | null>(null)
 const editBuffer = ref<any>({})
 const createBuffer = ref<any>({})
@@ -154,7 +154,7 @@ function saveEdit(rowIndex: number) {
     cancelEdit();
 }
 function createCategory() {
-    emit('create:category', createBuffer.value)
+    emit('create:item', createBuffer.value)
     createBuffer.value = {}
 }
 function deleteItem(item: any) {
