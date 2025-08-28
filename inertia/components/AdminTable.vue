@@ -1,6 +1,7 @@
 <template>
     <div>
-        <form @submit.prevent="createCategory" class="flex gap-2 mb-6 items-center bg-white rounded-lg p-2">
+        <form v-if="canCreate" @submit.prevent="createCategory"
+            class="flex gap-2 mb-6 items-center bg-white rounded-lg p-2">
             <div v-for="col in columns" :key="col.key">
                 <template v-if="col.editable === false">
                 </template>
@@ -131,6 +132,11 @@ const props = defineProps({
         type: Array,
         required: true,
         // [{ key: 'name', label: 'Name', type: 'text', editable: true }, ...]
+    },
+    canCreate: {
+        type: Boolean,
+        required: false,
+        default: true
     },
 })
 const emit = defineEmits(['update:item', 'create:item', 'delete:item'])
