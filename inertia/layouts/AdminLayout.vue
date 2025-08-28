@@ -19,6 +19,7 @@ const props = defineProps<{
                 <a href="/admin/products" class="desktop-link">Products</a>
                 <a href="/admin/categories" class="desktop-link">Categories</a>
                 <a href="/admin/brands" class="desktop-link">Brands</a>
+                <a href="/admin/specs" class="desktop-link">Specs</a>
                 <a href="/admin/users" class="desktop-link">Users</a>
             </nav>
         </aside>

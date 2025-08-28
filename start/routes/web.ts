@@ -25,14 +25,21 @@ router.group(() => {
   router.post('/import', [ImportController, 'import']).as('import.import')
   router.get('/admin', [AdminController, 'home']).as('admin.home')
   router.get('/admin/products', [AdminController, 'products']).as('admin.products')
+  // CATEGORY
   router.get('/admin/categories', [AdminController, 'categories']).as('admin.categories')
   router.post('/admin/categories', [AdminController, 'createCategory']).as('admin.categories.create')
   router.put('/admin/categories/:id', [AdminController, 'updateCategory']).as('admin.categories.update')
   router.delete('/admin/categories/:id', [AdminController, 'deleteCategory']).as('admin.categories.delete')
+  // BRAND
   router.get('/admin/brands', [AdminController, 'brands']).as('admin.brands')
   router.post('/admin/brands', [AdminController, 'createBrand']).as('admin.brands.create')
   router.put('/admin/brands/:id', [AdminController, 'updateBrand']).as('admin.brands.update')
   router.delete('/admin/brands/:id', [AdminController, 'deleteBrand']).as('admin.brands.delete')
+  // SPEC
+  router.get('/admin/specs', [AdminController, 'specs']).as('admin.specs')
+  router.post('/admin/specs', [AdminController, 'createSpec']).as('admin.specs.create')
+  router.put('/admin/specs/:id', [AdminController, 'updateSpec']).as('admin.specs.update')
+  router.delete('/admin/specs/:id', [AdminController, 'deleteSpec']).as('admin.specs.delete')
   router.get('/admin/users', [AdminController, 'users']).as('admin.users')
 
 })

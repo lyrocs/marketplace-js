@@ -7,6 +7,7 @@ import { importValidator } from '#validators/import'
 import type { HttpContext } from '@adonisjs/core/http'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
+import SpecDto from '#dtos/spec'
 @inject()
 export default class ImportController {
   constructor(
@@ -63,6 +64,26 @@ export default class ImportController {
     await this.brandService.delete(request.param('id'))
     return response.redirect().toRoute('admin.brands')
   }
+
+  async specs({ inertia }: HttpContext) {
+    const specs = await this.specService.all()
+    const specsFormated = specs.map((spec: any) => new SpecDto(spec))
+    return inertia.render('admin/specs', { specs: specsFormated })
+  }
+  async createSpec({ request, response }: HttpContext) {
+    const { type, value } = request.only(['type', 'value'])
+    await this.specService.create({ type, value })
+    return response.redirect().toRoute('admin.specs')
+  }
+  async updateSpec({ request, response }: HttpContext) {
+    const { type, value } = request.only(['type', 'value'])
+    await this.specService.update(request.param('id'), { type, value })
+    return response.redirect().toRoute('admin.specs')
+  }
+  async deleteSpec({ request, response }: HttpContext) {
+    await this.specService.delete(request.param('id'))
+    return response.redirect().toRoute('admin.specs')
+  } 
 
   async users({ inertia }: HttpContext) {
     return inertia.render('admin/users')
