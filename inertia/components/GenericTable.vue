@@ -1,5 +1,50 @@
 <template>
     <div>
+        <form @submit.prevent="createCategory" class="flex gap-2 mb-6 items-center bg-white rounded-lg p-2">
+            <div v-for="col in columns" :key="col.key">
+                <template v-if="col.editable === false">
+                </template>
+                <template v-else>
+                    <div v-if="col.type === 'select'" class="flex flex-col">
+                        <label :for="col.key" class="font-semibold">{{ col.label }}</label>
+                        <Select v-model="createBuffer[col.key]">
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue :placeholder="`Select ${col.label}`" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
+                                        {{ option.name }}
+                                    </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div v-else-if="col.type === 'array'">
+                        <label :for="col.key" class="font-semibold">{{ col.label }}</label>
+                        <TagsInput v-model="createBuffer[col.key]">
+                            <TagsInputItem v-for="item in createBuffer[col.key]" :key="item" :value="item">
+                                <TagsInputItemText />
+                                <TagsInputItemDelete />
+                            </TagsInputItem>
+
+                            <TagsInputInput :placeholder="`${col.label}...`" />
+                        </TagsInput>
+                    </div>
+                    <div v-else>
+                        <label :for="col.key" class="font-semibold">{{ col.label }}</label>
+                        <input v-model="createBuffer[col.key]" class="border px-2 py-1 rounded w-full" />
+                    </div>
+                </template>
+            </div>
+            <div class="flex flex-col self-end mb-1">
+                <Button type="submit" class="bg-green-500 hover:bg-green-600">
+                    <IconAdd class="h-6 w-6" /> Add
+                </Button>
+            </div>
+        </form>
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
@@ -24,12 +69,20 @@
                                 {{ item[col.key] }}
                             </template>
                         </span>
-                        <select v-else-if="col.type === 'select'" v-model="editBuffer[col.key]"
-                            class="select select-bordered">
-                            <option v-for="option in col.options" :key="option.id" :value="option.id">
-                                {{ option.name }}
-                            </option>
-                        </select>
+                        <Select v-else-if="col.type === 'select'" v-model="editBuffer[col.key]">
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue :placeholder="`Select ${col.label}`" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
+                                        {{ option.name }}
+                                    </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                         <template v-else-if="col.type === 'array'">
                             <TagsInput v-model="editBuffer[col.key]">
                                 <TagsInputItem v-for="item in editBuffer[col.key]" :key="item" :value="item">
@@ -59,6 +112,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { IconAdd } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps({
     items: {
@@ -71,9 +125,10 @@ const props = defineProps({
         // [{ key: 'name', label: 'Name' }, ...]
     },
 })
-const emit = defineEmits(['update:item'])
+const emit = defineEmits(['update:item', 'create:category'])
 const editingRow = ref<number | null>(null)
 const editBuffer = ref<any>({})
+const createBuffer = ref<any>({})
 
 function isEditing(rowIndex: number) {
     return editingRow.value === rowIndex;
@@ -89,6 +144,9 @@ function cancelEdit() {
 function saveEdit(rowIndex: number) {
     emit('update:item', { rowIndex, item: { ...editBuffer.value } });
     cancelEdit();
+}
+function createCategory() {
+    emit('create:category', createBuffer.value)
 }
 
 </script>
