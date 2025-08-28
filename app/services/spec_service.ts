@@ -21,4 +21,20 @@ export class SpecService {
 
     return specs
   }
+  async create(data: { type: string; value: string; }) {
+    const existingSpec = await Spec.query().where('type', data.type).andWhere('value', data.value).first()
+    if (existingSpec) {
+      return existingSpec
+    }
+    return Spec.create(data)
+  }
+  async update(id: number, data: { type: string; value: string; }) {
+    const spec = await Spec.findOrFail(id)
+    spec.merge(data)
+    return spec.save()
+  }
+  async delete(id: number) {
+    const spec = await Spec.findOrFail(id)
+    return spec.delete()
+  }
 }
