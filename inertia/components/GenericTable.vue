@@ -96,8 +96,16 @@
                         <input v-else v-model="editBuffer[col.key]" class="border px-2 py-1 rounded w-full" />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <Button v-if="!isEditing(rowIndex)" @click="startEdit(rowIndex, item)"
-                            class="bg-blue-500 hover:bg-blue-600">Edit</Button>
+                        <DropdownMenu v-if="!isEditing(rowIndex)">
+                            <DropdownMenuTrigger>
+                                <IconMoreHoriz class="h-6 w-6" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem @click="startEdit(rowIndex, item)">Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem @click="deleteItem(item)">Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <span v-else>
                             <Button @click="saveEdit(rowIndex)"
                                 class="bg-green-500 hover:bg-green-600 mr-2">Save</Button>
@@ -112,7 +120,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { IconAdd } from '@iconify-prerendered/vue-material-symbols'
+import { IconAdd, IconMoreHoriz } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps({
     items: {
@@ -122,10 +130,10 @@ const props = defineProps({
     columns: {
         type: Array,
         required: true,
-        // [{ key: 'name', label: 'Name' }, ...]
+        // [{ key: 'name', label: 'Name', type: 'text', editable: true }, ...]
     },
 })
-const emit = defineEmits(['update:item', 'create:category'])
+const emit = defineEmits(['update:item', 'create:category', 'delete:item'])
 const editingRow = ref<number | null>(null)
 const editBuffer = ref<any>({})
 const createBuffer = ref<any>({})
@@ -147,6 +155,10 @@ function saveEdit(rowIndex: number) {
 }
 function createCategory() {
     emit('create:category', createBuffer.value)
+    createBuffer.value = {}
+}
+function deleteItem(item: any) {
+    emit('delete:item', item)
 }
 
 </script>
