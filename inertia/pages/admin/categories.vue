@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3'
 import AdminLayout from '~/layouts/AdminLayout.vue'
-import GenericTable from '../../components/GenericTable.vue'
 import CategoryDto from '#dtos/category'
 defineOptions({ layout: AdminLayout })
 
@@ -22,7 +21,7 @@ function deleteCategoryInline(item: CategoryDto) {
 <template>
     <div>
         <h1 class="text-2xl font-bold mb-6">Admin Categories</h1>
-        <GenericTable :items="props.categories" :columns="[
+        <AdminTable :items="props.categories" :columns="[
             { key: 'id', label: 'ID', editable: false },
             { key: 'name', label: 'Name' },
             { key: 'parentId', label: 'Parent', type: 'select', options: props.categories },
