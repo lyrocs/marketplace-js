@@ -54,13 +54,11 @@ function updateProduct() {
 
 const translations = ref(props.product.translations ? props.product.translations.map(t => ({
     ...t,
-    features: t.features && typeof t.features === 'object' ? JSON.parse(JSON.stringify(t.features)) : {},
+    features: Array.isArray(t.features) ? JSON.parse(JSON.stringify(t.features)) : [],
 })) : [])
 
-// For each translation, an array of keys being edited
-const featureKeyEdits = ref(translations.value.map(t => Object.keys(t.features || {})))
-// For each translation, a string for new feature key
-const newFeatureKey = ref(translations.value.map(() => ''))
+// For each translation, a string for new feature title
+const newFeatureTitle = ref(translations.value.map(() => ''))
 
 const messages = ref({
     success: '',
@@ -73,47 +71,32 @@ function removeTranslation(tIdx: number) {
     newFeatureKey.value.splice(tIdx, 1)
 }
 
-function updateFeatureKey(tIdx: number, oldKey: string, fIdx: number) {
-    const editKey = featureKeyEdits.value[tIdx][fIdx]
-    if (!editKey || editKey === oldKey) return
-    const features = translations.value[tIdx].features
-    if (features[editKey]) return // Don't overwrite existing key
-    features[editKey] = features[oldKey]
-    delete features[oldKey]
-    // Update the key edits array
-    featureKeyEdits.value[tIdx][fIdx] = editKey
+// No longer needed: updateFeatureKey
+
+// No longer needed: removeFeatureKey
+
+function removeFeatureItem(tIdx: number, fIdx: number, itemIdx: number) {
+    translations.value[tIdx].features[fIdx].items.splice(itemIdx, 1)
 }
 
-function removeFeatureKey(tIdx: number, key: string) {
-    const features = translations.value[tIdx].features
-    delete features[key]
-    featureKeyEdits.value[tIdx] = Object.keys(features)
+function addFeatureItem(tIdx: number, fIdx: number) {
+    translations.value[tIdx].features[fIdx].items.push('')
 }
 
-function removeFeatureValue(tIdx: number, key: string, vIdx: number) {
-    const arr = translations.value[tIdx].features[key]
-    arr.splice(vIdx, 1)
+function addFeature(tIdx: number) {
+    const title = newFeatureTitle.value[tIdx].trim()
+    if (!title) return
+    translations.value[tIdx].features.push({ title, items: [''] })
+    newFeatureTitle.value[tIdx] = ''
 }
 
-function addFeatureValue(tIdx: number, key: string) {
-    if (!translations.value[tIdx].features[key]) translations.value[tIdx].features[key] = []
-    translations.value[tIdx].features[key].push('')
-}
-
-function addFeatureKey(tIdx: number) {
-    const key = newFeatureKey.value[tIdx].trim()
-    if (!key) return
-    if (!translations.value[tIdx].features[key]) {
-        translations.value[tIdx].features[key] = ['']
-        featureKeyEdits.value[tIdx].push(key)
-    }
-    newFeatureKey.value[tIdx] = ''
+function removeFeature(tIdx: number, fIdx: number) {
+    translations.value[tIdx].features.splice(fIdx, 1)
 }
 
 function addTranslation() {
-    translations.value.push({ language: '', name: '', description: '', features: {} })
-    featureKeyEdits.value.push([])
-    newFeatureKey.value.push('')
+    translations.value.push({ language: '', name: '', description: '', features: [] })
+    newFeatureTitle.value.push('')
 }
 
 function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) {
@@ -224,30 +207,21 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
                     </div>
                     <div class="mb-2">
                         <label class="block font-semibold mb-1">Features</label>
-                        <div v-for="(key, fIdx) in featureKeyEdits[tIdx]" :key="key"
-                            class="mb-2 border rounded p-2 bg-white">
-                            <div class="flex gap-2 mb-1 items-center">
-                                <input v-model="featureKeyEdits[tIdx][fIdx]" @blur="updateFeatureKey(tIdx, key, fIdx)"
-                                    class="border px-2 py-1 rounded flex-1" />
-                                <button type="button" @click="removeFeatureKey(tIdx, key)" class="text-red-500">Remove
-                                    Key</button>
-                            </div>
-                            <div v-for="(value, vIdx) in (translation.features[key] || [])" :key="vIdx"
-                                class="flex gap-2 mb-1 items-center">
-                                <input v-model="translation.features[key][vIdx]"
-                                    class="border px-2 py-1 rounded flex-1" />
-                                <button type="button" @click="removeFeatureValue(tIdx, key, vIdx)"
-                                    class="text-red-500">Remove Value</button>
-                            </div>
-                            <button type="button" @click="addFeatureValue(tIdx, key)" class="text-blue-500">Add
-                                Value</button>
-                        </div>
-                        <div class="flex gap-2 mt-2">
-                            <input v-model="newFeatureKey[tIdx]" placeholder="New feature key..."
-                                class="border px-2 py-1 rounded flex-1" />
-                            <button type="button" @click="addFeatureKey(tIdx)"
-                                class="bg-blue-500 text-white px-2 py-1 rounded">Add Feature Key</button>
-                        </div>
+                        <div v-for="(feature, fIdx) in translation.features" :key="fIdx" class="mb-2 border rounded p-2 bg-white">
+    <div class="flex gap-2 mb-1 items-center">
+        <input v-model="feature.title" class="border px-2 py-1 rounded flex-1" placeholder="Feature Title" />
+        <button type="button" @click="removeFeature(tIdx, fIdx)" class="text-red-500">Remove Feature</button>
+    </div>
+    <div v-for="(item, itemIdx) in feature.items" :key="itemIdx" class="flex gap-2 mb-1 items-center">
+        <input v-model="feature.items[itemIdx]" class="border px-2 py-1 rounded flex-1" placeholder="Item" />
+        <button type="button" @click="removeFeatureItem(tIdx, fIdx, itemIdx)" class="text-red-500">Remove Item</button>
+    </div>
+    <button type="button" @click="addFeatureItem(tIdx, fIdx)" class="text-blue-500">Add Item</button>
+</div>
+<div class="flex gap-2 mt-2">
+    <input v-model="newFeatureTitle[tIdx]" placeholder="New feature title..." class="border px-2 py-1 rounded flex-1" />
+    <button type="button" @click="addFeature(tIdx)" class="bg-blue-500 text-white px-2 py-1 rounded">Add Feature</button>
+</div>
                     </div>
                 </div>
                 <button type="button" @click="addTranslation()" class="bg-blue-500 text-white px-4 py-2 rounded">Add
