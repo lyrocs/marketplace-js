@@ -139,10 +139,20 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
                         <label class="block font-semibold mb-1">Images</label>
                         <div class="flex flex-wrap gap-2 mb-2">
                             <div v-for="(img, idx) in form.images" :key="idx" class="relative group">
-                                <img :src="img" class="w-20 h-20 object-cover rounded border" />
-                                <button type="button" @click="removeImage(idx)" class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">
-                                    &times;
-                                </button>
+                                <Dialog>
+                                    <DialogTrigger>
+                                        <img :src="img" class="w-20 h-20 object-cover rounded border" />
+                                        <button type="button" @click="removeImage(idx)"
+                                            class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">
+                                            &times;
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <img :src="img" class="w-full h-full object-cover rounded border" />
+                                    </DialogContent>
+                                </Dialog>
+
+
                             </div>
                         </div>
                         <input v-model="newImage" placeholder="Add image URL..."
