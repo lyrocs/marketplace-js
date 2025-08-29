@@ -6,7 +6,10 @@ export const importValidator = vine.compile(
       vine.object({
         name: vine.string().trim().minLength(2),
         description: vine.string().trim(),
-        features: vine.record(vine.array(vine.string())).optional(),
+        features: vine.array(vine.object({
+          title: vine.string().trim(),
+          items: vine.array(vine.string().trim()),
+        }).optional()),
         images: vine.array(vine.string()),
         manufacturer_name: vine.string().trim(),
         price: vine.number(),

@@ -36,13 +36,12 @@ const details = props.product.translations.find((translation) => translation.lan
                 <div v-if="details.features" class="rounded-xl bg-white p-6 shadow-lg md:p-8">
                     <h2 class="text-2xl font-bold text-gray-800">Spécifications Techniques</h2>
                     <div class="mt-6 space-y-6">
-                        <div v-for="featureKey in Object.keys(details.features)" :key="featureKey">
-                            <h3 class="mb-3 border-b pb-2 text-lg font-bold text-gray-800">{{ featureKey }}</h3>
-                            <dl v-for="featureValue in details.features[featureKey]" :key="featureValue"
-                                class="space-y-2 text-sm">
+                        <div v-for="feature of details.features" :key="feature.title">
+                            <h3 class="mb-3 border-b pb-2 text-lg font-bold text-gray-800">{{ feature.title }}</h3>
+                            <dl v-for="item of feature.items" :key="feature.title" class="space-y-2 text-sm">
                                 <div class="flex justify-between">
-                                    <dt class="text-gray-600">{{ featureValue.split(':')[0] }}</dt>
-                                    <dd class="font-semibold text-gray-800">{{ featureValue.split(':')[1] }}</dd>
+                                    <dt class="text-gray-600">{{ item.split(':')[0] }}</dt>
+                                    <dd class="font-semibold text-gray-800">{{ item.split(':')[1] }}</dd>
                                 </div>
                             </dl>
                         </div>

@@ -4,7 +4,7 @@ export default class ProductTranslationDto {
   declare language?: string
   declare name?: string
   declare description?: string
-  declare features?: object
+  declare features?: { title: string; items: string[] }[]
 
   constructor(productTranslation?: ProductTranslationDto) {
     if (!productTranslation) return

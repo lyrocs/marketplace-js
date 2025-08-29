@@ -17,8 +17,10 @@ export default class ProductTranslation extends BaseModel {
   @column()
   declare description: string
 
-  @column()
-  declare features: object
+  @column({
+    prepare: (value) => JSON.stringify(value),
+  })
+  declare features: JSON
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

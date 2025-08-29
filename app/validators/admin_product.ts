@@ -12,7 +12,10 @@ export const adminProductValidator = vine.compile(
             product_id: vine.number().optional(),
             name: vine.string().trim(),
             description: vine.string().trim(),
-            features: vine.record(vine.array(vine.string())).optional(),
+            features: vine.array(vine.object({
+              title: vine.string().trim(),
+              items: vine.array(vine.string().trim()),
+            }).optional()),
             language: vine.string().trim(),
           })
         ),
