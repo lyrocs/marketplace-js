@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from '~/layouts/AdminLayout.vue'
-
+import UserDto from '#dtos/user'
 defineOptions({
     layout: AdminLayout
 })
