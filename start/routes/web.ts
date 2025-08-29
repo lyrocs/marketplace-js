@@ -26,6 +26,7 @@ router.group(() => {
   router.get('/admin', [AdminController, 'home']).as('admin.home')
   router.get('/admin/products', [AdminController, 'products']).as('admin.products')
   router.get('/admin/product/:id', [AdminController, 'product']).as('admin.product')
+  router.put('/admin/product/:id', [AdminController, 'updateProduct']).as('admin.product.update')
   // CATEGORY
   router.get('/admin/categories', [AdminController, 'categories']).as('admin.categories')
   router.post('/admin/categories', [AdminController, 'createCategory']).as('admin.categories.create')
