@@ -43,6 +43,10 @@ function addImage() {
     }
 }
 
+function removeImage(idx: number) {
+    form.value.images.splice(idx, 1)
+}
+
 function updateProduct() {
     router.put(`/admin/product/${props.product.id}`, { ...form.value, translations: translations.value })
 }
@@ -134,8 +138,12 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
                     <div class="mb-4">
                         <label class="block font-semibold mb-1">Images</label>
                         <div class="flex flex-wrap gap-2 mb-2">
-                            <img v-for="(img, idx) in form.images" :key="idx" :src="img"
-                                class="w-20 h-20 object-cover rounded border" />
+                            <div v-for="(img, idx) in form.images" :key="idx" class="relative group">
+                                <img :src="img" class="w-20 h-20 object-cover rounded border" />
+                                <button type="button" @click="removeImage(idx)" class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">
+                                    &times;
+                                </button>
+                            </div>
                         </div>
                         <input v-model="newImage" placeholder="Add image URL..."
                             class="border px-2 py-1 rounded w-full mb-2" />
