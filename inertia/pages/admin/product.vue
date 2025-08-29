@@ -49,6 +49,7 @@ function removeImage(idx: number) {
 
 function updateProduct() {
     router.put(`/admin/product/${props.product.id}`, { ...form.value, translations: translations.value })
+    messages.value.success = 'Product updated successfully'
 }
 
 const translations = ref(props.product.translations ? props.product.translations.map(t => ({
@@ -60,6 +61,11 @@ const translations = ref(props.product.translations ? props.product.translations
 const featureKeyEdits = ref(translations.value.map(t => Object.keys(t.features || {})))
 // For each translation, a string for new feature key
 const newFeatureKey = ref(translations.value.map(() => ''))
+
+const messages = ref({
+    success: '',
+    errorsBag: {},
+})
 
 function removeTranslation(tIdx: number) {
     translations.value.splice(tIdx, 1)
@@ -119,6 +125,7 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
 <template>
     <div class=" mx-auto bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-6">Edit Product</h1>
+        <ToastManager :messages="messages" />
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Left column: Global info -->
             <div class="flex-1 min-w-0">
