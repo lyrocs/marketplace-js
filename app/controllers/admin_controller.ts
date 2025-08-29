@@ -26,12 +26,28 @@ export default class ImportController {
     return inertia.render('admin/home')
   }
 
-  async products({ inertia, request }: HttpContext) {
-    const queryString = request.qs()
-    const page = queryString.page || 1
-    const products = await this.productService.all({ page })
-    const productsFormated = ProductDto.fromArray(Array.from(products))
-    return inertia.render('admin/products', { products: productsFormated, meta: new MetaDto(products.getMeta()) })
+  async products({ inertia, request, params, response }: HttpContext) {
+      const queryString = request.qs()
+       const categories = await this.categoryService.all()
+       let category
+       let specsData
+       if (queryString.category) {
+        category = await this.categoryService.getById(Number(queryString.category))
+        specsData = await this.specService.byTypes(category?.specsTypes as any)
+       }
+     
+       const specs = queryString.specs?.split(',') || []
+       const page = queryString.page || 1
+       const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+      
+       const products = await this.productService.byCategory({ category: category?.id, specs: specsIds, page })
+   
+       return inertia.render('admin/products', {
+         categories: categories.map((category: any) => new CategoryDto(category)),
+         products: ProductDto.fromArray(Array.from(products)),
+         meta: new MetaDto(products.getMeta()),
+         specs: specsData?.map((spec: any) => new SpecDto(spec))
+       })
   }
 
   async categories({ inertia }: HttpContext) {

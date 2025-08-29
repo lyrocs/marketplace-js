@@ -1,13 +1,30 @@
 <script setup lang="ts">
 import AdminLayout from '~/layouts/AdminLayout.vue'
 import ProductDto from '#dtos/product'
-import { router } from '@inertiajs/vue3'
+import CategoryDto from '#dtos/category'
+import MetaDto from '#dtos/meta'
+import SpecDto from '#dtos/spec'
+import { usePage, router } from '@inertiajs/vue3'
 
 defineOptions({
     layout: AdminLayout
 })
 
-const props = defineProps<{ products: ProductDto[], meta: MetaDto, }>()
+
+const props = defineProps<{
+    categories: CategoryDto[]
+    products: ProductDto[]
+    meta: MetaDto,
+    specs: SpecDto[]
+}>()
+
+
+const page = usePage()
+const queryString = page.url.split('?')[1] || '';
+const searchParams = new URLSearchParams(queryString);
+const queryParams = Object.fromEntries(searchParams.entries());
+const specsParams = queryParams.specs?.split(',').map(Number) || []
+const categoryParams = queryParams.category ? Number(queryParams.category) : null
 
 function handleChangePage(value: number) {
     const url = new URL(window.location.href)
@@ -15,10 +32,36 @@ function handleChangePage(value: number) {
     router.get(url.toString())
 }
 
+function handleChange(ids: number[]) {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('page')
+    url.searchParams.delete('specs')
+    if (ids && ids.length) {
+        url.searchParams.set('specs', ids.join(','))
+    }
+
+    router.get(url.toString())
+}
+
+function handleChangeCategory(id: number) {
+    console.log('handleChangeCategory', id)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('page')
+    url.searchParams.delete('specs')
+    url.searchParams.delete('category')
+    if (id) {
+        url.searchParams.set('category', id.toString())
+    }
+
+    router.get(url.toString())
+}
+
 </script>
 
 <template>
-    <div>
+    <div class="flex flex-col gap-4">
+        <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
+            :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
         <ul class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
             <li v-for="product in props.products" :key="product.id" class="flex gap-4 border bg-white p-2 rounded mb-2">
                 <div class="flex items-center justify-center">
@@ -37,7 +80,7 @@ function handleChangePage(value: number) {
                         <div>
                             <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
                                 product.status
-                                }}
+                            }}
                             </Badge>
                         </div>
                         <div v-for="translation in product.translations" :key="translation.id" class="">

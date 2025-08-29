@@ -59,7 +59,10 @@ function handleChange(ids: number[]) {
         </div>
       </section> -->
     <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-x-12">
-      <Filters @change="handleChange" :specs="specs" :selectedIds="specsParams" />
+      <div class="flex flex-col gap-4">
+        <h3 class="text-xl font-bold text-gray-800">Filtres pour les annonces</h3>
+        <Filters @change="handleChange" :specs="specs" :selectedIds="specsParams" />
+      </div>
       <div class="mt-8 lg:col-span-3 lg:mt-0">
         <!-- <div class="mb-6 flex items-center justify-between">
           <p class="text-gray-600">

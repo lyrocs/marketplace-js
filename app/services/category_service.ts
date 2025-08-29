@@ -9,6 +9,10 @@ export class CategoryService {
     const category = await Category.query().where('name', name).first()
     return category
   }
+  async getById(id: number) {
+    const category = await Category.query().where('id', id).firstOrFail()
+    return category
+  }
   async create(data) {
     const newCategory = await Category.create(data)
     return Category.findOrFail(newCategory.id)

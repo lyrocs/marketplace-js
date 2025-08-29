@@ -4,15 +4,6 @@ import Source from '#models/source'
 import type Spec from '#models/spec'
 
 export class ProductService {
-  async all({ page = 1 }: { page?: number } = {}) {
-    return Product.query()
-      .preload('category')
-      .preload('specs')
-      .preload('translations')
-      .preload('sources')
-      .preload('brand')
-      .paginate(page)
-  }
   // add type to specs
   async byCategory({
     specs = [],
@@ -30,7 +21,7 @@ export class ProductService {
         specQuery.whereIn('id', specs)
       })
     }
-    return products.preload('category').preload('specs').preload('sources').preload('brand').paginate(page)
+    return products.preload('category').preload('specs').preload('translations').preload('sources').preload('brand').paginate(page)
   }
 
   async search({
