@@ -9,6 +9,7 @@ import ProductTranslationDto from '#dtos/product_translation'
 export default class ProductDto extends BaseModelDto {
   declare id: number
   declare name: string
+  declare status: string
   declare category: CategoryDto
   declare brand: BrandDto
   declare images: JSON
@@ -22,6 +23,7 @@ export default class ProductDto extends BaseModelDto {
     if (!product) return
     this.id = product.id
     this.name = product.name
+    this.status = product.status
     this.category = product.category && new CategoryDto(product.category)
     this.brand = product.brand && new BrandDto(product.brand)
     this.images = product.images

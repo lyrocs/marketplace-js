@@ -10,6 +10,8 @@ import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
 import SpecDto from '#dtos/spec'
 import UserDto from '#dtos/user'
+import ProductDto from '#dtos/product'
+import MetaDto from '#dtos/meta'
 @inject()
 export default class ImportController {
   constructor(
@@ -24,8 +26,12 @@ export default class ImportController {
     return inertia.render('admin/home')
   }
 
-  async products({ inertia }: HttpContext) {
-    return inertia.render('admin/products')
+  async products({ inertia, request }: HttpContext) {
+    const queryString = request.qs()
+    const page = queryString.page || 1
+    const products = await this.productService.all({ page })
+    const productsFormated = ProductDto.fromArray(Array.from(products))
+    return inertia.render('admin/products', { products: productsFormated, meta: new MetaDto(products.getMeta()) })
   }
 
   async categories({ inertia }: HttpContext) {
