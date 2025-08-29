@@ -50,6 +50,12 @@ export default class ImportController {
        })
   }
 
+  async product({ inertia, params }: HttpContext) {
+    const product = await this.productService.one(Number(params.id))
+    const specs = await this.specService.all()
+    return inertia.render('admin/product', { product: new ProductDto(product), specs: specs.map((spec: any) => new SpecDto(spec)) })
+  }
+
   async categories({ inertia }: HttpContext) {
     const categories = await this.categoryService.all()
     const categoriesFormated = categories.map((category: any) => new CategoryDto(category))

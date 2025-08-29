@@ -63,40 +63,41 @@ function handleChangeCategory(id: number) {
         <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
             :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
         <ul class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-            <li v-for="product in props.products" :key="product.id" class="flex gap-4 border bg-white p-2 rounded mb-2">
-                <div class="flex items-center justify-center">
-                    <img :src="product.images[0]" alt="" class="w-24 h-24 object-cover">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <h2 class="font-bold">{{ product.name }}</h2>
+            <li v-for="product in props.products" :key="product.id">
+                <a :href="`/admin/product/${product.id}`" class="flex gap-4 border bg-white p-2 rounded mb-2">
+                    <div class="flex items-center justify-center">
+                        <img :src="product.images[0]" alt="" class="w-24 h-24 object-cover">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h2 class="font-bold">{{ product.name }}</h2>
 
-                    <p>{{ product.category.name }} - {{ product.brand.name }}</p>
-                    <ul class="flex gap-2">
-                        <li v-for="spec in product.specs" :key="spec.id">
-                            <Badge>{{ spec.type }}: {{ spec.value }}</Badge>
-                        </li>
-                    </ul>
-                    <div class="flex gap-2">
-                        <div>
-                            <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
-                                product.status
-                            }}
-                            </Badge>
-                        </div>
-                        <div v-for="translation in product.translations" :key="translation.id" class="">
-                            <p>
-                                <Badge>{{ translation.language }}</Badge>
-                            </p>
-                        </div>
-                        <div v-for="shop in product.shops" :key="shop.id" class="flex gap-4">
-                            <p>
-                                <Badge :class="shop.available ? 'bg-green-500' : 'bg-red-500'">{{ shop.shop }} - {{
-                                    shop.price }} {{ shop.currency }}</Badge>
-                            </p>
+                        <p>{{ product.category.name }} - {{ product.brand.name }}</p>
+                        <ul class="flex gap-2">
+                            <li v-for="spec in product.specs" :key="spec.id">
+                                <Badge>{{ spec.type }}: {{ spec.value }}</Badge>
+                            </li>
+                        </ul>
+                        <div class="flex gap-2">
+                            <div>
+                                <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
+                                    product.status
+                                    }}
+                                </Badge>
+                            </div>
+                            <div v-for="translation in product.translations" :key="translation.id" class="">
+                                <p>
+                                    <Badge>{{ translation.language }}</Badge>
+                                </p>
+                            </div>
+                            <div v-for="shop in product.shops" :key="shop.id" class="flex gap-4">
+                                <p>
+                                    <Badge :class="shop.available ? 'bg-green-500' : 'bg-red-500'">{{ shop.shop }} - {{
+                                        shop.price }} {{ shop.currency }}</Badge>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                </a>
             </li>
         </ul>
         <Pagination v-slot="{ page }" :items-per-page="meta.perPage" :total="meta.total"
