@@ -5,6 +5,7 @@ import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
 import { UserService } from '#services/user_service'
 import { importValidator } from '#validators/import'
+import { adminProductValidator } from '#validators/admin_product'
 import type { HttpContext } from '@adonisjs/core/http'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
@@ -54,6 +55,19 @@ export default class ImportController {
     const product = await this.productService.one(Number(params.id))
     const specs = await this.specService.all()
     return inertia.render('admin/product', { product: new ProductDto(product), specs: specs.map((spec: any) => new SpecDto(spec)) })
+  }
+
+  async updateProduct({ inertia, params, request, response }: HttpContext) {
+    const data = await request.validateUsing(adminProductValidator)
+    const id = Number(request.param('id'))
+    const productData = {
+      name: data.name,
+      images: data.images,
+      status: data.status,
+    }
+    await this.productService.update(id, productData)
+    await this.productService.syncSpecs(await this.productService.one(id), data.specs)
+    return response.redirect().toRoute('admin.product', { id })
   }
 
   async categories({ inertia }: HttpContext) {

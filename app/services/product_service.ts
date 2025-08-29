@@ -69,6 +69,10 @@ export class ProductService {
     await product.related('specs').attach(specs.map((spec) => spec.id))
   }
 
+  async syncSpecs(product: Product, specs: number[]) {
+    await product.related('specs').sync(specs)
+  }
+
   async createSource(data: {
     product_id: number
     url: string
@@ -87,5 +91,12 @@ export class ProductService {
       return null
     }
     return Product.findOrFail(source.productId)
+  }
+
+  async update(id: number, data: { name: string; images: string[]; status: string }) {
+    const product = await Product.findOrFail(id)
+    product.merge(data)
+    await product.save()
+    return Product.findOrFail(id)
   }
 }
