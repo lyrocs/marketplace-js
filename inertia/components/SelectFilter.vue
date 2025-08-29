@@ -16,7 +16,7 @@ const emit = defineEmits(['add', 'remove'])
 const props = defineProps<{ specs: SpecDto[], selectedIds: number[], type: string }>()
 
 const selectedSpecs = computed(() => {
-  return props.specs.filter((spec) => props.selectedIds.includes(spec.id))
+  return props.specs?.filter((spec) => props.selectedIds.includes(spec.id))
 })
 
 
