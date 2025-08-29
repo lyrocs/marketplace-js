@@ -65,6 +65,26 @@ export class ProductService {
     return ProductTranslation.findOrFail(translation.id)
   }
 
+  async updateTranslation(data: {
+    id: number
+    product_id: number
+    language: string
+    name: string
+    description: string
+    features: object
+  }) {
+    const translation = await ProductTranslation.findOrFail(data.id)
+    translation.merge(data)
+    await translation.save()
+    return translation
+  }
+
+  async deleteTranslation(id: number) {
+    const translation = await ProductTranslation.findOrFail(id)
+    await translation.delete()
+    return translation
+  }
+
   async attachSpecs(product: Product, specs: Spec[]) {
     await product.related('specs').attach(specs.map((spec) => spec.id))
   }

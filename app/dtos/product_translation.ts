@@ -1,4 +1,5 @@
 export default class ProductTranslationDto {
+  declare id?: number
   declare productId?: number
   declare language?: string
   declare name?: string
@@ -7,7 +8,7 @@ export default class ProductTranslationDto {
 
   constructor(productTranslation?: ProductTranslationDto) {
     if (!productTranslation) return
-
+    this.id = productTranslation.id
     this.productId = productTranslation.productId
     this.language = productTranslation.language
     this.name = productTranslation.name
