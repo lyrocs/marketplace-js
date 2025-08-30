@@ -64,11 +64,11 @@ function handleChangeCategory(id: number) {
             :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
         <ul class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
             <li v-for="product in props.products" :key="product.id">
-                <a :href="`/admin/product/${product.id}`" class="flex gap-4 border bg-white p-2 rounded mb-2">
+                <a :href="`/admin/product/${product.id}`" class="flex gap-4 border bg-white p-2 rounded mb-2 min-h-36">
                     <div class="flex items-center justify-center">
                         <img :src="product.images[0]" alt="" class="w-24 h-24 object-cover">
                     </div>
-                    <div class="flex flex-col gap-2">
+                    <div class="flex-1 flex flex-col justify-between w-full gap-2">
                         <h2 class="font-bold">{{ product.name }}</h2>
 
                         <p>{{ product.category.name }} - {{ product.brand.name }}</p>
