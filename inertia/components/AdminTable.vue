@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form v-if="canCreate" @submit.prevent="createCategory"
+        <Form v-if="canCreate" @submit.prevent="createCategory"
             class="flex gap-2 mb-6 items-center bg-white rounded-lg p-2">
             <div v-for="col in columns" :key="col.key">
                 <template v-if="col.editable === false">
@@ -9,11 +9,9 @@
                     <div v-if="col.type === 'select'" class="flex flex-col">
                         <label :for="col.key" class="font-semibold">{{ col.label }}</label>
                         <Select v-model="createBuffer[col.key]">
-                            <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue :placeholder="`Select ${col.label}`" />
-                                </SelectTrigger>
-                            </FormControl>
+                            <SelectTrigger>
+                                <SelectValue :placeholder="`Select ${col.label}`" />
+                            </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
@@ -45,7 +43,7 @@
                     <IconAdd class="h-6 w-6" /> Add
                 </Button>
             </div>
-        </form>
+        </Form>
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
@@ -71,11 +69,9 @@
                             </template>
                         </span>
                         <Select v-else-if="col.type === 'select'" v-model="editBuffer[col.key]">
-                            <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue :placeholder="`Select ${col.label}`" />
-                                </SelectTrigger>
-                            </FormControl>
+                            <SelectTrigger>
+                                <SelectValue :placeholder="`Select ${col.label}`" />
+                            </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
