@@ -54,7 +54,14 @@ export default class ImportController {
   async product({ inertia, params }: HttpContext) {
     const product = await this.productService.one(Number(params.id))
     const specs = await this.specService.all()
-    return inertia.render('admin/product', { product: new ProductDto(product), specs: specs.map((spec: any) => new SpecDto(spec)) })
+    const categories = await this.categoryService.all()
+    const brands = await this.brandService.all()
+    return inertia.render('admin/product', { 
+      product: new ProductDto(product), 
+      specs: specs.map((spec: any) => new SpecDto(spec)), 
+      categories: categories.map((category: any) => new CategoryDto(category)), 
+      brands: brands.map((brand: any) => new BrandDto(brand)) 
+    })
   }
 
   async updateProduct({ inertia, params, request, response }: HttpContext) {
@@ -65,6 +72,8 @@ export default class ImportController {
       name: data.name,
       images: data.images,
       status: data.status,
+      category_id: data.category_id,
+      brand_id: data.brand_id,
     }
 
     for (const translation of data.translations) {  

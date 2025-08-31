@@ -2,6 +2,8 @@
 import AdminLayout from '~/layouts/AdminLayout.vue'
 import ProductDto from '#dtos/product'
 import SpecDto from '#dtos/spec'
+import CategoryDto from '#dtos/category'
+import BrandDto from '#dtos/brand'
 defineOptions({
     layout: AdminLayout
 })
@@ -9,6 +11,8 @@ defineOptions({
 const props = defineProps<{
     product: ProductDto
     specs: SpecDto[]
+    categories: CategoryDto[]
+    brands: BrandDto[]
 }>()
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
@@ -18,6 +22,8 @@ const form = ref({
     status: props.product.status,
     images: Array.isArray(props.product.images) ? [...props.product.images] : [],
     specs: props.product.specs ? props.product.specs.map(s => s.id) : [],
+    category_id: props.product.category_id || props.product.category?.id || '',
+    brand_id: props.product.brand_id || props.product.brand?.id || '',
 })
 
 const selectedSpecId = ref('')
@@ -48,7 +54,14 @@ function removeImage(idx: number) {
 }
 
 function updateProduct() {
-    router.put(`/admin/product/${props.product.id}`, { ...form.value, translations: translations.value })
+    router.put(`/admin/product/${props.product.id}`,
+        {
+            ...form.value,
+            translations: translations.value,
+            category_id: form.value.category_id,
+            brand_id: form.value.brand_id,
+        }
+    )
     messages.value.success = 'Product updated successfully'
 }
 
@@ -152,11 +165,21 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
                     </div>
                     <div class="mb-4">
                         <label class="block font-semibold mb-1">Category</label>
-                        <div class="border px-2 py-1 rounded w-full bg-gray-50">{{ product.category?.name }}</div>
+                        <select v-model="form.category_id" class="border px-2 py-1 rounded w-full">
+                            <option value="">Select category</option>
+                            <option v-for="cat in props.categories" :key="cat.id" :value="cat.id">
+                                {{ cat.name }}
+                            </option>
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="block font-semibold mb-1">Brand</label>
-                        <div class="border px-2 py-1 rounded w-full bg-gray-50">{{ product.brand?.name }}</div>
+                        <select v-model="form.brand_id" class="border px-2 py-1 rounded w-full">
+                            <option value="">Select brand</option>
+                            <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">
+                                {{ brand.name }}
+                            </option>
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="block font-semibold mb-1">Specs</label>
@@ -207,21 +230,30 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
                     </div>
                     <div class="mb-2">
                         <label class="block font-semibold mb-1">Features</label>
-                        <div v-for="(feature, fIdx) in translation.features" :key="fIdx" class="mb-2 border rounded p-2 bg-white">
-    <div class="flex gap-2 mb-1 items-center">
-        <input v-model="feature.title" class="border px-2 py-1 rounded flex-1" placeholder="Feature Title" />
-        <button type="button" @click="removeFeature(tIdx, fIdx)" class="text-red-500">Remove Feature</button>
-    </div>
-    <div v-for="(item, itemIdx) in feature.items" :key="itemIdx" class="flex gap-2 mb-1 items-center">
-        <input v-model="feature.items[itemIdx]" class="border px-2 py-1 rounded flex-1" placeholder="Item" />
-        <button type="button" @click="removeFeatureItem(tIdx, fIdx, itemIdx)" class="text-red-500">Remove Item</button>
-    </div>
-    <button type="button" @click="addFeatureItem(tIdx, fIdx)" class="text-blue-500">Add Item</button>
-</div>
-<div class="flex gap-2 mt-2">
-    <input v-model="newFeatureTitle[tIdx]" placeholder="New feature title..." class="border px-2 py-1 rounded flex-1" />
-    <button type="button" @click="addFeature(tIdx)" class="bg-blue-500 text-white px-2 py-1 rounded">Add Feature</button>
-</div>
+                        <div v-for="(feature, fIdx) in translation.features" :key="fIdx"
+                            class="mb-2 border rounded p-2 bg-white">
+                            <div class="flex gap-2 mb-1 items-center">
+                                <input v-model="feature.title" class="border px-2 py-1 rounded flex-1"
+                                    placeholder="Feature Title" />
+                                <button type="button" @click="removeFeature(tIdx, fIdx)" class="text-red-500">Remove
+                                    Feature</button>
+                            </div>
+                            <div v-for="(item, itemIdx) in feature.items" :key="itemIdx"
+                                class="flex gap-2 mb-1 items-center">
+                                <input v-model="feature.items[itemIdx]" class="border px-2 py-1 rounded flex-1"
+                                    placeholder="Item" />
+                                <button type="button" @click="removeFeatureItem(tIdx, fIdx, itemIdx)"
+                                    class="text-red-500">Remove Item</button>
+                            </div>
+                            <button type="button" @click="addFeatureItem(tIdx, fIdx)" class="text-blue-500">Add
+                                Item</button>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <input v-model="newFeatureTitle[tIdx]" placeholder="New feature title..."
+                                class="border px-2 py-1 rounded flex-1" />
+                            <button type="button" @click="addFeature(tIdx)"
+                                class="bg-blue-500 text-white px-2 py-1 rounded">Add Feature</button>
+                        </div>
                     </div>
                 </div>
                 <button type="button" @click="addTranslation()" class="bg-blue-500 text-white px-4 py-2 rounded">Add
