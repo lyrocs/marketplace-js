@@ -64,6 +64,23 @@ export default class ImportController {
     })
   }
 
+  async createProduct({ inertia, request, response }: HttpContext) {
+    const data = await request.validateUsing(adminProductValidator)
+    const product = await this.productService.create(data)
+    return response.redirect().toRoute('admin.product', { id: product.id })
+  }
+
+  async createProductPage({ inertia, request, response }: HttpContext) {
+    const specs = await this.specService.all()
+    const categories = await this.categoryService.all()
+    const brands = await this.brandService.all()
+    return inertia.render('admin/product-create', { 
+      specs: specs.map((spec: any) => new SpecDto(spec)), 
+      categories: categories.map((category: any) => new CategoryDto(category)), 
+      brands: brands.map((brand: any) => new BrandDto(brand)) 
+    })
+  }
+
   async updateProduct({ inertia, params, request, response }: HttpContext) {
     const data = await request.validateUsing(adminProductValidator)
     const id = Number(request.param('id'))

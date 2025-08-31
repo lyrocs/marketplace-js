@@ -56,12 +56,17 @@ function handleChangeCategory(id: number) {
     router.get(url.toString())
 }
 
+function createProduct() {
+    router.get('/admin/product/create')
+}
+
 </script>
 
 <template>
     <div class="flex flex-col gap-4">
         <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
             :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
+        <Button @click="createProduct">Create Product</Button>
         <ul class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
             <li v-for="product in props.products" :key="product.id">
                 <a :href="`/admin/product/${product.id}`" class="flex gap-4 border bg-white p-2 rounded mb-2 min-h-36">

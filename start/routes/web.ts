@@ -25,8 +25,10 @@ router.group(() => {
   router.post('/import', [ImportController, 'import']).as('import.import')
   router.get('/admin', [AdminController, 'home']).as('admin.home')
   router.get('/admin/products', [AdminController, 'products']).as('admin.products')
+  router.post('/admin/product', [AdminController, 'createProduct']).as('admin.products.create')
   router.get('/admin/product/:id', [AdminController, 'product']).as('admin.product')
   router.put('/admin/product/:id', [AdminController, 'updateProduct']).as('admin.product.update')
+  router.get('/admin/product/create', [AdminController, 'createProductPage']).as('admin.product.create')
   // CATEGORY
   router.get('/admin/categories', [AdminController, 'categories']).as('admin.categories')
   router.post('/admin/categories', [AdminController, 'createCategory']).as('admin.categories.create')

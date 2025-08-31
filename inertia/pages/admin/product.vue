@@ -125,87 +125,18 @@ function updateTranslation({ rowIndex, item }: { rowIndex: number, item: any }) 
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Left column: Global info -->
             <div class="flex-1 min-w-0">
-                <form @submit.prevent="updateProduct">
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Name</label>
-                        <input v-model="form.name" class="border px-2 py-1 rounded w-full" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Status</label>
-                        <select v-model="form.status" class="border px-2 py-1 rounded w-full">
-                            <option value="PENDING">Pending</option>
-                            <option value="ACTIVE">Active</option>
-                            <option value="INACTIVE">Inactive</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Images</label>
-                        <div class="flex flex-wrap gap-2 mb-2">
-                            <div v-for="(img, idx) in form.images" :key="idx" class="relative group">
-                                <Dialog>
-                                    <DialogTrigger>
-                                        <img :src="img" class="w-20 h-20 object-cover rounded border" />
-                                        <button type="button" @click="removeImage(idx)"
-                                            class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">
-                                            &times;
-                                        </button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <img :src="img" class="w-full h-full object-cover rounded border" />
-                                    </DialogContent>
-                                </Dialog>
-
-
-                            </div>
-                        </div>
-                        <input v-model="newImage" placeholder="Add image URL..."
-                            class="border px-2 py-1 rounded w-full mb-2" />
-                        <button type="button" @click="addImage" class="bg-blue-500 text-white px-2 py-1 rounded">Add
-                            Image</button>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Category</label>
-                        <select v-model="form.category_id" class="border px-2 py-1 rounded w-full">
-                            <option value="">Select category</option>
-                            <option v-for="cat in props.categories" :key="cat.id" :value="cat.id">
-                                {{ cat.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Brand</label>
-                        <select v-model="form.brand_id" class="border px-2 py-1 rounded w-full">
-                            <option value="">Select brand</option>
-                            <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">
-                                {{ brand.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Specs</label>
-                        <ul class="flex flex-wrap gap-2 mb-2">
-                            <li v-for="id in form.specs" :key="id" class="flex items-center gap-2">
-                                <span class="bg-gray-200 px-2 py-1 rounded">
-                                    {{props.specs.find(s => s.id === id)?.type}}: {{props.specs.find(s => s.id ===
-                                        id)?.value}}
-                                </span>
-                                <button type="button" @click="removeSpec(id)" class="text-red-500">Remove</button>
-                            </li>
-                        </ul>
-                        <div class="flex gap-2">
-                            <select v-model="selectedSpecId" class="border px-2 py-1 rounded flex-1">
-                                <option value="">Select spec to add</option>
-                                <option v-for="spec in props.specs" :key="spec.id" :value="spec.id"
-                                    :disabled="form.specs.includes(spec.id)">
-                                    {{ spec.type }}: {{ spec.value }}
-                                </option>
-                            </select>
-                            <button type="button" @click="addSpec" class="bg-blue-500 text-white px-2 py-1 rounded">Add
-                                Spec</button>
-                        </div>
-                    </div>
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Save Product</button>
-                </form>
+                <ProductForm
+  v-model="form"
+  :specs="props.specs"
+  :categories="props.categories"
+  :brands="props.brands"
+  :translations="translations"
+  :messages="messages"
+  :isEdit="true"
+  @submit="updateProduct"
+>
+  <!-- Optionally, add translation slot if needed -->
+</ProductForm>
             </div>
             <!-- Right column: Translations -->
             <div class="flex-1 min-w-0">

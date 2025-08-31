@@ -20,6 +20,6 @@ export const adminProductValidator = vine.compile(
             }).optional()),
             language: vine.string().trim(),
           })
-        ),
+        ).optional(),
   })
 )
