@@ -37,6 +37,11 @@ export class ProductService {
     return products.preload('category').preload('specs').preload('sources').preload('brand').paginate(page)
   }
 
+  async recent() {
+    const products = Product.query()
+    return products.preload('category').preload('specs').preload('sources').preload('brand').orderBy('created_at', 'desc').limit(10)
+  } 
+
   async one(id: number) {
     const product = await Product.query()
       .preload('category')

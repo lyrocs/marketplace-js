@@ -9,8 +9,13 @@ import {
   IconChat,
   IconSearch,
 } from '@iconify-prerendered/vue-material-symbols'
+import ProductDto from '#dtos/product'
 
 const searchInput = ref('')
+
+const props = defineProps<{
+  products: ProductDto[]
+}>()
 
 const search = () => {
   router.get(`/products/search/${searchInput.value}`)
@@ -66,7 +71,7 @@ const search = () => {
         </a>
       </section>
 
-      <section class="mt-20">
+      <!-- <section class="mt-20">
         <h2 class="text-center text-3xl font-bold text-gray-200">Les dernières annonces</h2>
         <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div class="group flex flex-col overflow-hidden rounded-xl bg-white shadow-lg">
@@ -135,7 +140,7 @@ const search = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <section class="mt-20 rounded-xl bg-white p-8 shadow-lg md:p-12">
         <div class="mx-auto max-w-3xl text-center">
