@@ -60,9 +60,9 @@ const menuParentCategories = parentCategories.map((category) => ({
 </script>
 
 <template>
-  <div class="flex items-center">
-    <a href="/">
-      <img src="../../public/images/logo.png" class="block w-[125px] max-[991px]:w-[115px]"></img>
+  <div class="flex gap-4 items-center">
+    <a href="/" class="text-2xl font-semibold">
+      Marketplace.js
     </a>
     <NavigationMenu>
       <NavigationMenuList>
