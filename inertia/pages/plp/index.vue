@@ -77,7 +77,7 @@ function handleChange(ids: number[]) {
             <option>Trier par : Prix décroissant</option>
           </select>
         </div> -->
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 mb-6">
           <ProductCard v-for="product in products" :key="product.id" :product="product" />
         </div>
         <Pagination v-slot="{ page }" :items-per-page="meta.perPage" :total="meta.total"
