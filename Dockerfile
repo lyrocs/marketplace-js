@@ -10,7 +10,7 @@ RUN corepack enable pnpm && pnpm i --frozen-lockfile
 FROM base AS production-deps
 WORKDIR /app
 ADD package.json pnpm-lock.yaml ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile --omit=dev
+RUN corepack enable pnpm && pnpm i --prod
 
 # Build stage
 FROM base AS build
