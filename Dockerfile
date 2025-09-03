@@ -4,20 +4,20 @@ FROM node:22.16.0-alpine3.22 AS base
 FROM base AS deps
 WORKDIR /app
 ADD package.json pnpm-lock.yaml ./
-RUN pnpm i --frozen-lockfile
+RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
 # Production only deps stage
 FROM base AS production-deps
 WORKDIR /app
 ADD package.json pnpm-lock.yaml ./
-RUN pnpm i --frozen-lockfile --omit=dev
+RUN corepack enable pnpm && pnpm i --frozen-lockfile --omit=dev
 
 # Build stage
 FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 ADD . .
-RUN pnpm run build
+RUN corepack enable pnpm && pnpm run build
 
 # Production stage
 FROM base
