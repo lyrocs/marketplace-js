@@ -54,7 +54,7 @@ export class ProductService {
     return product
   }
 
-  async create(data: { name: string; images: JSON; status: string; category_id: number }) {
+  async create(data: { name: string; images: string[]; status: string; category_id: number }) {
     const product = await Product.create(data)
     return Product.findOrFail(product.id)
   }
@@ -64,7 +64,7 @@ export class ProductService {
     language: string
     name: string
     description: string
-    features: object
+    features: { title: string; items: string[] }[]
   }) {
     const translation = await ProductTranslation.create(data)
     return ProductTranslation.findOrFail(translation.id)
@@ -76,7 +76,7 @@ export class ProductService {
     language: string
     name: string
     description: string
-    features: object
+    features: { title: string; items: string[] }[]
   }) {
     const translation = await ProductTranslation.findOrFail(data.id)
     translation.merge(data)

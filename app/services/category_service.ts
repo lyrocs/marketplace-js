@@ -13,11 +13,11 @@ export class CategoryService {
     const category = await Category.query().where('id', id).firstOrFail()
     return category
   }
-  async create(data) {
+  async create(data: { name: string; parentId: number; specsTypes: string[] }) {
     const newCategory = await Category.create(data)
     return Category.findOrFail(newCategory.id)
   }
-  async update(id, data) {
+  async update(id: number, data: { name: string; parentId: number; specsTypes: string[] }) {
     const category = await Category.findOrFail(id)
     category.merge(data)
     await category.save()

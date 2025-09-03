@@ -11,7 +11,7 @@ export default class Category extends BaseModel {
   @column({
     prepare: value => JSON.stringify(value)
   })
-  declare specsTypes: JSON
+  declare specsTypes: string[]
 
   @column()
   declare parentId: number | null

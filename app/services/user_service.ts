@@ -37,7 +37,7 @@ export class UserService {
       matrixPassword: matrixUser.password,
     })
 
-    const account = await Account.create({
+    await Account.create({
       user_id: user.id,
       provider: 'google',
       provider_account_id: userData.id,

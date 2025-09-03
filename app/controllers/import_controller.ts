@@ -66,10 +66,10 @@ export default class ImportController {
         language: payload.language,
         name: payload.name,
         description: payload.description,
-        features: payload.features || {},
+        features: payload.features || [],
       }
 
-      const translation = await this.productService.createTranslation(translationPayload)
+      await this.productService.createTranslation(translationPayload)
 
       const sourcePayload = {
         product_id: product.id,
@@ -81,7 +81,7 @@ export default class ImportController {
         language: payload.language,
       }
 
-      const source = await this.productService.createSource(sourcePayload)
+      await this.productService.createSource(sourcePayload)
 
       success++
 

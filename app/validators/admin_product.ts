@@ -17,7 +17,7 @@ export const adminProductValidator = vine.compile(
             features: vine.array(vine.object({
               title: vine.string().trim(),
               items: vine.array(vine.string().trim()),
-            }).optional()),
+            })).optional(),
             language: vine.string().trim(),
           })
         ).optional(),

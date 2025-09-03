@@ -5,7 +5,6 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import Spec from '#models/spec'
 import type { DateTime } from 'luxon'
 import Source from '#models/source'
-import ProductComponent from '#models/product_component'
 import Brand from '#models/brand'
 
 export default class Product extends BaseModel {
@@ -30,7 +29,7 @@ export default class Product extends BaseModel {
   @column({
     prepare: (value) => JSON.stringify(value),
   })
-  declare images: JSON
+  declare images: string[]
 
   @column()
   declare status: string

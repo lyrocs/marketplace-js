@@ -2,8 +2,8 @@ import { BaseModelDto } from '@adocasts.com/dto/base'
 import User from '#models/user'
 
 export default class UserDto extends BaseModelDto {
-  declare id: number
-  declare name: string
+  declare id: string
+  declare name: string | null
   declare email: string
   declare password: string
   declare createdAt: string

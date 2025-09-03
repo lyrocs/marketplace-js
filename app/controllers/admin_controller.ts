@@ -4,7 +4,6 @@ import { ProductService } from '#services/product_service'
 import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
 import { UserService } from '#services/user_service'
-import { importValidator } from '#validators/import'
 import { adminProductValidator } from '#validators/admin_product'
 import type { HttpContext } from '@adonisjs/core/http'
 import CategoryDto from '#dtos/category'
@@ -27,7 +26,7 @@ export default class ImportController {
     return inertia.render('admin/home')
   }
 
-  async products({ inertia, request, params, response }: HttpContext) {
+  async products({ inertia, request }: HttpContext) {
       const queryString = request.qs()
        const categories = await this.categoryService.all()
        let category
@@ -64,13 +63,13 @@ export default class ImportController {
     })
   }
 
-  async createProduct({ inertia, request, response }: HttpContext) {
+  async createProduct({ request, response }: HttpContext) {
     const data = await request.validateUsing(adminProductValidator)
     const product = await this.productService.create(data)
     return response.redirect().toRoute('admin.product', { id: product.id })
   }
 
-  async createProductPage({ inertia, request, response }: HttpContext) {
+  async createProductPage({ inertia }: HttpContext) {
     const specs = await this.specService.all()
     const categories = await this.categoryService.all()
     const brands = await this.brandService.all()
@@ -81,7 +80,7 @@ export default class ImportController {
     })
   }
 
-  async updateProduct({ inertia, params, request, response }: HttpContext) {
+  async updateProduct({ request, response }: HttpContext) {
     const data = await request.validateUsing(adminProductValidator)
     const id = Number(request.param('id'))
     const product = await this.productService.one(id)
@@ -93,7 +92,7 @@ export default class ImportController {
       brand_id: data.brand_id,
     }
 
-    for (const translation of data.translations) {  
+    for (const translation of data?.translations || []) {  
       if (translation.id) {
         const translationData = {
           id: translation.id,
@@ -101,7 +100,7 @@ export default class ImportController {
           language: translation.language,
           name: translation.name,
           description: translation.description,
-          features: translation.features || {},
+          features: translation.features || [],
         }
         await this.productService.updateTranslation(translationData)
       }
@@ -111,13 +110,13 @@ export default class ImportController {
           language: translation.language,
           name: translation.name,
           description: translation.description,
-          features: translation.features || {},
+          features: translation.features || [],
         }
         await this.productService.createTranslation(translationData)
       }
     }
     for (const translation of product.translations) {
-      if (!data.translations.some(t => t.id === translation.id)) {
+      if (!data?.translations?.some(t => t.id === translation.id)) {
         await this.productService.deleteTranslation(translation.id)
       }
     }
@@ -165,7 +164,6 @@ export default class ImportController {
     await this.brandService.delete(request.param('id'))
     return response.redirect().toRoute('admin.brands')
   }
-
   async specs({ inertia }: HttpContext) {
     const specs = await this.specService.all()
     const specsFormated = specs.map((spec: any) => new SpecDto(spec))
@@ -185,11 +183,9 @@ export default class ImportController {
     await this.specService.delete(request.param('id'))
     return response.redirect().toRoute('admin.specs')
   } 
-
   async users({ inertia }: HttpContext) {
     const users = await this.userService.all()
     const usersFormated = users.map((user: any) => new UserDto(user))
     return inertia.render('admin/users', { users: usersFormated })
   }
-
 }

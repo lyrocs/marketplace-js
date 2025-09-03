@@ -20,7 +20,7 @@ export default class CategoryDto extends BaseModelDto {
   }
   declare id: number
   declare name: string
-  declare specsTypes: JSON
+  declare specsTypes: string[]
   declare parentId: number | null
 
   constructor(category?: Category) {

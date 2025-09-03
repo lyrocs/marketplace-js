@@ -12,7 +12,7 @@ export default class ProductDto extends BaseModelDto {
   declare status: string
   declare category: CategoryDto
   declare brand: BrandDto
-  declare images: JSON
+  declare images: string[]
   declare specs: SpecDto[]
   declare shops: ShopDto[]
   declare translations: ProductTranslationDto[]
