@@ -2,6 +2,10 @@
 
 A modern, full-stack marketplace application built with AdonisJS, Vue 3, and TypeScript. This application provides a robust platform for creating and managing an online marketplace with features like product listings, user authentication, and more.
 
+## 🖥️ Demo
+
+Try the live demo: [https://marketplace.lyrocs.ovh/](https://marketplace.lyrocs.ovh/)
+
 ## 🚀 Features
 
 - **Modern Stack**: Built with AdonisJS 6, Vue 3, and TypeScript
@@ -33,32 +37,38 @@ A modern, full-stack marketplace application built with AdonisJS, Vue 3, and Typ
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/lyrocs/marketplace-js.git
    cd marketplace-js
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Copy the environment file and update the variables:
+
    ```bash
    cp .env.example .env
    ```
 
 4. Generate an app key:
+
    ```bash
    node ace generate:key
    ```
 
 5. Run database migrations:
+
    ```bash
    node ace migration:run
    ```
 
 6. Start the development server:
+
    ```bash
    pnpm dev
    ```
