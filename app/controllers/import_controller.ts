@@ -16,7 +16,7 @@ export default class ImportController {
   ) {}
 
   async form({ inertia }: HttpContext) {
-    return inertia.render('import/form')
+    return inertia.render('admin/import/form')
   }
 
   async import({ request, inertia }: HttpContext) {
@@ -86,7 +86,7 @@ export default class ImportController {
       success++
 
     }
-    return inertia.render('import/form', {
+    return inertia.render('admin/import/form', {
       total: products.length,
       success,
     })

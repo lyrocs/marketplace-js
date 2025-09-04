@@ -21,9 +21,9 @@ router
   .use(middleware.guest())
 
 router.group(() => {
-  router.get('/import', [ImportController, 'form']).as('import.form')
-  router.post('/import', [ImportController, 'import']).as('import.import')
   router.get('/admin', [AdminController, 'home']).as('admin.home')
+  router.get('/admin/import', [ImportController, 'form']).as('admin.import.form')
+  router.post('/admin/import', [ImportController, 'import']).as('admin.import.import')
   router.get('/admin/products', [AdminController, 'products']).as('admin.products')
   router.post('/admin/product', [AdminController, 'createProduct']).as('admin.products.create')
   router.get('/admin/product/:id', [AdminController, 'product']).as('admin.product')

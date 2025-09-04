@@ -20,13 +20,9 @@ const props = defineProps<{
         <DropdownMenuContent align="end">
             <DropdownMenuLabel>{{ user?.email }}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem :as="Link" href="/settings/profile">
-                Profile Settings
+            <DropdownMenuItem v-if="user.isAdmin" :as="Link" href="/admin">
+                Admin Panel
             </DropdownMenuItem>
-            <DropdownMenuItem :as="Link" href="/settings/account">
-                Account Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem :as="Link" href="/auth/logout" method="post" class="w-full"> Logout </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

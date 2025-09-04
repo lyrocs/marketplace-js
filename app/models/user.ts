@@ -9,7 +9,7 @@ import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 
-enum UserRole {
+export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
 }
