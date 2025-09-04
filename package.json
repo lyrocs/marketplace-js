@@ -61,6 +61,7 @@
   "dependencies": {
     "@adocasts.com/actions": "^1.0.5",
     "@adocasts.com/dto": "^0.0.9",
+    "@adonisjs/ally": "^5.1.1",
     "@adonisjs/auth": "^9.3.1",
     "@adonisjs/core": "^6.17.2",
     "@adonisjs/cors": "^2.2.1",

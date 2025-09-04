@@ -107,7 +107,7 @@ const form = useForm({
                 </div>
 
                 <div class="mt-6 grid grid-cols-2 gap-4">
-                    <a href="#"
+                    <a href="/google/redirect"
                         class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-slate-600">
                         <svg class="size-5" aria-hidden="true" viewBox="0 0 24 24">
                             <path

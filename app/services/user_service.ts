@@ -39,8 +39,8 @@ export class UserService {
       email: userData.email,
       name: userData.name,
       image: userData.image,
-      matrixLogin: matrixUser.username,
-      matrixPassword: matrixUser.password,
+      matrixLogin: matrixUser?.username,
+      matrixPassword: matrixUser?.password,
     })
 
     await Account.create({

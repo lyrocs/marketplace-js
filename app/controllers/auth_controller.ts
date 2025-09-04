@@ -67,4 +67,51 @@ export default class HomeController {
   async verify({ auth }: HttpContext) {
     return auth.user?.email
   }
+
+  async googleCallback({ auth, ally, response }: { ally: any; auth: any; response: any }) {
+    const gh = ally.use('google')
+
+    /**
+     * User has denied access by canceling
+     * the login flow
+     */
+    if (gh.accessDenied()) {
+      return 'You have cancelled the login process'
+    }
+
+    /**
+     * OAuth state verification failed. This happens when the
+     * CSRF cookie gets expired.
+     */
+    if (gh.stateMisMatch()) {
+      return 'We are unable to verify the request. Please try again'
+    }
+
+    /**
+     * GitHub responded with some error
+     */
+    if (gh.hasError()) {
+      return gh.getError()
+    }
+
+    /**
+     * Access user info
+     */
+    const user = await gh.user()
+    try {
+      const existingAccount = await this.userService.getAccount(user.id)
+      // replace true by  !!request.input('remember_me')
+      await auth.use('web').login(existingAccount.user, true)
+    } catch {
+      // const matrixUser = await this.matrixService.createUser()
+      // console.log('matrixUser', matrixUser)
+      // if (!matrixUser) {
+      //   return 'Unable to create matrix user'
+      // }
+
+      const newUser = await this.userService.createGoogleAccount(user, {})
+      await auth.use('web').login(newUser, true)
+    }
+    return response.redirect().toRoute('home')
+  }
 }

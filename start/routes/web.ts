@@ -55,5 +55,9 @@ router.get('/auth/register', [AuthController, 'register']).as('auth.register')
 router.post('/auth/register', [AuthController, 'registerPost']).as('auth.register.post')
 router.post('/auth/logout', [AuthController, 'logout']).as('auth.logout')
 router.get('/auth/verify', [AuthController, 'verify']).as('auth.verify').use(middleware.auth())
+router.get('/google/redirect', ({ ally }) => {
+  return ally.use('google').redirect()
+})
+router.get('/google/callback', [AuthController, 'googleCallback'])
 
 router.where('id', router.matchers.number())
