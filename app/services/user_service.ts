@@ -8,6 +8,12 @@ export class UserService {
     return users
   }
 
+  // used to know if we have an admin user
+  async getFirst() {
+    const user = await User.query().first()
+    return user
+  }
+
   async getAccount(accoutId: number) {
     const account = await Account.query()
       .where('provider_account_id', accoutId)

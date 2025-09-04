@@ -3,10 +3,15 @@ import { inject } from '@adonisjs/core'
 import { loginValidator, registerValidator } from '#validators/auth'
 import User from '#models/user'
 import limiter from '@adonisjs/limiter/services/main'
+import { UserService } from '#services/user_service'
+import { UserRole } from '#models/user'
+
 
 @inject()
 export default class HomeController {
-  constructor() {}
+  constructor(
+    private userService: UserService
+  ) {}
 
   get limit() {
     return limiter.use({
@@ -43,7 +48,12 @@ export default class HomeController {
   }
   async registerPost({ auth, request, response }: HttpContext) {
     const data = await request.validateUsing(registerValidator)
-    const user = await User.create(data)
+    const firstUser = await this.userService.getFirst()
+    const userData = {
+      ...data,
+      role: firstUser ? UserRole.USER : UserRole.ADMIN
+    }
+    const user = await User.create(userData)
     await auth.use('web').login(user)
     return response.redirect().toRoute('home')
   }
