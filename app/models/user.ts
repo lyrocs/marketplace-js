@@ -9,6 +9,10 @@ import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 
+enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -35,6 +39,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column({ serializeAs: null })
   declare password: string
+
+  @column()
+  declare role: UserRole
 
   @column()
   declare matrixLogin: string | null
