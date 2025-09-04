@@ -4,7 +4,7 @@ import { loginValidator, registerValidator } from '#validators/auth'
 import User from '#models/user'
 import limiter from '@adonisjs/limiter/services/main'
 import { UserService } from '#services/user_service'
-import { UserRole } from '#models/user'
+import UserRole from '#enums/roles'
 
 
 @inject()

@@ -1,6 +1,6 @@
 import { BaseModelDto } from '@adocasts.com/dto/base'
 import User from '#models/user'
-import { UserRole } from '#models/user'
+import UserRole from '#enums/roles'
 
 export default class UserDto extends BaseModelDto {
   declare id: string
