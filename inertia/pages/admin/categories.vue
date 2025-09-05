@@ -24,6 +24,7 @@ function deleteCategoryInline(item: CategoryDto) {
         <AdminTable :items="props.categories" :columns="[
             { key: 'id', label: 'ID', editable: false },
             { key: 'name', label: 'Name' },
+            { key: 'key', label: 'Key', editable: false },
             { key: 'parentId', label: 'Parent', type: 'select', options: props.categories },
             { key: 'specsTypes', label: 'Specs Types', type: 'array' }
         ]" @update:item="({ rowIndex, item }) => updateCategoryInline(rowIndex, item)" @create:item="createCategory"
