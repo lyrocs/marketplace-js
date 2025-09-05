@@ -28,33 +28,6 @@ const form = ref({
     features: props.product.features || [],
 })
 
-const selectedSpecId = ref('')
-
-function addSpec() {
-    const id = Number(selectedSpecId.value)
-    if (id && !form.value.specs.includes(id)) {
-        form.value.specs.push(id)
-        selectedSpecId.value = ''
-    }
-}
-
-function removeSpec(id: number) {
-    form.value.specs = form.value.specs.filter(sid => sid !== id)
-}
-
-const newImage = ref('')
-
-function addImage() {
-    if (newImage.value && !form.value.images.includes(newImage.value)) {
-        form.value.images.push(newImage.value)
-        newImage.value = ''
-    }
-}
-
-function removeImage(idx: number) {
-    form.value.images.splice(idx, 1)
-}
-
 function updateProduct() {
     router.put(`/admin/product/${props.product.id}`,
         {
@@ -66,13 +39,10 @@ function updateProduct() {
     messages.value.success = 'Product updated successfully'
 }
 
-
 const messages = ref({
     success: '',
     errorsBag: {},
 })
-
-
 
 </script>
 

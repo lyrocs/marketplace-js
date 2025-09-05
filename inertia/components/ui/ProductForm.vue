@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { PropType } from 'vue'
-import ProductDto from '#dtos/product'
 import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
@@ -71,8 +70,6 @@ function removeImage(idx: number) {
   localForm.value.images.splice(idx, 1)
   emit('update:modelValue', { ...localForm.value })
 }
-
-
 
 const newFeatureTitle = ref('')
 
@@ -153,7 +150,7 @@ function removeFeature(fIdx: number) {
         </li>
       </ul>
       <div class="flex gap-2">
-        <select v-model="selectedSpecId" class="border px-2 py-1 rounded flex-1">
+        <select v-model="selectedSpecId" @change="addSpec" class="border px-2 py-1 rounded flex-1">
           <option value="">Select spec to add</option>
           <option v-for="spec in props.specs" :key="spec.id" :value="spec.id"
             :disabled="localForm.specs.includes(spec.id)">

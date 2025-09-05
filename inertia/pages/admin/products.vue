@@ -88,14 +88,9 @@ function createProduct() {
                                 }}
                                 </Badge>
                             </div>
-                            <div v-for="translation in product.translations" :key="translation.id" class="">
-                                <p>
-                                    <Badge>{{ translation.language }}</Badge>
-                                </p>
-                            </div>
                             <div v-for="shop in product.shops" :key="shop.id" class="flex gap-4">
                                 <p>
-                                    <Badge :class="shop.available ? 'bg-green-500' : 'bg-red-500'">{{ shop.shop }} - {{
+                                    <Badge :class="shop.available ? 'bg-green-500' : 'bg-red-500'">{{ shop.name }} - {{
                                         shop.price }} {{ shop.currency }}</Badge>
                                 </p>
                             </div>

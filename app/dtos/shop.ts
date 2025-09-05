@@ -1,5 +1,5 @@
 import { BaseModelDto } from '@adocasts.com/dto/base'
-import Shop from '#models/source'
+import Shop from '#models/shop'
 
 export default class ShopDto extends BaseModelDto {
   declare id: number
@@ -8,7 +8,7 @@ export default class ShopDto extends BaseModelDto {
   declare price: number
   declare currency: string
   declare available: boolean
-  declare shop: string
+  declare name: string
 
   constructor(shop?: Shop) {
     super()
@@ -20,6 +20,6 @@ export default class ShopDto extends BaseModelDto {
     this.price = shop.price
     this.currency = shop.currency
     this.available = shop.available
-    this.shop = shop.shop
+    this.name = shop.name
   }
 }
