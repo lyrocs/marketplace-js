@@ -13,7 +13,7 @@ import {
 
 const emit = defineEmits(['add', 'remove'])
 
-const props = defineProps<{ specs: SpecDto[], selectedIds: number[], type: string }>()
+const props = defineProps<{ specs: SpecDto[], selectedIds: number[], type: string, inline?: boolean }>()
 
 const selectedSpecs = computed(() => {
   return props.specs?.filter((spec) => props.selectedIds.includes(spec.id))
@@ -33,15 +33,7 @@ function handleClick(id: number) {
 
 
 <template>
-  <div>
-    <ul class="my-2">
-      <li v-for="spec in selectedSpecs" :key="spec">
-        <button @click="handleClick(spec.id)" class="flex items-center">
-          <p class="text-sm">{{ spec.value }}</p>
-          <IconDeleteForeverOutline class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </button>
-      </li>
-    </ul>
+  <div :class="inline ? 'flex gap-2' : 'flex flex-col gap-2'">
     <Combobox v-model="value" by="label">
       <ComboboxAnchor class="w-full" as-child>
         <ComboboxTrigger as-child>
@@ -77,5 +69,13 @@ function handleClick(id: number) {
         </ComboboxGroup>
       </ComboboxList>
     </Combobox>
+    <ul class="my-2">
+      <li v-for="spec in selectedSpecs" :key="spec">
+        <button @click="handleClick(spec.id)" class="flex items-center">
+          <p class="text-sm">{{ spec.value }}</p>
+          <IconDeleteForeverOutline class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </button>
+      </li>
+    </ul>
   </div>
 </template>

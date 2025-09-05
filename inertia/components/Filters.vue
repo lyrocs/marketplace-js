@@ -2,6 +2,7 @@
 import SpecDto from '#dtos/spec';
 import CategoryDto from '#dtos/category';
 import { computed, ref, watch } from 'vue'
+import FilterCard from './FilterCard.vue'
 
 const props = defineProps<{
     specs: SpecDto[],
@@ -46,6 +47,7 @@ function handleCategoryChange(value: number) {
 watch(selectedCategory, (value) => {
     emit('change:category', value)
 })
+
 </script>
 
 
@@ -54,12 +56,11 @@ watch(selectedCategory, (value) => {
         <div class="space-y-8">
             <div :class="inline ? 'flex flex-row gap-4' : 'flex flex-col gap-4'">
                 <template v-if="categories">
-                    <FilterCard title="Categories">
+                    <component :is="inline ? 'div' : FilterCard" title="Categories">
                         <Select v-model="selectedCategory" @change="handleCategoryChange">
                             <SelectTrigger>
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
-
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem v-for="option in categories" :key="option.id" :value="option.id">
@@ -68,13 +69,14 @@ watch(selectedCategory, (value) => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                    </FilterCard>
+                    </component>
                 </template>
                 <template v-if="specs">
-                    <FilterCard v-for="(specs, type) in specsByType" :key="type" :title="type">
+                    <component :is="inline ? 'div' : FilterCard" v-for="(specs, type) in specsByType" :key="type"
+                        :title="type">
                         <SelectFilter @add="handleAddSpec" @remove="handleRemoveSpec" :specs="specs"
-                            :selectedIds="selectedIds" :type="type" />
-                    </FilterCard>
+                            :selectedIds="selectedIds" :type="type" :inline="inline" />
+                    </component>
                 </template>
                 <div class="flex justify-center">
                     <Button @click="handleReset"

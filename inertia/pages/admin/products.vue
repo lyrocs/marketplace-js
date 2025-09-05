@@ -5,11 +5,12 @@ import CategoryDto from '#dtos/category'
 import MetaDto from '#dtos/meta'
 import SpecDto from '#dtos/spec'
 import { usePage, router } from '@inertiajs/vue3'
-
+import {
+    IconAdd
+} from '@iconify-prerendered/vue-material-symbols'
 defineOptions({
     layout: AdminLayout
 })
-
 
 const props = defineProps<{
     categories: CategoryDto[]
@@ -65,7 +66,9 @@ function createProduct() {
     <div class="flex flex-col gap-4">
         <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
             :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
-        <Button @click="createProduct">Create Product</Button>
+        <Button @click="createProduct">
+            <IconAdd class="size-12" />Create Product
+        </Button>
         <ul class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
             <li v-for="product in props.products" :key="product.id">
                 <a :href="`/admin/product/${product.id}`" class="flex gap-4 border bg-white p-2 rounded mb-2 min-h-36">
@@ -85,7 +88,7 @@ function createProduct() {
                             <div>
                                 <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
                                     product.status
-                                }}
+                                    }}
                                 </Badge>
                             </div>
                             <div v-for="shop in product.shops" :key="shop.id" class="flex gap-4">
