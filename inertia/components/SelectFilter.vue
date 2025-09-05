@@ -69,7 +69,7 @@ function handleClick(id: number) {
         </ComboboxGroup>
       </ComboboxList>
     </Combobox>
-    <ul class="my-2">
+    <ul class="my-2 flex flex-wrap">
       <li v-for="spec in selectedSpecs" :key="spec">
         <button @click="handleClick(spec.id)" class="flex items-center">
           <p class="text-sm">{{ spec.value }}</p>

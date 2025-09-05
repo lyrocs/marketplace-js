@@ -54,7 +54,7 @@ watch(selectedCategory, (value) => {
 <template>
     <aside class="lg:col-span-1">
         <div class="space-y-8">
-            <div :class="inline ? 'flex flex-row gap-4' : 'flex flex-col gap-4'">
+            <div :class="inline ? 'flex flex-row flex-wrap gap-4' : 'flex flex-col gap-4'">
                 <template v-if="categories">
                     <component :is="inline ? 'div' : FilterCard" title="Categories">
                         <Select v-model="selectedCategory" @change="handleCategoryChange">
