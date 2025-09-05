@@ -87,7 +87,7 @@ export default class ImportController {
   async updateProduct({ request, response }: HttpContext) {
     const data = await request.validateUsing(adminProductValidator)
     const id = Number(request.param('id'))
-    const product = await this.productService.one(id)
+    await this.productService.one(id)
     const productData = {
       name: data.name,
       images: data.images,
@@ -97,35 +97,6 @@ export default class ImportController {
       description: data.description,
       features: data.features || [],
     }
-
-    // for (const translation of data?.translations || []) {  
-    //   if (translation.id) {
-    //     const translationData = {
-    //       id: translation.id,
-    //       product_id: id,
-    //       language: translation.language,
-    //       name: translation.name,
-    //       description: translation.description,
-    //       features: translation.features || [],
-    //     }
-    //     await this.productService.updateTranslation(translationData)
-    //   }
-    //   else {
-    //     const translationData = {
-    //       product_id: id,
-    //       language: translation.language,
-    //       name: translation.name,
-    //       description: translation.description,
-    //       features: translation.features || [],
-    //     }
-    //     await this.productService.createTranslation(translationData)
-    //   }
-    // }
-    // for (const translation of product.translations) {
-    //   if (!data?.translations?.some(t => t.id === translation.id)) {
-    //     await this.productService.deleteTranslation(translation.id)
-    //   }
-    // }
     await this.productService.update(id, productData)
     await this.productService.syncSpecs(await this.productService.one(id), data.specs)
     return response.redirect().toRoute('admin.product', { id })
