@@ -2,7 +2,7 @@ import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Product from './product.js'
 
-export default class Source extends BaseModel {
+export default class Shop extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
@@ -22,10 +22,7 @@ export default class Source extends BaseModel {
   declare available: boolean
 
   @column()
-  declare shop: string
-
-  @column()
-  declare language: string
+  declare name: string
 
   @belongsTo(() => Product, {
     foreignKey: 'product_id',

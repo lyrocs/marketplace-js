@@ -1,10 +1,9 @@
 import { BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import Category from '#models/category'
-import ProductTranslation from '#models/product_translation'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Spec from '#models/spec'
 import type { DateTime } from 'luxon'
-import Source from '#models/source'
+import Shop from '#models/shop'
 import Brand from '#models/brand'
 
 export default class Product extends BaseModel {
@@ -64,11 +63,8 @@ export default class Product extends BaseModel {
   })
   declare specs: ManyToMany<typeof Spec>
 
-  @hasMany(() => ProductTranslation)
-  declare translations: HasMany<typeof ProductTranslation>
-
-  @hasMany(() => Source)
-  declare sources: HasMany<typeof Source>
+  @hasMany(() => Shop)
+  declare shops: HasMany<typeof Shop>
 
   @manyToMany(() => Product, {
     pivotTable: 'product_components',

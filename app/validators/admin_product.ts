@@ -8,18 +8,10 @@ export const adminProductValidator = vine.compile(
         specs: vine.array(vine.number()),
         category_id: vine.number(),
         brand_id: vine.number(),
-        translations: vine.array(
-          vine.object({
-            id: vine.number().optional(),
-            product_id: vine.number().optional(),
-            name: vine.string().trim(),
-            description: vine.string().trim(),
-            features: vine.array(vine.object({
-              title: vine.string().trim(),
-              items: vine.array(vine.string().trim()),
-            })).optional(),
-            language: vine.string().trim(),
-          })
-        ).optional(),
+        description: vine.string().trim().optional(),
+        features: vine.array(vine.object({
+          title: vine.string().trim(),
+          items: vine.array(vine.string().trim()),
+        })).optional(),
   })
 )

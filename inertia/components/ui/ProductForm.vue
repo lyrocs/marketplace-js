@@ -23,10 +23,6 @@ const props = defineProps({
     type: Array as PropType<BrandDto[]>,
     required: true,
   },
-  translations: {
-    type: Array as PropType<any[]>,
-    required: true,
-  },
   messages: {
     type: Object as PropType<any>,
     required: true,
@@ -75,17 +71,44 @@ function removeImage(idx: number) {
   localForm.value.images.splice(idx, 1)
   emit('update:modelValue', { ...localForm.value })
 }
+
+
+
+const newFeatureTitle = ref('')
+
+function removeFeatureItem(fIdx: number, itemIdx: number) {
+  localForm.value.features[fIdx].items.splice(itemIdx, 1)
+}
+
+function addFeatureItem(fIdx: number) {
+  localForm.value.features[fIdx].items.push('')
+}
+
+function addFeature() {
+  const title = newFeatureTitle.value.trim()
+  if (!title) return
+  localForm.value.features.push({ title, items: [''] })
+  newFeatureTitle.value = ''
+}
+
+function removeFeature(fIdx: number) {
+  localForm.value.features.splice(fIdx, 1)
+}
+
+
 </script>
 
 <template>
   <form @submit.prevent="onSubmit">
     <div class="mb-4">
       <label class="block font-semibold mb-1">Name</label>
-      <input v-model="localForm.name" @input="updateField('name', localForm.name)" class="border px-2 py-1 rounded w-full" />
+      <input v-model="localForm.name" @input="updateField('name', localForm.name)"
+        class="border px-2 py-1 rounded w-full" />
     </div>
     <div class="mb-4">
       <label class="block font-semibold mb-1">Status</label>
-      <select v-model="localForm.status" @change="updateField('status', localForm.status)" class="border px-2 py-1 rounded w-full">
+      <select v-model="localForm.status" @change="updateField('status', localForm.status)"
+        class="border px-2 py-1 rounded w-full">
         <option value="PENDING">Pending</option>
         <option value="ACTIVE">Active</option>
         <option value="INACTIVE">Inactive</option>
@@ -96,7 +119,8 @@ function removeImage(idx: number) {
       <div class="flex flex-wrap gap-2 mb-2">
         <div v-for="(img, idx) in localForm.images" :key="idx" class="relative group">
           <img :src="img" class="w-20 h-20 object-cover rounded border" />
-          <button type="button" @click="removeImage(idx)" class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">&times;</button>
+          <button type="button" @click="removeImage(idx)"
+            class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">&times;</button>
         </div>
       </div>
       <input v-model="newImage" placeholder="Add image URL..." class="border px-2 py-1 rounded w-full mb-2" />
@@ -104,14 +128,16 @@ function removeImage(idx: number) {
     </div>
     <div class="mb-4">
       <label class="block font-semibold mb-1">Category</label>
-      <select v-model="localForm.category_id" @change="updateField('category_id', localForm.category_id)" class="border px-2 py-1 rounded w-full">
+      <select v-model="localForm.category_id" @change="updateField('category_id', localForm.category_id)"
+        class="border px-2 py-1 rounded w-full">
         <option value="">Select category</option>
         <option v-for="cat in props.categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
       </select>
     </div>
     <div class="mb-4">
       <label class="block font-semibold mb-1">Brand</label>
-      <select v-model="localForm.brand_id" @change="updateField('brand_id', localForm.brand_id)" class="border px-2 py-1 rounded w-full">
+      <select v-model="localForm.brand_id" @change="updateField('brand_id', localForm.brand_id)"
+        class="border px-2 py-1 rounded w-full">
         <option value="">Select brand</option>
         <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
       </select>
@@ -129,14 +155,42 @@ function removeImage(idx: number) {
       <div class="flex gap-2">
         <select v-model="selectedSpecId" class="border px-2 py-1 rounded flex-1">
           <option value="">Select spec to add</option>
-          <option v-for="spec in props.specs" :key="spec.id" :value="spec.id" :disabled="localForm.specs.includes(spec.id)">
+          <option v-for="spec in props.specs" :key="spec.id" :value="spec.id"
+            :disabled="localForm.specs.includes(spec.id)">
             {{ spec.type }}: {{ spec.value }}
           </option>
         </select>
         <button type="button" @click="addSpec" class="bg-blue-500 text-white px-2 py-1 rounded">Add Spec</button>
       </div>
     </div>
-    <slot name="translations"></slot>
-    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">{{ props.isEdit ? 'Save Product' : 'Create Product' }}</button>
+    <div class="mb-2">
+      <label class="block font-semibold mb-1">Description</label>
+      <textarea v-model="localForm.description" @input="updateField('description', localForm.description)" rows="8"
+        class="border px-2 py-1 rounded w-full"></textarea>
+    </div>
+    <div class="mb-2">
+      <label class="block font-semibold mb-1">Features</label>
+      <div v-for="(feature, fIdx) in localForm.features" :key="fIdx" class="mb-2 border rounded p-2 bg-white">
+        <div class="flex gap-2 mb-1 items-center">
+          <input v-model="feature.title" class="border px-2 py-1 rounded flex-1" placeholder="Feature Title" />
+          <button type="button" @click="removeFeature(fIdx)" class="text-red-500">Remove
+            Feature</button>
+        </div>
+        <div v-for="(item, itemIdx) in feature.items" :key="itemIdx" class="flex gap-2 mb-1 items-center">
+          <input v-model="feature.items[itemIdx]" class="border px-2 py-1 rounded flex-1" placeholder="Item" />
+          <button type="button" @click="removeFeatureItem(fIdx, itemIdx)" class="text-red-500">Remove
+            Item</button>
+        </div>
+        <button type="button" @click="addFeatureItem(fIdx)" class="text-blue-500">Add
+          Item</button>
+      </div>
+      <div class="flex gap-2 mt-2">
+        <input v-model="newFeatureTitle" placeholder="New feature title..." class="border px-2 py-1 rounded flex-1" />
+        <button type="button" @click="addFeature()" class="bg-blue-500 text-white px-2 py-1 rounded">Add
+          Feature</button>
+      </div>
+    </div>
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">{{ props.isEdit ? 'Save Product' :
+      'Create Product' }}</button>
   </form>
 </template>

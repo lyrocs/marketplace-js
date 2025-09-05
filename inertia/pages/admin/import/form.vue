@@ -44,7 +44,7 @@ function triggerFileInput() {
 }
 
 function submit() {
-    form.post('/import', {
+    form.post('/admin/import', {
         onError: (errs) => {
             error.value = 'Erreur lors de l\'envoi : ' + JSON.stringify(errs)
         },

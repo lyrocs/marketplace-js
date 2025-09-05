@@ -44,7 +44,6 @@ function handleChange(ids: number[]) {
 }
 
 function handleChangeCategory(id: number) {
-    console.log('handleChangeCategory', id)
     const url = new URL(window.location.href)
     url.searchParams.delete('page')
     url.searchParams.delete('specs')
@@ -86,7 +85,7 @@ function createProduct() {
                             <div>
                                 <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
                                     product.status
-                                    }}
+                                }}
                                 </Badge>
                             </div>
                             <div v-for="translation in product.translations" :key="translation.id" class="">

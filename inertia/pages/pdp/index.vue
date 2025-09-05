@@ -8,7 +8,6 @@ const props = defineProps<{
 }>()
 
 const parentCategory = props.categories.find((category) => category.id === props.product.category.parentId)
-const details = props.product.translations.find((translation) => translation.language === 'FR') || {}
 </script>
 
 <template>
@@ -29,14 +28,14 @@ const details = props.product.translations.find((translation) => translation.lan
                 <div class="rounded-xl bg-white p-6 shadow-lg md:p-8">
                     <h2 class="text-2xl font-bold text-gray-800">Description</h2>
                     <p class="mt-4 leading-relaxed text-gray-700">
-                        {{ details.description }}
+                        {{ product.description }}
                     </p>
                 </div>
 
-                <div v-if="details.features" class="rounded-xl bg-white p-6 shadow-lg md:p-8">
+                <div v-if="product.features" class="rounded-xl bg-white p-6 shadow-lg md:p-8">
                     <h2 class="text-2xl font-bold text-gray-800">Spécifications Techniques</h2>
                     <div class="mt-6 space-y-6">
-                        <div v-for="feature of details.features" :key="feature.title">
+                        <div v-for="feature of product.features" :key="feature.title">
                             <h3 class="mb-3 border-b pb-2 text-lg font-bold text-gray-800">{{ feature.title }}</h3>
                             <dl v-for="item of feature.items" :key="feature.title" class="space-y-2 text-sm">
                                 <div class="flex justify-between">

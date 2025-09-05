@@ -32,14 +32,12 @@ export default class ImportController {
      
       const category = await this.categoryService.getByName(payload.category_name)
       if (!category?.id) {
-        console.log('Category not found')
         continue
       }
 
 
-      const existingProduct = await this.productService.getBySource(payload.url)
+      const existingProduct = await this.productService.getByShop(payload.url)
       if (existingProduct) {
-        console.log('Product already exists')
         continue
       }
 
@@ -56,32 +54,33 @@ export default class ImportController {
         status: 'PENDING',
         category_id: category?.id,
         brand_id: brand.id,
+        description: payload.description,
+        features: payload.features || [],
       }
       const product = await this.productService.create(productPayload)
 
       await this.productService.attachSpecs(product, specs)
 
-      const translationPayload = {
-        product_id: product.id,
-        language: payload.language,
-        name: payload.name,
-        description: payload.description,
-        features: payload.features || [],
-      }
+      // const translationPayload = {
+      //   product_id: product.id,
+      //   language: payload.language,
+      //   name: payload.name,
+      //   description: payload.description,
+      //   features: payload.features || [],
+      // }
 
-      await this.productService.createTranslation(translationPayload)
+      // await this.productService.createTranslation(translationPayload)
 
       const sourcePayload = {
         product_id: product.id,
         url: payload.url,
-        shop: payload.shop,
+        name: payload.shop,
         price: payload.price,
         currency: payload.currency,
-        available: payload.available,
-        language: payload.language,
+        available: payload.available
       }
 
-      await this.productService.createSource(sourcePayload)
+      await this.productService.createShop(sourcePayload)
 
       success++
 

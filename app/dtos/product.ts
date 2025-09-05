@@ -30,6 +30,6 @@ export default class ProductDto extends BaseModelDto {
     this.description = product.description
     this.features = product.features
     this.specs = product.specs && product.specs.map((spec) => new SpecDto(spec))
-    this.shops = product.sources && product.sources.map((source) => new ShopDto(source))
+    this.shops = product.shops && product.shops.map((shop) => new ShopDto(shop))
   }
 }

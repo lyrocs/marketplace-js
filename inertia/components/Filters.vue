@@ -39,7 +39,6 @@ function handleReset() {
 }
 
 function handleCategoryChange(value: number) {
-    console.log('handleCategoryChange', value)
     emit('change:category', value)
 }
 
