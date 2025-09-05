@@ -6,7 +6,7 @@ export default class ProductComponent extends BaseModel {
   declare id: number
 
   @column()
-  declare drone_id: number
+  declare parent_id: number
 
   @column()
   declare component_id: number

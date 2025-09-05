@@ -32,6 +32,15 @@ export default class Product extends BaseModel {
   declare images: string[]
 
   @column()
+  declare description: string
+
+  @column({
+    prepare: (value) => JSON.stringify(value),
+  })
+  declare features: { title: string; items: string[] }[] | undefined
+
+
+  @column()
   declare status: string
 
   @column.dateTime({ autoCreate: true })
