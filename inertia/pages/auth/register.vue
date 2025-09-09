@@ -19,7 +19,7 @@ const form = useForm({
 </script>
 
 <template>
-    <div class=" flex min-h-screen flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center">
 
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <a href="#" class="block text-center text-3xl font-bold text-gray-800">

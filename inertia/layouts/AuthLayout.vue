@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="bg-slate-100/50">
+  <div class="min-h-screen bg-slate-100/50">
     <header>
       <nav class="flex items-center justify-between p-6 lg:px-8">
         <div class="flex lg:flex-1">
