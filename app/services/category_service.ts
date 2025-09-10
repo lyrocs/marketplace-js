@@ -10,7 +10,7 @@ export class CategoryService {
     return category
   }
   async getById(id: number) {
-    const category = await Category.query().where('id', id).firstOrFail()
+    const category = await Category.query().where('id', id).preload('specTypes').firstOrFail()
     return category
   }
   async create(data: { name: string; parentId: number; specsTypes: string[] }) {

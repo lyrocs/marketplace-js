@@ -36,7 +36,7 @@ export default class ImportController {
        let specsData
        if (queryString.category) {
         category = await this.categoryService.getById(Number(queryString.category))
-        specsData = await this.specService.byTypes(category?.specsTypes as any)
+        specsData = await this.specService.byTypes(category?.specTypes?.map((type: any) => type.key) as any)
        }
      
        const specs = queryString.specs?.split(',') || []
