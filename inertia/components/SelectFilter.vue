@@ -33,7 +33,7 @@ function handleClick(id: number) {
 
 
 <template>
-  <div :class="inline ? 'flex gap-2' : 'flex flex-col gap-2'">
+  <div :class="inline ? 'flex gap-2' : 'flex flex-col'">
     <Combobox v-model="value" by="label">
       <ComboboxAnchor class="w-full" as-child>
         <ComboboxTrigger as-child>
@@ -47,8 +47,7 @@ function handleClick(id: number) {
 
       <ComboboxList>
         <div class="relative w-full max-w-sm items-center">
-          <ComboboxInput class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
-            :placeholder="`Select ${props.type}`" />
+          <ComboboxInput class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10" placeholder="Search" />
           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
             <IconSearchRounded class="size-4 text-muted-foreground" />
           </span>
