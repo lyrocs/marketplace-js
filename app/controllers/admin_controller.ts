@@ -12,6 +12,7 @@ import SpecDto from '#dtos/spec'
 import UserDto from '#dtos/user'
 import ProductDto from '#dtos/product'
 import MetaDto from '#dtos/meta'
+import SpecTypeDto from '#dtos/spec_type'
 @inject()
 export default class ImportController {
   constructor(
@@ -143,17 +144,18 @@ export default class ImportController {
   }
   async specs({ inertia }: HttpContext) {
     const specs = await this.specService.all()
+    const types = await this.specService.allTypes()
     const specsFormated = specs.map((spec: any) => new SpecDto(spec))
-    return inertia.render('admin/specs', { specs: specsFormated })
+    return inertia.render('admin/specs', { specs: specsFormated, types: types.map((type: any) => new SpecTypeDto(type)) })
   }
   async createSpec({ request, response }: HttpContext) {
-    const { type, value } = request.only(['type', 'value'])
-    await this.specService.create({ type, value })
+    const { specTypeId, value } = request.only(['specTypeId', 'value'])
+    await this.specService.create({ specTypeId, value })
     return response.redirect().toRoute('admin.specs')
   }
   async updateSpec({ request, response }: HttpContext) {
-    const { type, value } = request.only(['type', 'value'])
-    await this.specService.update(request.param('id'), { type, value })
+    const { specTypeId, value } = request.only(['specTypeId', 'value'])
+    await this.specService.update(request.param('id'), { specTypeId, value })
     return response.redirect().toRoute('admin.specs')
   }
   async deleteSpec({ request, response }: HttpContext) {

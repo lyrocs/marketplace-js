@@ -25,7 +25,7 @@ export default class ProductsController {
     if (!category) {
       return response.redirect().back()
     }
-    const specsData = await this.specService.byTypes(category.specsTypes as any)
+    const specsData = await this.specService.byTypes(category.specTypes.map((specType: any) => specType.key) as any)
     const products = await this.productService.byCategory({ category: category.id, specs: specsIds, page })
 
     return inertia.render('plp/index', {

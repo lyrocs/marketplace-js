@@ -31,7 +31,7 @@ export default class CategoryDto extends BaseModelDto {
     this.id = category.id
     this.name = category.name
     this.key = category.name.toUpperCase().replaceAll(' ','_')
-    this.specsTypes = category.specsTypes
+    this.specsTypes = category.specTypes && category.specTypes.map(specType => specType.key)
     this.parentId = category.parentId
   }
 }

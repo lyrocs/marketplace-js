@@ -15,7 +15,7 @@
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
-                                        {{ option.name }}
+                                        {{ option[col.option_key] || option.name }}
                                     </SelectItem>
                                 </SelectGroup>
                             </SelectContent>
@@ -59,7 +59,7 @@
                     <td v-for="col in columns" :key="col.key" class="px-6 py-4 whitespace-nowrap">
                         <span v-if="!isEditing(rowIndex) || col.editable === false">
                             <template v-if="col.type === 'select'">
-                                {{col.options.find(option => option.id === item[col.key])?.name}}
+                                {{col.options.find(option => option.id === item[col.key])?.[col.option_key || 'name']}}
                             </template>
                             <template v-else-if="col.type === 'array'">
                                 <Badge v-for="item in item[col.key]" :key="item" class="mr-2">{{ item }}</Badge>
@@ -75,7 +75,7 @@
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectItem v-for="option in col.options" :key="option.id" :value="option.id">
-                                        {{ option.name }}
+                                        {{ option[col.option_key] || option.name }}
                                     </SelectItem>
                                 </SelectGroup>
                             </SelectContent>
