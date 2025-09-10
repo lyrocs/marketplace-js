@@ -144,7 +144,7 @@ function removeFeature(fIdx: number) {
       <ul class="flex flex-wrap gap-2 mb-2">
         <li v-for="id in localForm.specs" :key="id" class="flex items-center gap-2">
           <span class="bg-gray-200 px-2 py-1 rounded">
-            {{props.specs.find(s => s.id === id)?.type}}: {{props.specs.find(s => s.id === id)?.value}}
+            {{props.specs.find(s => s.id === id)?.type.label}}: {{props.specs.find(s => s.id === id)?.value}}
           </span>
           <button type="button" @click="removeSpec(id)" class="text-red-500">Remove</button>
         </li>
@@ -154,7 +154,7 @@ function removeFeature(fIdx: number) {
           <option value="">Select spec to add</option>
           <option v-for="spec in props.specs" :key="spec.id" :value="spec.id"
             :disabled="localForm.specs.includes(spec.id)">
-            {{ spec.type }}: {{ spec.value }}
+            {{ spec.type.label }}: {{ spec.value }}
           </option>
         </select>
         <button type="button" @click="addSpec" class="bg-blue-500 text-white px-2 py-1 rounded">Add Spec</button>
