@@ -1,5 +1,6 @@
 import { inject } from '@adonisjs/core'
 import { SpecService } from '#services/spec_service'
+import { SpecTypeService } from '#services/spec_type_service'
 import { ProductService } from '#services/product_service'
 import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
@@ -17,6 +18,7 @@ import SpecTypeDto from '#dtos/spec_type'
 export default class ImportController {
   constructor(
     private specService: SpecService,
+    private specTypeService: SpecTypeService,
     private productService: ProductService,
     private categoryService: CategoryService,
     private brandService: BrandService,
@@ -50,7 +52,7 @@ export default class ImportController {
          specs: specsData?.map((spec: any) => new SpecDto(spec))
        })
   }
-
+  // PRODUCT
   async product({ inertia, params }: HttpContext) {
     const product = await this.productService.one(Number(params.id))
     const specs = await this.specService.all()
@@ -102,7 +104,7 @@ export default class ImportController {
     await this.productService.syncSpecs(await this.productService.one(id), data.specs)
     return response.redirect().toRoute('admin.product', { id })
   }
-
+  // CATEGORY
   async categories({ inertia }: HttpContext) {
     const categories = await this.categoryService.all()
     const categoriesFormated = categories.map((category: any) => new CategoryDto(category))
@@ -122,7 +124,7 @@ export default class ImportController {
     await this.categoryService.delete(request.param('id'))
     return response.redirect().toRoute('admin.categories')
   }
-
+  // BRAND
   async brands({ inertia }: HttpContext) {
     const brands = await this.brandService.all()
     const brandsFormated = brands.map((brand: any) => new BrandDto(brand))
@@ -142,6 +144,7 @@ export default class ImportController {
     await this.brandService.delete(request.param('id'))
     return response.redirect().toRoute('admin.brands')
   }
+  // SPEC
   async specs({ inertia }: HttpContext) {
     const specs = await this.specService.all()
     const types = await this.specService.allTypes()
@@ -161,6 +164,26 @@ export default class ImportController {
   async deleteSpec({ request, response }: HttpContext) {
     await this.specService.delete(request.param('id'))
     return response.redirect().toRoute('admin.specs')
+  } 
+  // SPEC TYPE
+  async specTypes({ inertia }: HttpContext) {
+    const types = await this.specTypeService.all()
+    const typesFormated = types.map((type: any) => new SpecTypeDto(type))
+    return inertia.render('admin/spec-types', { types: typesFormated })
+  }
+  async createSpecType({ request, response }: HttpContext) {
+    const { key, label, description } = request.only(['key', 'label', 'description'])
+    await this.specTypeService.create({ key, label, description })
+    return response.redirect().toRoute('admin.spec-types')
+  }
+  async updateSpecType({ request, response }: HttpContext) {
+    const { key, label, description } = request.only(['key', 'label', 'description'])
+    await this.specTypeService.update(request.param('id'), { key, label, description })
+    return response.redirect().toRoute('admin.spec-types')
+  }
+  async deleteSpecType({ request, response }: HttpContext) {
+    await this.specTypeService.delete(request.param('id'))
+    return response.redirect().toRoute('admin.spec-types')
   } 
   async users({ inertia }: HttpContext) {
     const users = await this.userService.all()

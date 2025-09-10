@@ -14,10 +14,10 @@ const props = defineProps<{
 
 const specsByType = computed(() => {
     return props.specs?.reduce((acc, spec) => {
-        if (!acc[spec.type]) {
-            acc[spec.type] = []
+        if (!acc[spec.type.label]) {
+            acc[spec.type.label] = []
         }
-        acc[spec.type].push(spec)
+        acc[spec.type.label].push(spec)
         return acc
     }, {} as Record<string, SpecDto[]>)
 })

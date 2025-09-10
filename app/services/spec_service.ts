@@ -4,7 +4,7 @@ import SpecType from '#models/spec_type'
 export class SpecService {
   async byTypes(data: string[]) {
     const typesIds = await SpecType.query().whereIn('key', data).select('id')
-    const specs = await Spec.query().whereIn('spec_type_id', typesIds.map((type: any) => type.id))
+    const specs = await Spec.query().preload('type').whereIn('spec_type_id', typesIds.map((type: any) => type.id))
     return specs
   }
   async all() {

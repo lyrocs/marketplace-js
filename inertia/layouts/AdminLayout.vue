@@ -20,6 +20,7 @@ const props = defineProps<{
                 <a href="/admin/categories" class="desktop-link">Categories</a>
                 <a href="/admin/brands" class="desktop-link">Brands</a>
                 <a href="/admin/specs" class="desktop-link">Specs</a>
+                <a href="/admin/spec-types" class="desktop-link">Spec Types</a>
                 <a href="/admin/users" class="desktop-link">Users</a>
                 <a href="/admin/import" class="desktop-link">Import</a>
                 <a href="/" class="desktop-link">Website</a>

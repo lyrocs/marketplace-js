@@ -44,6 +44,12 @@ router.group(() => {
   router.post('/admin/specs', [AdminController, 'createSpec']).as('admin.specs.create')
   router.put('/admin/specs/:id', [AdminController, 'updateSpec']).as('admin.specs.update')
   router.delete('/admin/specs/:id', [AdminController, 'deleteSpec']).as('admin.specs.delete')
+  // SPEC TYPE
+  router.get('/admin/spec-types', [AdminController, 'specTypes']).as('admin.spec-types')
+  router.post('/admin/spec-types', [AdminController, 'createSpecType']).as('admin.spec-types.create')
+  router.put('/admin/spec-types/:id', [AdminController, 'updateSpecType']).as('admin.spec-types.update')
+  router.delete('/admin/spec-types/:id', [AdminController, 'deleteSpecType']).as('admin.spec-types.delete')
+  // USER
   router.get('/admin/users', [AdminController, 'users']).as('admin.users')
 
 })
