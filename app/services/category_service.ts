@@ -17,7 +17,7 @@ export class CategoryService {
     return category
   }
   async create(data: AdminCategoryInput) {
-    const specTypes = await SpecType.query().whereIn('key', data.specsTypes).select('id')
+    const specTypes = await SpecType.query().whereIn('key', data.specsTypes || []).select('id')
     delete data.specsTypes
     const categoryData = {
       ...data,
@@ -41,7 +41,7 @@ export class CategoryService {
     })
     await category.save()
     await category.related('specTypes').detach()
-    const specTypes = await SpecType.query().whereIn('key', newSpecsTypes).select('id')
+    const specTypes = await SpecType.query().whereIn('key', newSpecsTypes || []).select('id')
     if (specTypes.length) {
       await category.related('specTypes').attach(specTypes.map((specType: any) => specType.id))
     }

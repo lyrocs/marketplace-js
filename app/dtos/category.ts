@@ -21,8 +21,8 @@ export default class CategoryDto extends BaseModelDto {
   declare id: number
   declare name: string
   declare key: string
-  declare image: string
-  declare description: string
+  declare image: string | null
+  declare description: string | null
   declare specsTypes: string[]
   declare parentId: number | null
 
