@@ -21,19 +21,30 @@ export class ProductService {
         specQuery.whereIn('id', specs)
       })
     }
-    return products.preload('category').preload('specs').preload('shops').preload('brand').paginate(page)
+    return products.preload('category').preload('specs', (specQuery) => {
+      specQuery.preload('type')
+    }).preload('shops').preload('brand').paginate(page)
   }
 
   async search({
     name,
+    category,
+    specs = [],
     page = 1,
-  }: { name?: string; page?: number } = {}) {
+  }: { name?: string; category?: number; specs?: number[]; page?: number } = {}) {
     const products = Product.query()
 
     if (name) {
       products.where('name', 'ilike', `%${name}%`)
     }
-
+    if (category) {
+      products.where('category_id', category)
+    }
+    if (specs && specs.length) {
+      products.whereHas('specs', (specQuery) => {
+        specQuery.whereIn('id', specs)
+      })
+    }
     return products.preload('category').preload('specs').preload('shops').preload('brand').paginate(page)
   }
 

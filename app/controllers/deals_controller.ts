@@ -1,0 +1,56 @@
+import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
+import { CategoryService } from '#services/category_service'
+import { SpecService } from '#services/spec_service'
+import { ProductService } from '#services/product_service'
+import CategoryDto from '#dtos/category'
+import SpecDto from '#dtos/spec'
+import ProductDto from '#dtos/product'
+import MetaDto from '#dtos/meta'
+import { DealService } from '#services/deal_service'
+import DealDto from '#dtos/deal'
+@inject()
+export default class DealsController {
+  constructor(
+    private categoryService: CategoryService,
+    private specService: SpecService,
+    private productService: ProductService,
+    private dealService: DealService,
+  ) { }
+
+  async create({ auth, response }: HttpContext) {
+    const deal = await this.dealService.create({
+      user_id: auth.user?.id || '',
+    })
+    return response.redirect().toRoute('deals.edit', { id: deal.id })
+  }
+
+  async edit({ inertia, params }: HttpContext) {
+    const deal = await this.dealService.one(Number(params.id))
+    return inertia.render('deals/edit', { deal: new DealDto(deal) })
+  }
+
+  async searchProduct({ inertia, request }: HttpContext) {
+    const queryString = request.qs()
+    const categories = await this.categoryService.all()
+    let category
+    let specsData
+    if (queryString.category) {
+     category = await this.categoryService.getById(Number(queryString.category))
+     specsData = await this.specService.byTypes(category?.specTypes?.map((type: any) => type.key) as any)
+    }
+
+    const specs = queryString.specs?.split(',') || []
+    const page = queryString.page || 1
+    const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+   
+    const products = await this.productService.byCategory({ category: category?.id, specs: specsIds, page })
+    return inertia.render('deals/searchProduct', {    
+              categories: categories.map((category: any) => new CategoryDto(category)),
+               specs: specsData?.map((spec: any) => new SpecDto(spec)),
+               products: ProductDto.fromArray(Array.from(products)),
+               meta: new MetaDto(products.getMeta()),
+    })
+  }
+
+}

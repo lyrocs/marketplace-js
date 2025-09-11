@@ -1,18 +1,17 @@
 import Deal from '#models/deal'
 import Product from '#models/product'
-import DealImage from '#models/deal_image'
 import DealProduct from '#models/deal_product'
+import DealStatus from '#enums/deal_status'
 
 export class DealService {
   async all() {
-    const deals = await Deal.query().preload('products').preload('images')
+    const deals = await Deal.query().preload('products')
     return deals
   }
 
   async one(id: number) {
     const singleDeal = await Deal.query()
       .preload('products')
-      .preload('images')
       .where('id', id)
       .firstOrFail()
     return singleDeal
@@ -45,18 +44,17 @@ export class DealService {
     // find if empty deal exists for the user, wihtout products linked
     const existingDeal = await Deal.query()
       .where('user_id', data.user_id)
-      .where('status', 'draft')
+      .where('status', DealStatus.DRAFT)
       .whereNotExists((query) => {
         query.from('deal_products').whereRaw('deal_products.deal_id = deals.id')
       })
       .preload('products')
-      .preload('images')
       .first()
     if (existingDeal) {
       return existingDeal
     }
     // if no empty deal exists, create a new on
-    const newDeal = await Deal.create({ user_id: data.user_id, status: 'draft' })
+    const newDeal = await Deal.create({ user_id: data.user_id, status: DealStatus.DRAFT })
     return newDeal
   }
 
@@ -95,12 +93,15 @@ export class DealService {
   }
 
   async addImage(id: number, imageUrl: string) {
-    await DealImage.create({ deal_id: id, url: imageUrl })
+    const deal = await Deal.findOrFail(id)
+    deal.images.push(imageUrl)
+    await deal.save()
   }
 
   async deleteImage(id: number, url: string) {
-    const image = await DealImage.query().where('deal_id', id).where('url', url).firstOrFail()
-    await image.delete()
+    const deal = await Deal.findOrFail(id)
+    deal.images = deal.images.filter((image) => image !== url)
+    await deal.save()
   }
 
   async createProduct(data: {
@@ -114,14 +115,14 @@ export class DealService {
       category_id: data.categoryId,
       brand_id: data.brandId,
       images: JSON.parse('[]'),
-      status: 'draft',
+      status: DealStatus.DRAFT,
     }
     let product = await Product.create(productData)
     product = await Product.findOrFail(product.id)
 
     const deal = await Deal.create({
       user_id: data.user_id,
-      status: 'draft',
+      status: DealStatus.DRAFT,
     })
 
     await DealProduct.create({

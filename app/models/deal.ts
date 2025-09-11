@@ -2,7 +2,6 @@ import { BaseModel, column, manyToMany, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import type { DateTime } from 'luxon'
 import Product from './product.js'
-import DealImage from './deal_image.js'
 import Discussion from './discussion.js'
 
 export default class Deal extends BaseModel {
@@ -30,6 +29,9 @@ export default class Deal extends BaseModel {
   @column()
   declare status: string
 
+  @column()
+  declare images: string[]
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -41,11 +43,6 @@ export default class Deal extends BaseModel {
     pivotColumns: ['quantity'],
   })
   declare products: ManyToMany<typeof Product>
-
-  @hasMany(() => DealImage, {
-    foreignKey: 'deal_id',
-  })
-  declare images: HasMany<typeof DealImage>
 
   @hasMany(() => Discussion, { foreignKey: 'deal_id' })
   declare discussions: HasMany<typeof Discussion>
