@@ -56,7 +56,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <tr v-for="(item, rowIndex) in items" :key="rowIndex">
-                    <td v-for="col in columns" :key="col.key" class="px-6 py-4 whitespace-nowrap">
+                    <td v-for="col in columns" :key="col.key" class="max-w-32 truncate px-6 py-4 whitespace-nowrap">
                         <span v-if="!isEditing(rowIndex) || col.editable === false">
                             <template v-if="col.type === 'select'">
                                 {{col.options.find(option => option.id === item[col.key])?.[col.option_key || 'name']}}
