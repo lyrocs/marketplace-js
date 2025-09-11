@@ -3,6 +3,7 @@
 // You can import admin menu items or user info as props if needed
 const props = defineProps<{
     user?: any
+    messages?: any
 }>()
 
 </script>
@@ -37,6 +38,7 @@ const props = defineProps<{
                 </div>
             </header>
             <main class="flex-1 p-6">
+                <ToastManager :messages="messages" />
                 <slot />
             </main>
         </div>

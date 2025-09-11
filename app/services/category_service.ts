@@ -1,5 +1,8 @@
 import Category from '#models/category'
 import SpecType from '#models/spec_type'
+import { AdminCategoryInput } from '#validators/admin_category'
+
+
 export class CategoryService {
   async all() {
     const categories = await Category.query().preload('specTypes')
@@ -13,14 +16,13 @@ export class CategoryService {
     const category = await Category.query().where('id', id).preload('specTypes').firstOrFail()
     return category
   }
-  async create(data: { name: string; key: string; description: string; image: string; parentId: number; specsTypes: string[] }) {
+  async create(data: AdminCategoryInput) {
     const specTypes = await SpecType.query().whereIn('key', data.specsTypes).select('id')
+    delete data.specsTypes
     const categoryData = {
-      name: data.name,
+      ...data,
       key: data.key.toUpperCase(),
-      description: data.description,
-      image: data.image,
-      parentId: data.parentId
+      parentId: data.parentId ? Number(data.parentId) : null,
     }
     const newCategory = await Category.create(categoryData)
     if (specTypes.length) {
@@ -28,18 +30,18 @@ export class CategoryService {
     }
     return Category.findOrFail(newCategory.id)
   }
-  async update(id: number, data: { name: string; key: string; description: string; image: string; parentId: number; specsTypes: string[] }) {
+  async update(id: number, data: AdminCategoryInput) {
     const category = await Category.findOrFail(id)
+    const newSpecsTypes = data.specsTypes
+    delete data.specsTypes
     category.merge({
-      name: data.name,
+     ...data,
       key: data.key.toUpperCase(),
-      description: data.description,
-      image: data.image,
-      parentId: data.parentId
+      parentId: data.parentId ? Number(data.parentId) : null,
     })
     await category.save()
     await category.related('specTypes').detach()
-    const specTypes = await SpecType.query().whereIn('key', data.specsTypes).select('id')
+    const specTypes = await SpecType.query().whereIn('key', newSpecsTypes).select('id')
     if (specTypes.length) {
       await category.related('specTypes').attach(specTypes.map((specType: any) => specType.id))
     }

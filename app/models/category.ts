@@ -13,7 +13,7 @@ export default class Category extends BaseModel {
   declare key: string
 
   @column()
-  declare description: string
+  declare description: string | null
 
   @column()
   declare image: string

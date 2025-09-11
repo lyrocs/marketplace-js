@@ -14,6 +14,7 @@ import UserDto from '#dtos/user'
 import ProductDto from '#dtos/product'
 import MetaDto from '#dtos/meta'
 import SpecTypeDto from '#dtos/spec_type'
+import { adminCategoryValidator } from '#validators/admin_category'
 @inject()
 export default class ImportController {
   constructor(
@@ -110,14 +111,20 @@ export default class ImportController {
     const categoriesFormated = categories.map((category: any) => new CategoryDto(category))
     return inertia.render('admin/categories', { categories: CategoryDto.sortTree(categoriesFormated) })
   }
-  async createCategory({ request, response }: HttpContext) {
-    const { name, key, description, image, parentId, specsTypes } = request.only(['name','key','description', 'image', 'parentId', 'specsTypes'])
-    await this.categoryService.create({ name, key, description, image, parentId, specsTypes })
-    return response.redirect().toRoute('admin.categories')
+  async createCategory({ request, response, session }: HttpContext) {
+    try {
+      const data = await request.validateUsing(adminCategoryValidator)
+      await this.categoryService.create(data)
+      session.flash('success', 'Category created successfully')
+      return response.redirect().toRoute('admin.categories')
+    } catch (error) {
+      session.flashErrors(error.messages.map((message: any) => message.message).join(', '))
+      return response.redirect().back()
+    }
   }
   async updateCategory({ request, response }: HttpContext) {
-    const { name, key, description, image, parentId, specsTypes } = request.only(['name', 'key', 'description', 'image', 'parentId', 'specsTypes'])
-    await this.categoryService.update(request.param('id'), { name, key, description, image, parentId, specsTypes })
+    const data = await request.validateUsing(adminCategoryValidator)
+    await this.categoryService.update(request.param('id'), data)
     return response.redirect().toRoute('admin.categories')
   }
   async deleteCategory({ request, response }: HttpContext) {
