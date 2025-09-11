@@ -30,7 +30,7 @@ export default class ImportController {
 
     for (const payload of products) {
      
-      const category = await this.categoryService.getByName(payload.category_name)
+      const category = await this.categoryService.getByKey(payload.category_name)
       if (!category?.id) {
         continue
       }

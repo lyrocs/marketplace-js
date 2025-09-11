@@ -17,7 +17,7 @@ export default class ProductsController {
 
   async plp({ inertia, request, params, response }: HttpContext) {
     const categories = await this.categoryService.all()
-    const category = await this.categoryService.getByName(params.category.toUpperCase())
+    const category = await this.categoryService.getByKey(params.category.toUpperCase())
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
     const page = queryString.page || 1

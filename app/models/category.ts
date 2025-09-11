@@ -10,6 +10,15 @@ export default class Category extends BaseModel {
   declare name: string
 
   @column()
+  declare key: string
+
+  @column()
+  declare description: string
+
+  @column()
+  declare image: string
+
+  @column()
   declare parentId: number | null
 
   @belongsTo(() => Category)

@@ -111,13 +111,13 @@ export default class ImportController {
     return inertia.render('admin/categories', { categories: CategoryDto.sortTree(categoriesFormated) })
   }
   async createCategory({ request, response }: HttpContext) {
-    const { name, parentId, specsTypes } = request.only(['name', 'parentId', 'specsTypes'])
-    await this.categoryService.create({ name, parentId, specsTypes })
+    const { name, key, description, image, parentId, specsTypes } = request.only(['name','key','description', 'image', 'parentId', 'specsTypes'])
+    await this.categoryService.create({ name, key, description, image, parentId, specsTypes })
     return response.redirect().toRoute('admin.categories')
   }
   async updateCategory({ request, response }: HttpContext) {
-    const { name, parentId, specsTypes } = request.only(['name', 'parentId', 'specsTypes'])
-    await this.categoryService.update(request.param('id'), { name, parentId, specsTypes })
+    const { name, key, description, image, parentId, specsTypes } = request.only(['name', 'key', 'description', 'image', 'parentId', 'specsTypes'])
+    await this.categoryService.update(request.param('id'), { name, key, description, image, parentId, specsTypes })
     return response.redirect().toRoute('admin.categories')
   }
   async deleteCategory({ request, response }: HttpContext) {

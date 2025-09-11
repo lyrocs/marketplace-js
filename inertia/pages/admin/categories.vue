@@ -6,12 +6,12 @@ defineOptions({ layout: AdminLayout })
 
 const props = defineProps<{ categories: CategoryDto[] }>()
 
-function createCategory({ name, parentId, specsTypes = [] }: { name: string, parentId: number | null, specsTypes: any }) {
-    router.post('/admin/categories', { name, parentId, specsTypes })
+function createCategory({ name, key, description, image, parentId, specsTypes = [] }: { name: string, key: string, description: string, image: string, parentId: number | null, specsTypes: any }) {
+    router.post('/admin/categories', { name, key, description, image, parentId, specsTypes })
 }
 
 function updateCategoryInline(rowIndex: number, item: CategoryDto) {
-    router.put(`/admin/categories/${item.id}`, { name: item.name, parentId: item.parentId, specsTypes: item.specsTypes as any })
+    router.put(`/admin/categories/${item.id}`, { name: item.name, key: item.key, description: item.description, image: item.image, parentId: item.parentId, specsTypes: item.specsTypes as any })
 }
 function deleteCategoryInline(item: CategoryDto) {
     router.delete(`/admin/categories/${item.id}`)
@@ -24,7 +24,9 @@ function deleteCategoryInline(item: CategoryDto) {
         <AdminTable :items="props.categories" :columns="[
             { key: 'id', label: 'ID', editable: false },
             { key: 'name', label: 'Name' },
-            { key: 'key', label: 'Key', editable: false },
+            { key: 'key', label: 'Key' },
+            { key: 'description', label: 'Description' },
+            { key: 'image', label: 'Image' },
             { key: 'parentId', label: 'Parent', type: 'select', options: props.categories },
             { key: 'specsTypes', label: 'Specs Types', type: 'array' }
         ]" @update:item="({ rowIndex, item }) => updateCategoryInline(rowIndex, item)" @create:item="createCategory"

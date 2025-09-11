@@ -5,18 +5,21 @@ export class CategoryService {
     const categories = await Category.query().preload('specTypes')
     return categories
   }
-  async getByName(name: string) {
-    const category = await Category.query().where('name', name).preload('specTypes').first()
+  async getByKey(key: string) {
+    const category = await Category.query().where('key', key).preload('specTypes').first()
     return category
   }
   async getById(id: number) {
     const category = await Category.query().where('id', id).preload('specTypes').firstOrFail()
     return category
   }
-  async create(data: { name: string; parentId: number; specsTypes: string[] }) {
+  async create(data: { name: string; key: string; description: string; image: string; parentId: number; specsTypes: string[] }) {
     const specTypes = await SpecType.query().whereIn('key', data.specsTypes).select('id')
     const categoryData = {
       name: data.name,
+      key: data.key.toUpperCase(),
+      description: data.description,
+      image: data.image,
       parentId: data.parentId
     }
     const newCategory = await Category.create(categoryData)
@@ -25,10 +28,13 @@ export class CategoryService {
     }
     return Category.findOrFail(newCategory.id)
   }
-  async update(id: number, data: { name: string; parentId: number; specsTypes: string[] }) {
+  async update(id: number, data: { name: string; key: string; description: string; image: string; parentId: number; specsTypes: string[] }) {
     const category = await Category.findOrFail(id)
     category.merge({
       name: data.name,
+      key: data.key.toUpperCase(),
+      description: data.description,
+      image: data.image,
       parentId: data.parentId
     })
     await category.save()

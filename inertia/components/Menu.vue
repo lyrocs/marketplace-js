@@ -51,9 +51,9 @@ const menuParentCategories = parentCategories.map((category) => ({
   title: category.name,
   children: props.categories.filter((childCategory) => childCategory.parentId === category.id).map((childCategory) => ({
     title: childCategory.name,
-    href: `/products/${childCategory.name.toLowerCase()}`,
-    image: categoriesImage[childCategory.name.toLowerCase() as keyof typeof categoriesImage],
-    description: categoriesDescription[childCategory.name.toLowerCase() as keyof typeof categoriesDescription],
+    href: `/products/${childCategory.key.toLowerCase()}`,
+    image: childCategory.image,
+    description: childCategory.description,
   }))
 }))
 

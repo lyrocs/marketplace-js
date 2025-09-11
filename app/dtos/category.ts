@@ -21,6 +21,8 @@ export default class CategoryDto extends BaseModelDto {
   declare id: number
   declare name: string
   declare key: string
+  declare image: string
+  declare description: string
   declare specsTypes: string[]
   declare parentId: number | null
 
@@ -30,7 +32,9 @@ export default class CategoryDto extends BaseModelDto {
     if (!category) return
     this.id = category.id
     this.name = category.name
-    this.key = category.name.toUpperCase().replaceAll(' ','_')
+    this.key = category.key
+    this.image = category.image
+    this.description = category.description
     this.specsTypes = category.specTypes && category.specTypes.map(specType => specType.key)
     this.parentId = category.parentId
   }
