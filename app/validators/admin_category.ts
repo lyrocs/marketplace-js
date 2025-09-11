@@ -6,7 +6,7 @@ export const adminCategoryValidator = vine.compile(
         name: vine.string().trim().minLength(2),
         key: vine.string().trim().minLength(2),
         description: vine.string().trim().optional(),
-        image: vine.string().trim(),  
+        image: vine.string().trim().optional(),  
         parentId: vine.number().optional(),
         specsTypes: vine.array(vine.string()).optional(),
   })
