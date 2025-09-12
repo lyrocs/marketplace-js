@@ -17,6 +17,13 @@ export class DealService {
     return singleDeal
   }
 
+  async byUser(userId: string) {
+    const deals = await Deal.query()
+      .where('user_id', userId)
+      .preload('products')
+    return deals
+  }
+
   async search({
     specs = [],
     category = undefined,

@@ -23,6 +23,9 @@ const props = defineProps<{
             <DropdownMenuItem v-if="user.isAdmin" :as="Link" href="/admin">
                 Admin Panel
             </DropdownMenuItem>
+            <DropdownMenuItem :as="Link" href="/deals/my">
+                My deals
+            </DropdownMenuItem>
             <DropdownMenuItem :as="Link" href="/auth/logout" method="post" class="w-full"> Logout </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
