@@ -19,6 +19,11 @@ export default class DealsController {
     private dealService: DealService,
   ) { }
 
+  async view({ inertia, params }: HttpContext) {
+    const deal = await this.dealService.one(Number(params.id))
+    return inertia.render('deals/view', { deal: new DealDto(deal) })
+  }
+
   async create({ auth, response }: HttpContext) {
     const deal = await this.dealService.create({
       user_id: auth.user?.id || '',

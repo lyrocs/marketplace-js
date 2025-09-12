@@ -27,6 +27,7 @@ router
   .group(() => {
     // DEAL
     router.get('/deals/create', [DealsController, 'create']).as('deals.create')
+    router.get('/deals/:id', [DealsController, 'view']).as('deal.view')
     router.get('/deals/:id/edit', [DealsController, 'edit']).as('deal.edit')
     router
       .get('/deals/:id/search-product', [DealsController, 'searchProduct'])
