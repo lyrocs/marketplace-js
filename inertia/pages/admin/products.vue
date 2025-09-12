@@ -81,14 +81,14 @@ function createProduct() {
                         <p>{{ product.category.name }} - {{ product.brand.name }}</p>
                         <ul class="flex gap-2">
                             <li v-for="spec in product.specs" :key="spec.id">
-                                <Badge>{{ spec.type }}: {{ spec.value }}</Badge>
+                                <Badge>{{ spec.type.label }}: {{ spec.value }}</Badge>
                             </li>
                         </ul>
                         <div class="flex gap-2">
                             <div>
                                 <Badge :variant="product.status === 'PENDING' ? 'destructive' : 'secondary'">{{
                                     product.status
-                                    }}
+                                }}
                                 </Badge>
                             </div>
                             <div v-for="shop in product.shops" :key="shop.id" class="flex gap-4">
