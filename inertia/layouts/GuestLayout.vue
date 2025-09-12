@@ -15,7 +15,9 @@ const props = defineProps<{
     <header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <Menu :categories="categories" />
       <!-- User Panel -->
-      <div class="flex flex-1 items-center justify-end">
+      <div class="flex flex-1 items-center justify-end gap-4">
+        <a v-if="user" href="/deals/create"
+          class="bg-slate-700 text-white font-semibold py-2 px-5 rounded-full hover:bg-slate-800 transition-colors">Vendre</a>
         <UserButton :user="user" />
       </div>
     </header>
