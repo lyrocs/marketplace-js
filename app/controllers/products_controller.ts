@@ -32,7 +32,9 @@ export default class ProductsController {
       categories: categories.map((category: any) => new CategoryDto(category)),
       products: ProductDto.fromArray(Array.from(products)),
       meta: new MetaDto(products.getMeta()),
-      specs: specsData.map((spec: any) => new SpecDto(spec))
+      specs: specsData.map((spec: any) => new SpecDto(spec)),
+      isDeal: false,
+      category: params.category,
     })
   }
 

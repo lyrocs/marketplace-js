@@ -80,4 +80,27 @@ export default class DealsController {
     })
     response.redirect().back()
   }
+
+    async plp({ inertia, request, params, response }: HttpContext) {
+      const categories = await this.categoryService.all()
+      const category = await this.categoryService.getByKey(params.category.toUpperCase())
+      const queryString = request.qs()
+      const specs = queryString.specs?.split(',') || []
+      const page = queryString.page || 1
+      const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+      if (!category) {
+        return response.redirect().back()
+      }
+      const specsData = await this.specService.byTypes(category.specTypes.map((specType: any) => specType.key) as any)
+      const deals = await this.dealService.search({ category: category.id, specs: specsIds, page })
+  
+      return inertia.render('plp/index', {
+        categories: categories.map((category: any) => new CategoryDto(category)),
+        deals: DealDto.fromArray(Array.from(deals)),
+        meta: new MetaDto(deals.getMeta()),
+        specs: specsData.map((spec: any) => new SpecDto(spec)),
+        category: params.category,
+        isDeal: true
+      })
+    }
 }

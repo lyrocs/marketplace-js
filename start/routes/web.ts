@@ -16,6 +16,7 @@ router
     router.get('/', [HomeController, 'home']).as('home')
     router.get('/products/search/:name', [ProductsController, 'search']).as('products.search')
     router.get('/products/:category', [ProductsController, 'plp']).as('products.plp')
+    router.get('/products/:category/deal', [DealsController, 'plp']).as('products.plp.deal')
     router.get('/product/:id', [ProductsController, 'pdp']).as('product.pdp')
   })
   .use(middleware.guest())
