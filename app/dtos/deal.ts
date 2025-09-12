@@ -1,7 +1,8 @@
 import { BaseModelDto } from '@adocasts.com/dto/base'
 import Deal from '#models/deal'
-import ProductDto from '#dtos/product'
+import DealProductDto from '#dtos/deal_product'
 import DiscussionDto from '#dtos/discussion'
+import ProductDto from './product.js'
 
 export default class DealDto extends BaseModelDto {
   declare id: number
@@ -14,7 +15,7 @@ export default class DealDto extends BaseModelDto {
   declare status: string
   declare createdAt: string
   declare updatedAt: string
-  declare products: ProductDto[]
+  declare products: DealProductDto[]
   declare images: string[]
   declare discussions: DiscussionDto[]
 
@@ -32,7 +33,7 @@ export default class DealDto extends BaseModelDto {
     this.status = deal.status
     this.createdAt = deal.createdAt.toISO()!
     this.updatedAt = deal.updatedAt.toISO()!
-    this.products = ProductDto.fromArray(deal.products)
+    this.products = deal.products && deal.products.map((product) => new DealProductDto(product, product.$extras.pivot_quantity))
     this.images = deal.images || []
     this.discussions = DiscussionDto.fromArray(deal.discussions)
   }

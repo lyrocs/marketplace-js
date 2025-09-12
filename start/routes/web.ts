@@ -30,6 +30,8 @@ router
     router
       .get('/deals/:id/search-product', [DealsController, 'searchProduct'])
       .as('deals.search-product')
+    router.post('/deals/:id/add-product', [DealsController, 'addProduct']).as('deals.add-product')
+    router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
   })
   .use(middleware.auth())
 

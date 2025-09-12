@@ -58,6 +58,10 @@ export class DealService {
     return newDeal
   }
 
+  async addProduct(data: { product_id: number; deal_id: number }) {
+    await DealProduct.create(data)
+  }
+
   async update(
     id: number,
     data: {

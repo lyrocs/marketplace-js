@@ -21,11 +21,14 @@ const form = useForm({
     currency: props.deal.currency || 'EUR',
     location: props.deal.location || '',
     images: [] as File[],
-    product_ids: props.deal.products?.map(p => p.id) || []
+    products: props.deal.products?.map(p => ({
+        productId: p.id,
+        quantity: p.quantity || 1
+    })) || []
 })
 
 const previewImages = ref<string[]>(props.deal.images || [])
-const products = ref<Product[]>(props.deal.products || [])
+const products = ref<Array<Product & { pivot?: { quantity: number } }>>(props.deal.products || [])
 
 const handleImageUpload = (e: Event) => {
     const target = e.target as HTMLInputElement
@@ -57,18 +60,23 @@ const removeImage = (index: number) => {
 }
 
 const removeProduct = (productId: number) => {
-    const index = form.product_ids.indexOf(productId)
+    const index = form.products.findIndex(p => p.productId === productId)
     if (index > -1) {
-        form.product_ids.splice(index, 1)
+        form.products.splice(index, 1)
         products.value = products.value.filter(p => p.id !== productId)
     }
 }
 
-const submitForm = () => {
-    const url = props.deal.id ? `/deals/${props.deal.id}` : '/deals'
+const updateQuantity = (productId: number, quantity: number) => {
+    const index = form.products.findIndex(p => p.productId === productId)
+    if (index > -1) {
+        form.products[index].quantity = Math.max(1, quantity) // Ensure quantity is at least 1
+    }
+}
 
-    form.post(url, {
-        forceFormData: true,
+const submitForm = () => {
+    form.post(`/deals/${props.deal.id}`, {
+        // forceFormData: true,
         onSuccess: () => {
             // Handle success - Inertia will automatically handle the redirect if the response includes one
         },
@@ -141,19 +149,43 @@ const submitForm = () => {
                 </div>
                 <div class="p-6">
                     <div v-if="products.length > 0" class="space-y-2">
-                        <div v-for="product in products" :key="product.id"
-                            class="flex items-center justify-between p-3 border rounded-md">
-                            <div>
-                                <h4 class="font-medium">{{ product.name }}</h4>
-                                <p v-if="product.description" class="text-sm text-gray-500">
-                                    {{ product.description.substring(0, 100) }}{{ product.description.length > 100 ?
-                                    '...' : '' }}
-                                </p>
+                        <div v-for="(product, index) in products" :key="product.id"
+                            class="flex items-center justify-between p-3 border-b">
+                            <div class="flex items-center space-x-4">
+                                <img v-if="product.images?.[0]" :src="product.images[0]" :alt="product.name"
+                                    class="w-12 h-12 object-cover rounded" />
+                                <div>
+                                    <h3 class="font-medium">{{ product.name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ product.description }}</p>
+                                </div>
                             </div>
-                            <button type="button" class="text-sm text-red-600 hover:text-red-900 focus:outline-none"
-                                @click="removeProduct(product.id)">
-                                Remove
-                            </button>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <button type="button"
+                                        @click="updateQuantity(product.id, form.products[index].quantity - 1)"
+                                        class="px-2 py-1 border rounded-l-md hover:bg-gray-100"
+                                        :disabled="form.products[index].quantity <= 1">
+                                        -
+                                    </button>
+                                    <input type="number" v-model.number="form.products[index].quantity"
+                                        @change="updateQuantity(product.id, form.products[index].quantity)" min="1"
+                                        class="w-16 text-center border-t border-b border-gray-300 py-1" />
+                                    <button type="button"
+                                        @click="updateQuantity(product.id, form.products[index].quantity + 1)"
+                                        class="px-2 py-1 border rounded-r-md hover:bg-gray-100">
+                                        +
+                                    </button>
+                                </div>
+                                <button type="button" @click="removeProduct(product.id)"
+                                    class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div v-else class="text-center py-6 text-gray-500">
@@ -191,10 +223,10 @@ const submitForm = () => {
 
             <!-- Submit Button -->
             <div class="flex justify-end">
-                <button type="submit"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <Button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                     {{ deal.id ? 'Update Deal' : 'Create Deal' }}
-                </button>
+                </Button>
             </div>
         </form>
     </div>

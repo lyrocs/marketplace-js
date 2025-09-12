@@ -4,12 +4,14 @@ import CategoryDto from '#dtos/category'
 import SpecDto from '#dtos/spec'
 import ProductDto from '#dtos/product'
 import MetaDto from '#dtos/meta'
+import DealDto from '#dtos/deal'
 import { usePage, router } from '@inertiajs/vue3'
 
 const props = defineProps<{
     categories: CategoryDto[]
     specs: SpecDto[]
     products: ProductDto[]
+    deal: DealDto
     meta: MetaDto
 }>()
 
@@ -44,7 +46,8 @@ function handleChangeCategory(id: number) {
 }
 
 function handleProductSelect(product: ProductDto) {
-    console.log('Selected product:', product)
+    router.post(`/deals/${props.deal.id}/add-product`, { product_id: product.id })
+    router.get(`/deals/${props.deal.id}/edit`)
 }
 
 onMounted(() => {
