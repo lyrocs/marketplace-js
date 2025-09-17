@@ -47,7 +47,6 @@ function handleChangeCategory(id: number) {
 
 function handleProductSelect(product: ProductDto) {
     router.post(`/deals/${props.deal.id}/add-product`, { product_id: product.id })
-    router.get(`/deals/${props.deal.id}/edit`)
 }
 
 onMounted(() => {

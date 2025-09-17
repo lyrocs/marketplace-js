@@ -69,12 +69,13 @@ export default class DealsController {
   }
 
   async addProduct({ request, response, params }: HttpContext) {
-    const data = request.only(['product_id', 'deal_id'])
+    const data = request.only(['product_id'])
+    const dealId = Number(params.id)
     await this.dealService.addProduct({
       product_id: Number(data.product_id),
-      deal_id: Number(params.id)
+      deal_id: dealId
     })
-    return response.redirect().back()
+    return response.redirect().toRoute('deals.edit', { id: dealId })
   }
 
   async update({ request, params, response }: HttpContext) {
