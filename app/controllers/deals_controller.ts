@@ -82,13 +82,13 @@ export default class DealsController {
     const data = request.all()
     const id = params.id
     const payload = await updateDealValidator.validate(data)
-    const deal = await this.dealService.update(id, {
+    await this.dealService.update(id, {
       title: payload.title,
-      description: payload.description,
-      location: payload.location,
-      currency: payload.currency,
+      description: payload.description || '',
+      location: payload.location || '',
+      currency: payload.currency || '',
       price: payload.price,
-      products: payload.products,
+      products: payload.products || [],
     })
     response.redirect().back()
   }

@@ -18,11 +18,11 @@ export const createDraftDealValidator = vine.compile(
 
 export const updateDealValidator = vine.compile(
   vine.object({
-    title: vine.string().trim().minLength(2).optional(),
+    title: vine.string().trim().minLength(2),
     description: vine.string().trim().optional(),
     location: vine.string().trim().optional(),
     currency: vine.string().trim().optional(),
-    price: vine.number().optional(),
+    price: vine.number(),
     products: vine
       .array(
         vine.object({

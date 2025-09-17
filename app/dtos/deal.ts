@@ -2,7 +2,6 @@ import { BaseModelDto } from '@adocasts.com/dto/base'
 import Deal from '#models/deal'
 import DealProductDto from '#dtos/deal_product'
 import DiscussionDto from '#dtos/discussion'
-import ProductDto from './product.js'
 
 export default class DealDto extends BaseModelDto {
   declare id: number
