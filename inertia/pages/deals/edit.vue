@@ -102,20 +102,20 @@ const submitForm = () => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
-                            <input id="title" v-model="form.title" required
+                            <Input id="title" v-model="form.title" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" />
                         </div>
 
                         <div class="space-y-2">
                             <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                            <input id="location" v-model="form.location"
+                            <Input id="location" v-model="form.location"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" />
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="description" v-model="form.description" rows="4"
+                        <Textarea id="description" v-model="form.description" rows="4"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"></textarea>
                     </div>
 
@@ -123,7 +123,7 @@ const submitForm = () => {
                         <div class="space-y-2">
                             <label for="price" class="block text-sm font-medium text-gray-700">Price *</label>
                             <div class="flex rounded-md shadow-sm">
-                                <input id="price" type="number" step="0.01" min="0" v-model="form.price" required
+                                <Input id="price" type="number" step="0.01" min="0" v-model="form.price" required
                                     class="block w-full rounded-none rounded-l-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:text-sm" />
                                 <select v-model="form.currency"
                                     class="-ml-px rounded-r-md border border-l-0 border-gray-300 bg-gray-50 py-2 pl-3 pr-8 text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm">
