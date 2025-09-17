@@ -10,7 +10,6 @@ import { middleware } from '#start/kernel'
 /* ignore formatting, I find it easier to scan single-line route definitions */
 /* prettier-ignore-start */
 /* eslint-disable */
-
 router
   .group(() => {
     router.get('/', [HomeController, 'home']).as('home')
@@ -35,6 +34,8 @@ router
       .as('deals.search-product')
     router.post('/deals/:id/add-product', [DealsController, 'addProduct']).as('deals.add-product')
     router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
+    router.post('/deals/:id/images', [DealsController, 'addImages']).as('deals.add-images')
+    router.delete('/deals/:id/images', [DealsController, 'deleteImages']).as('deals.delete-images')
   })
   .use(middleware.auth())
 

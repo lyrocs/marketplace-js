@@ -105,6 +105,9 @@ export class DealService {
 
   async addImage(id: number, imageUrl: string) {
     const deal = await Deal.findOrFail(id)
+    if (!deal.images) {
+      deal.images = []
+    }
     deal.images.push(imageUrl)
     await deal.save()
   }

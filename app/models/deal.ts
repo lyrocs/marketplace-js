@@ -29,7 +29,9 @@ export default class Deal extends BaseModel {
   @column()
   declare status: string
 
-  @column()
+  @column({
+    prepare: (value) => JSON.stringify(value),
+  })
   declare images: string[]
 
   @column.dateTime({ autoCreate: true })

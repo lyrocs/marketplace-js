@@ -10,6 +10,9 @@ import MetaDto from '#dtos/meta'
 import { DealService } from '#services/deal_service'
 import DealDto from '#dtos/deal'
 import { updateDealValidator } from '#validators/deal'
+import drive from '@adonisjs/drive/services/main'
+import { cuid } from '@adonisjs/core/helpers'
+
 @inject()
 export default class DealsController {
   constructor(
@@ -37,9 +40,9 @@ export default class DealsController {
     return response.redirect().toRoute('deals.edit', { id: deal.id })
   }
 
-  async edit({ inertia, params }: HttpContext) {
+  async edit({ inertia, params, request }: HttpContext) {
     const deal = await this.dealService.one(Number(params.id))
-    return inertia.render('deals/edit', { deal: new DealDto(deal) })
+    return inertia.render('deals/edit', { deal: new DealDto(deal), csrfToken: request.csrfToken })
   }
 
   async searchProduct({ inertia, request, params }: HttpContext) {
@@ -76,6 +79,32 @@ export default class DealsController {
       deal_id: dealId
     })
     return response.redirect().toRoute('deals.edit', { id: dealId })
+  }
+
+  async addImages({ request, params, response }: HttpContext) {
+    const images = request.files('images')
+    let imagesData = []
+    for (const image of images) {
+      const key = `uploaded_images/${cuid()}.${image.extname}`
+      await image.moveToDisk(key)
+      const imageUrl = await drive.use().getUrl(key)
+      await this.dealService.addImage(params.id, imageUrl)
+      imagesData.push(imageUrl)
+    }
+    return response.json(imagesData)
+  }
+
+  async deleteImages({ request, params }: HttpContext) {
+    const data = request.all()
+    const images = data.images
+    for (const image of images) {
+      const key = image.split('https://kwadmarket-images.s3.amazonaws.com/').pop()
+      await drive.use().delete(key)
+    }
+    for (const imageUrl of images) {
+      await this.dealService.deleteImage(params.id, imageUrl)
+    }
+    return images
   }
 
   async update({ request, params, response }: HttpContext) {

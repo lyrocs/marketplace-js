@@ -11,7 +11,7 @@ interface Product extends Omit<ProductDto, 'id' | 'createdAt' | 'updatedAt'> {
     description?: string
 }
 
-const props = defineProps<{ deal: DealDto }>()
+const props = defineProps<{ deal: DealDto, csrfToken: string }>()
 
 const form = useForm({
     _method: props.deal.id ? 'put' : 'post',
@@ -20,7 +20,6 @@ const form = useForm({
     price: props.deal.price || '',
     currency: props.deal.currency || 'EUR',
     location: props.deal.location || '',
-    images: [] as File[],
     products: props.deal.products?.map(p => ({
         productId: p.id,
         quantity: p.quantity || 1
@@ -30,12 +29,30 @@ const form = useForm({
 const previewImages = ref<string[]>(props.deal.images || [])
 const products = ref<Array<Product & { pivot?: { quantity: number } }>>(props.deal.products || [])
 
+const addImages = async (newImages: File[]) => {
+    const formData = new FormData()
+    newImages.forEach(file => {
+        formData.append('images', file)
+    })
+
+    const response = await fetch(`/deals/${props.deal.id}/images`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'X-CSRF-TOKEN': props.csrfToken,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    const images = await response.json()
+    previewImages.value = [...previewImages.value, ...images.data]
+}
+
 const handleImageUpload = (e: Event) => {
     const target = e.target as HTMLInputElement
     if (!target.files?.length) return
 
     const newImages = Array.from(target.files)
-    form.images = [...form.images, ...newImages]
 
     // Create previews
     newImages.forEach(file => {
@@ -45,18 +62,21 @@ const handleImageUpload = (e: Event) => {
         }
         reader.readAsDataURL(file)
     })
+    addImages(newImages)
 }
 
-const removeImage = (index: number) => {
-    if (index < previewImages.value.length - form.images.length) {
-        // Remove existing image
-        previewImages.value.splice(index, 1)
-    } else {
-        // Remove newly added image
-        const newIndex = index - (previewImages.value.length - form.images.length)
-        form.images.splice(newIndex, 1)
-        previewImages.value.splice(index, 1)
-    }
+const removeImage = async (url: string) => {
+    await fetch(`/deals/${props.deal.id}/images`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'X-CSRF-TOKEN': props.csrfToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ images: [url] })
+    })
+    previewImages.value = previewImages.value.filter(image => image !== url)
 }
 
 const removeProduct = (productId: number) => {
@@ -203,7 +223,7 @@ const submitForm = () => {
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <div v-for="(image, index) in previewImages" :key="index" class="relative group">
                             <img :src="image" class="w-full h-32 object-cover rounded-md" />
-                            <button type="button" @click="removeImage(index)"
+                            <button type="button" @click="removeImage(image)"
                                 class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 ×
                             </button>
