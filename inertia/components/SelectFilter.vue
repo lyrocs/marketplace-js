@@ -37,7 +37,7 @@ function handleClick(id: number) {
     <Combobox v-model="value" by="label">
       <ComboboxAnchor class="w-full" as-child>
         <ComboboxTrigger as-child>
-          <Button variant="outline" class="justify-between">
+          <Button variant="outline" class="justify-between h-10">
             {{ value?.label ?? `Select ${props.type}` }}
 
             <IconKeyboardArrowUp class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -68,7 +68,7 @@ function handleClick(id: number) {
         </ComboboxGroup>
       </ComboboxList>
     </Combobox>
-    <ul class="my-2 flex flex-wrap">
+    <ul class="my-2 flex flex-wrap items-center">
       <li v-for="spec in selectedSpecs" :key="spec">
         <button @click="handleClick(spec.id)" class="flex items-center">
           <p class="text-sm">{{ spec.value }}</p>

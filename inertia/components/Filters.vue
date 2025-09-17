@@ -77,7 +77,7 @@ watch(selectedCategory, (value) => {
                             :selectedIds="selectedIds" :type="type" :inline="inline" />
                     </div>
                 </template>
-                <div class="flex justify-center">
+                <div class="flex justify-center items-center">
                     <Button @click="handleReset"
                         class="block text-center text-sm bg-gray-500 hover:bg-gray-600 w-full">Réinitialiser</Button>
                 </div>

@@ -56,8 +56,7 @@ onMounted(() => {
 </script>
 <template>
     <div>
-        <h1>Deal Form</h1>
-        <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
+        <Filters class="mb-4" @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
             :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
         <ProductSelectionList :products="products" @select="handleProductSelect" />
     </div>
