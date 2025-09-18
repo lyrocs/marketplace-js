@@ -4,6 +4,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const ImportController = () => import('#controllers/import_controller')
 const AdminController = () => import('#controllers/admin_controller')
 const DealsController = () => import('#controllers/deals_controller')
+const ChatController = () => import('#controllers/chat_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -36,6 +37,10 @@ router
     router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
     router.post('/deals/:id/images', [DealsController, 'addImages']).as('deals.add-images')
     router.delete('/deals/:id/images', [DealsController, 'deleteImages']).as('deals.delete-images')
+
+
+    // CHAT
+    router.get('/chat', [ChatController, 'list']).as('chat.list')
   })
   .use(middleware.auth())
 

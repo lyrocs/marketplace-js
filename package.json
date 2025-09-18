@@ -87,6 +87,7 @@
     "edge.js": "^6.2.1",
     "lucide-vue-next": "^0.475.0",
     "luxon": "^3.5.0",
+    "matrix-js-sdk": "^38.2.0",
     "pg": "^8.13.3",
     "radix-vue": "^1.9.14",
     "reflect-metadata": "^0.2.2",
