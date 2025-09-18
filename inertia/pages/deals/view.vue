@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DealDto from '#dtos/deal'
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps<{ deal: DealDto }>()
 
@@ -39,6 +40,10 @@ const similarDeals = [
         image: 'https://placehold.co/300x300/64748b/white?text=DJI+FPV',
     },
 ]
+
+const makeOffer = () => {
+    router.post(`/deals/${props.deal.id}/contact`)
+}
 </script>
 
 <template>
@@ -124,7 +129,7 @@ const similarDeals = [
                             <img :src="seller.avatar" alt="avatar" class="w-16 h-16 rounded-full" />
                             <div>
                                 <a href="#" class="font-semibold text-gray-800 hover:text-slate-600">{{ seller.name
-                                }}</a>
+                                    }}</a>
                                 <div class="flex items-center gap-2 mt-1">
                                     <div class="flex text-yellow-400 text-sm">
                                         <ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon
@@ -155,11 +160,11 @@ const similarDeals = [
                             class="mt-3 block text-center bg-slate-100 text-slate-800 text-sm font-semibold px-3 py-1 rounded-full w-fit mx-auto">État
                             : {{ dealState }}</span>
                         <div class="mt-6 flex flex-col gap-3">
-                            <button
+                            <button @click="makeOffer"
                                 class="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center gap-2">
                                 <ion-icon name="chatbubble-ellipses-outline" class="text-xl"></ion-icon> Contacter
                             </button>
-                            <button
+                            <button @click="makeOffer"
                                 class="w-full bg-white border-2 border-slate-700 text-slate-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-100 transition-colors duration-300">
                                 Faire une offre
                             </button>

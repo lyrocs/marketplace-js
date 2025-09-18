@@ -5,11 +5,13 @@ import User from '#models/user'
 import limiter from '@adonisjs/limiter/services/main'
 import { UserService } from '#services/user_service'
 import UserRole from '#enums/roles'
+import { MatrixContractService } from '#contracts/matrix_service'
 
 
 @inject()
 export default class HomeController {
   constructor(
+    private matrixService: MatrixContractService,
     private userService: UserService
   ) {}
 
@@ -55,6 +57,12 @@ export default class HomeController {
     }
     const user = await User.create(userData)
     await auth.use('web').login(user)
+    const matrixUser = await this.matrixService.createUser()
+    if (!matrixUser) {
+      return 'Unable to create matrix user'
+    }
+    const newUser = await this.userService.update(user.id, { matrixLogin: matrixUser.username, matrixPassword: matrixUser.password })
+    await auth.use('web').login(newUser)
     return response.redirect().toRoute('home')
   }
 
@@ -103,13 +111,12 @@ export default class HomeController {
       // replace true by  !!request.input('remember_me')
       await auth.use('web').login(existingAccount.user, true)
     } catch {
-      // const matrixUser = await this.matrixService.createUser()
-      // console.log('matrixUser', matrixUser)
-      // if (!matrixUser) {
-      //   return 'Unable to create matrix user'
-      // }
+      const matrixUser = await this.matrixService.createUser()
+      if (!matrixUser) {
+        return 'Unable to create matrix user'
+      }
 
-      const newUser = await this.userService.createGoogleAccount(user, {})
+      const newUser = await this.userService.createGoogleAccount(user, matrixUser)
       await auth.use('web').login(newUser, true)
     }
     return response.redirect().toRoute('home')

@@ -37,7 +37,7 @@ router
     router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
     router.post('/deals/:id/images', [DealsController, 'addImages']).as('deals.add-images')
     router.delete('/deals/:id/images', [DealsController, 'deleteImages']).as('deals.delete-images')
-
+    router.post('deals/:id/contact', [DealsController, 'contact']).as('deals.contact')
 
     // CHAT
     router.get('/chat', [ChatController, 'list']).as('chat.list')

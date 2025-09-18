@@ -8,7 +8,6 @@ const props = defineProps<{
     matrixHost: string;
 }>();
 const user = props.user;
-const matrixLogin = computed(() => `@${user?.matrixLogin!}:${props.matrixHost}`);
 let accessToken: string | null = null;
 let client: any | null = null;
 
@@ -38,7 +37,7 @@ const loginMatrix = async () => {
         },
         body: JSON.stringify({
             type: 'm.login.password',
-            user: user?.matrixLogin,
+            user: props.user?.matrixLogin!,
             password: user?.matrixPassword,
         }),
     });
@@ -86,7 +85,7 @@ const initMatrix = () => {
     const newClient = sdk.createClient({
         baseUrl: `https://${props.matrixHost}`,
         accessToken: accessToken!,
-        userId: `@${user?.matrixLogin!}:${props.matrixHost}`,
+        userId: props.user?.matrixLogin!,
     });
 
     newClient.once('sync', (state: any, prevState: any, res: any) => {
@@ -95,15 +94,29 @@ const initMatrix = () => {
             conversations.value = rooms.map(room => ({
                 roomId: room.roomId,
                 name: room.name,
-                messages: room.timeline.filter(i => i.getType() === 'm.room.message').map(event => ({
+                messages: room.timeline?.filter(i => i.getType() === 'm.room.message').map(event => ({
                     sender: event.getSender(),
                     body: event.getContent().body,
                     ts: event.getTs(),
-                })),
+                })) || [],
             }));
             selectedRoom.value = rooms[0].roomId;
             listenNewMessage(newClient);
             client = newClient;
+        }
+    });
+
+    newClient.on('RoomMember.membership', (event, member) => {
+        if (
+            member.userId === newClient.getUserId()
+            && member.membership === 'invite'
+        ) {
+            newClient.joinRoom(member.roomId).then(() => {
+                console.log(`Joined room ${member.roomId} automatically`);
+                // todo CAll geRooms()
+            }).catch((err) => {
+                console.error(`Failed to join room ${member.roomId}:`, err);
+            });
         }
     });
 
@@ -122,7 +135,6 @@ onMounted(async () => {
 <template>
     <main class="container mx-auto">
         <div class="bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden">
-
             <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
                 <h1 class="text-2xl font-bold text-gray-800">Messagerie</h1>
                 <button
@@ -149,11 +161,11 @@ onMounted(async () => {
                                     <p class="font-bold text-gray-800 truncate">{{ conversation.name }}</p><span
                                         class="text-xs text-gray-500 flex-shrink-0">{{ new
                                             Date(conversation.messages[conversation.messages.length -
-                                                1].ts).toLocaleString() }}</span>
+                                                1]?.ts ?? 0).toLocaleString() }}</span>
                                 </div>
                                 <p class="text-sm font-semibold text-gray-600 truncate">Subject</p>
                                 <p class="text-sm text-gray-500 truncate">{{
-                                    conversation.messages[conversation.messages.length - 1].body }}</p>
+                                    conversation.messages[conversation.messages.length - 1]?.body }}</p>
                             </div>
                         </div>
                     </div>
@@ -179,11 +191,11 @@ onMounted(async () => {
                     </div>
                     <div class="flex-grow p-6 space-y-6 overflow-y-auto bg-slate-50">
                         <div v-for="message in currentRoom?.messages" :key="message.id" class="flex items-end gap-3"
-                            :class="{ 'justify-end': message.sender === matrixLogin }">
+                            :class="{ 'justify-end': message.sender === user?.matrixLogin }">
                             <img src="https://i.pravatar.cc/32?u=marc" class="w-8 h-8 rounded-full flex-shrink-0"
                                 alt="avatar">
                             <div class="rounded-bl-lg p-3 rounded-2xl shadow-sm max-w-lg border border-gray-200"
-                                :class="{ ' bg-slate-700 text-white': message.sender === matrixLogin, 'bg-white text-gray-800': message.sender !== matrixLogin }">
+                                :class="{ ' bg-slate-700 text-white': message.sender === user?.matrixLogin, 'bg-white text-gray-800': message.sender !== user?.matrixLogin }">
                                 <p class="text-sm">{{ message.body }}</p>
                                 <p class="text-right text-xs mt-1">{{ new
                                     Date(message.ts).toLocaleString() }}</p>

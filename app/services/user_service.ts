@@ -27,7 +27,7 @@ export class UserService {
     return user
   }
 
-  async update(id: number, data: any) {
+  async update(id: string, data: any) {
     const user = await User.findOrFail(id)
     user.merge(data)
     await user.save()
