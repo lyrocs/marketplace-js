@@ -19,8 +19,8 @@ export default class DealsController {
     private categoryService: CategoryService,
     private specService: SpecService,
     private productService: ProductService,
-    private dealService: DealService,
-  ) { }
+    private dealService: DealService
+  ) {}
 
   async view({ inertia, params }: HttpContext) {
     const deal = await this.dealService.one(Number(params.id))
@@ -51,8 +51,10 @@ export default class DealsController {
     let category
     let specsData
     if (queryString.category) {
-     category = await this.categoryService.getById(Number(queryString.category))
-     specsData = await this.specService.byTypes(category?.specTypes?.map((type: any) => type.key) as any)
+      category = await this.categoryService.getById(Number(queryString.category))
+      specsData = await this.specService.byTypes(
+        category?.specTypes?.map((type: any) => type.key) as any
+      )
     }
 
     const specs = queryString.specs?.split(',') || []
@@ -60,15 +62,19 @@ export default class DealsController {
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
 
     const deal = await this.dealService.one(Number(params.id))
-   
-    const products = await this.productService.byCategory({ category: category?.id, specs: specsIds, page })
-    return inertia.render('deals/searchProduct', {    
-              categories: categories.map((category: any) => new CategoryDto(category)),
-               specs: specsData?.map((spec: any) => new SpecDto(spec)),
-               products: ProductDto.fromArray(Array.from(products)),
-               meta: new MetaDto(products.getMeta()),
-               deal: new DealDto(deal),
-        })
+
+    const products = await this.productService.byCategory({
+      category: category?.id,
+      specs: specsIds,
+      page,
+    })
+    return inertia.render('deals/searchProduct', {
+      categories: categories.map((category: any) => new CategoryDto(category)),
+      specs: specsData?.map((spec: any) => new SpecDto(spec)),
+      products: ProductDto.fromArray(Array.from(products)),
+      meta: new MetaDto(products.getMeta()),
+      deal: new DealDto(deal),
+    })
   }
 
   async addProduct({ request, response, params }: HttpContext) {
@@ -76,7 +82,7 @@ export default class DealsController {
     const dealId = Number(params.id)
     await this.dealService.addProduct({
       product_id: Number(data.product_id),
-      deal_id: dealId
+      deal_id: dealId,
     })
     return response.redirect().toRoute('deals.edit', { id: dealId })
   }
@@ -122,26 +128,28 @@ export default class DealsController {
     response.redirect().back()
   }
 
-    async plp({ inertia, request, params, response }: HttpContext) {
-      const categories = await this.categoryService.all()
-      const category = await this.categoryService.getByKey(params.category.toUpperCase())
-      const queryString = request.qs()
-      const specs = queryString.specs?.split(',') || []
-      const page = queryString.page || 1
-      const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
-      if (!category) {
-        return response.redirect().back()
-      }
-      const specsData = await this.specService.byTypes(category.specTypes.map((specType: any) => specType.key) as any)
-      const deals = await this.dealService.search({ category: category.id, specs: specsIds, page })
-  
-      return inertia.render('plp/index', {
-        categories: categories.map((category: any) => new CategoryDto(category)),
-        deals: DealDto.fromArray(Array.from(deals)),
-        meta: new MetaDto(deals.getMeta()),
-        specs: specsData.map((spec: any) => new SpecDto(spec)),
-        category: params.category,
-        isDeal: true
-      })
+  async plp({ inertia, request, params, response }: HttpContext) {
+    const categories = await this.categoryService.all()
+    const category = await this.categoryService.getByKey(params.category.toUpperCase())
+    const queryString = request.qs()
+    const specs = queryString.specs?.split(',') || []
+    const page = queryString.page || 1
+    const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+    if (!category) {
+      return response.redirect().back()
     }
+    const specsData = await this.specService.byTypes(
+      category.specTypes.map((specType: any) => specType.key) as any
+    )
+    const deals = await this.dealService.search({ category: category.id, specs: specsIds, page })
+
+    return inertia.render('plp/index', {
+      categories: categories.map((category: any) => new CategoryDto(category)),
+      deals: DealDto.fromArray(Array.from(deals)),
+      meta: new MetaDto(deals.getMeta()),
+      specs: specsData.map((spec: any) => new SpecDto(spec)),
+      category: params.category,
+      isDeal: true,
+    })
+  }
 }
