@@ -26,6 +26,9 @@ const props = defineProps<{
             <DropdownMenuItem :as="Link" href="/deals/my">
                 My deals
             </DropdownMenuItem>
+            <DropdownMenuItem :as="Link" href="/chat">
+                Chat
+            </DropdownMenuItem>
             <DropdownMenuItem :as="Link" href="/auth/logout" method="post" class="w-full"> Logout </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

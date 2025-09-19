@@ -1,5 +1,9 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+
 import type { DateTime } from 'luxon'
+import Deal from '#models/deal'
+import User from '#models/user'
 
 export default class Discussion extends BaseModel {
   @column({ isPrimary: true })
@@ -22,4 +26,13 @@ export default class Discussion extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @belongsTo(() => Deal)
+  declare deal: BelongsTo<typeof Deal>
+
+  @belongsTo(() => User, { foreignKey: 'buyerId' })
+  declare buyer: BelongsTo<typeof User>
+
+  @belongsTo(() => User, { foreignKey: 'sellerId' })
+  declare seller: BelongsTo<typeof User>
 }
