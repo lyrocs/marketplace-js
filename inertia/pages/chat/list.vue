@@ -157,7 +157,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <main class="container mx-auto">
+    <main class="w-full mx-auto">
         <div class="bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden">
             <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
                 <h1 class="text-2xl font-bold text-gray-800">Messagerie</h1>
