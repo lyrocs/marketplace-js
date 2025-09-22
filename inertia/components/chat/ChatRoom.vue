@@ -75,7 +75,7 @@ onUpdated(() => {
 </script>
 
 <template>
-  <div v-if="room" class="md:col-span-3 flex flex-col h-full">
+  <div v-if="room" class="md:col-span-3 flex flex-col overflow-y-auto">
     <!-- Chat Header -->
     <div class="p-4 border-b flex items-center gap-4 flex-shrink-0 bg-white">
       <!-- Contact Avatar -->

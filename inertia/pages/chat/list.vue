@@ -184,7 +184,7 @@ watch(error, (newError) => {
       </div>
 
       <!-- Chat Layout -->
-      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden">
         <!-- Chat List -->
         <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
           :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
