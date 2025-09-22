@@ -1,9 +1,10 @@
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 
 import type { DateTime } from 'luxon'
 import Deal from '#models/deal'
 import User from '#models/user'
+import DiscussionStatus from '#models/discussion_status'
 
 export default class Discussion extends BaseModel {
   @column({ isPrimary: true })
@@ -35,4 +36,7 @@ export default class Discussion extends BaseModel {
 
   @belongsTo(() => User, { foreignKey: 'sellerId' })
   declare seller: BelongsTo<typeof User>
+
+  @hasMany(() => DiscussionStatus, { foreignKey: 'discussionId' })
+  declare status: HasMany<typeof DiscussionStatus>
 }

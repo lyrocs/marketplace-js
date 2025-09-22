@@ -60,7 +60,7 @@ const chatRooms = computed<ChatRoomType[]>(() => {
       ...discussion,
       messages,
       lastActivity: messages.length > 0 ? Math.max(...messages.map(m => m.ts)) : 0,
-      unreadCount: 0 // TODO: Implement unread count logic
+      unreadCount: discussion.status.find(status => status.userId === props.user.id)?.newMessages ? 1 : 0
     }
   })
 })
@@ -83,7 +83,15 @@ const handleRoomSelect = async (roomId: string) => {
   state.value.selectedRoomId = roomId
   state.value.error = null
   if (props.unreadMessagesCount > 0) {
-    const discussionId = chatRooms.value.find(room => room.matrixRoomId === roomId)?.id
+    const selectedRoom = chatRooms.value.find(room => room.matrixRoomId === roomId)
+    if (!selectedRoom) {
+      return
+    }
+    const discussionId = selectedRoom.id
+    const unreadMessagesCount = selectedRoom.unreadCount
+    if (!unreadMessagesCount) {
+      return
+    }
     router.post(`/chat/${discussionId}/read`)
   }
 }

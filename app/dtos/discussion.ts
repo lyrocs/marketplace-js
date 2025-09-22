@@ -1,6 +1,7 @@
 import { BaseModelDto } from '@adocasts.com/dto/base'
 import Discussion from '#models/discussion'
 import DealDto from '#dtos/deal'
+import DiscussionStatusDto from '#dtos/discussion_status'
 
 export default class DiscussionDto extends BaseModelDto {
   declare id: number
@@ -13,6 +14,7 @@ export default class DiscussionDto extends BaseModelDto {
   declare deal: DealDto
   declare buyer: { id: string, name: string }
   declare seller: { id: string, name: string }
+  declare status: DiscussionStatusDto[]
 
   constructor(discussion?: Discussion) {
     super()
@@ -28,5 +30,6 @@ export default class DiscussionDto extends BaseModelDto {
     this.deal = new DealDto(discussion.deal)
     this.buyer = { id: discussion.buyerId, name: discussion.buyer?.name || '' }
     this.seller = { id: discussion.sellerId, name: discussion.seller?.name || '' }
-  }
+    this.status = discussion.status.map((status) => new DiscussionStatusDto(status))
+  } 
 }

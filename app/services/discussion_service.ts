@@ -10,6 +10,7 @@ export class DiscussionService {
       .preload('deal')
       .preload('buyer')
       .preload('seller')
+      .preload('status')
     return discussions
   }
   async getDiscussion(dealId: number, buyerId: string, sellerId: string) {
