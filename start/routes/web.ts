@@ -41,6 +41,7 @@ router
 
     // CHAT
     router.get('/chat', [ChatController, 'list']).as('chat.list')
+    router.post('/chat/:id/read', [ChatController, 'read']).as('chat.read')
   })
   .use(middleware.auth())
 

@@ -5,7 +5,8 @@ import UserDto from "#dtos/user";
 
 const props = defineProps<{
   categories: CategoryDto[]
-  user?: UserDto
+  user?: UserDto,
+  unreadMessagesCount?: number
 }>()
 
 </script>
@@ -18,7 +19,7 @@ const props = defineProps<{
       <div class="flex flex-1 items-center justify-end gap-4">
         <a v-if="user" href="/deals/create"
           class="bg-slate-700 text-white font-semibold py-2 px-5 rounded-full hover:bg-slate-800 transition-colors">Vendre</a>
-        <UserButton :user="user" />
+        <UserButton :user="user" :unreadMessagesCount="unreadMessagesCount" />
       </div>
     </header>
 

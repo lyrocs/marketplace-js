@@ -11,6 +11,8 @@ import type { ChatRoom as ChatRoomType, ChatState } from '~/types/chat'
 const props = defineProps<{
   user: UserDto
   matrixHost: string
+  unreadMessagesCount: number
+  csrfToken: string
   discussions: (DiscussionDto & { messages?: Array<{ sender: string; body: string; ts: number }> })[]
 }>()
 
@@ -76,9 +78,21 @@ const error = computed(() => {
 })
 
 // Methods
-const handleRoomSelect = (roomId: string) => {
+const handleRoomSelect = async (roomId: string) => {
   state.value.selectedRoomId = roomId
   state.value.error = null
+  if (props.unreadMessagesCount > 0) {
+    const discussionId = chatRooms.value.find(room => room.matrixRoomId === roomId)?.id
+    // await router.post(`/chat/${discussionId}/read`, {})
+    const response = await fetch(`/chat/${discussionId}/read`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'X-CSRF-TOKEN': props.csrfToken,
+        'Accept': 'application/json',
+      },
+    })
+  }
 }
 
 const handleSearch = (query: string) => {
@@ -130,19 +144,13 @@ watch(error, (newError) => {
 <template>
   <main class="w-full mx-auto">
     <!-- Error Banner -->
-    <div 
-      v-if="error" 
-      class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3"
-    >
+    <div v-if="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
       <ion-icon name="alert-circle-outline" class="text-red-500 text-xl flex-shrink-0"></ion-icon>
       <div class="flex-grow">
         <p class="text-red-800 font-medium">Erreur de connexion</p>
         <p class="text-red-600 text-sm">{{ error }}</p>
       </div>
-      <button 
-        @click="state.error = null"
-        class="text-red-500 hover:text-red-700 transition-colors"
-      >
+      <button @click="state.error = null" class="text-red-500 hover:text-red-700 transition-colors">
         <ion-icon name="close-outline" class="text-xl"></ion-icon>
       </button>
     </div>
@@ -153,17 +161,14 @@ watch(error, (newError) => {
       <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
         <div class="flex items-center gap-3">
           <h1 class="text-2xl font-bold text-gray-800">Messagerie</h1>
-          
+
           <!-- Connection Status -->
           <div class="flex items-center gap-2">
-            <div 
-              class="w-2 h-2 rounded-full"
-              :class="{
-                'bg-green-500': isConnected,
-                'bg-yellow-500': isLoading,
-                'bg-red-500': error && !isLoading
-              }"
-            ></div>
+            <div class="w-2 h-2 rounded-full" :class="{
+              'bg-green-500': isConnected,
+              'bg-yellow-500': isLoading,
+              'bg-red-500': error && !isLoading
+            }"></div>
             <span class="text-sm text-gray-600">
               {{ isConnected ? 'Connecté' : isLoading ? 'Connexion...' : 'Déconnecté' }}
             </span>
@@ -178,24 +183,14 @@ watch(error, (newError) => {
       </div>
 
       <!-- Chat Layout -->
-      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-y-auto">
         <!-- Chat List -->
-        <ChatList
-          :rooms="chatRooms"
-          :selected-room-id="state.selectedRoomId"
-          :current-user="props.user"
-          :search-query="state.searchQuery"
-          @room-select="handleRoomSelect"
-          @search="handleSearch"
-        />
+        <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
+          :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
 
         <!-- Chat Room -->
-        <ChatRoom
-          :room="currentRoom"
-          :current-user="props.user"
-          :is-loading="isLoading"
-          @send-message="handleSendMessage"
-        />
+        <ChatRoom :room="currentRoom" :current-user="props.user" :is-loading="isLoading"
+          @send-message="handleSendMessage" />
       </div>
     </div>
   </main>

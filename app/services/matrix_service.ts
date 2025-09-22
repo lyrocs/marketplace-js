@@ -1,8 +1,14 @@
 import * as sdk from 'matrix-js-sdk'
 import env from '#start/env'
+import { inject } from '@adonisjs/core'
 import { MatrixContractService } from '#contracts/matrix_service'
+import { DiscussionService } from '#services/discussion_service'
 
+@inject()
 export class MatrixService implements MatrixContractService {
+    constructor(
+      private discussionService: DiscussionService,
+    ) {}
   client: sdk.MatrixClient | null = null
   accessToken: string | null = null
   async init() {
@@ -37,6 +43,28 @@ export class MatrixService implements MatrixContractService {
       await this.init()
     }
     this.client?.startClient()
+
+    this.client.on(sdk.RoomEvent.Timeline, async (event, room, toStartOfTimeline) => {
+      if (toStartOfTimeline || event.getType() !== 'm.room.message') {
+        return // don't print paginated results
+      }
+      const age = (event as any).event?.unsigned?.age
+      if (age > 5000) {
+        return
+      }
+      const roomId = room?.roomId || ''
+      const sender = event.getSender() || ''
+      const body = event.getContent().body || ''
+
+      if (!roomId || !sender || !body) {
+        return
+      }
+      try {
+        await this.discussionService.setNewMessage(roomId, sender)
+      } catch (error) {
+        console.error('Error setting new message for roomId:', roomId, error)
+      }
+    })
   }
   async createUser() {
     const matrixHost = env.get('MATRIX_HOST')

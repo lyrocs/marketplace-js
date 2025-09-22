@@ -4,6 +4,7 @@ import type { Authenticators } from '@adonisjs/auth/types'
 import { inject } from '@adonisjs/core'
 import { CategoryService } from '#services/category_service'
 import CategoryDto from '#dtos/category'
+import { DiscussionService } from '#services/discussion_service'
 /**
  * Auth middleware is used authenticate HTTP requests and deny
  * access to unauthenticated users.
@@ -16,7 +17,8 @@ export default class AuthMiddleware {
   redirectTo = '/auth/login'
 
   constructor(
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private discussionService: DiscussionService,
 ) {}
 
   async handle(
@@ -28,8 +30,10 @@ export default class AuthMiddleware {
   ) {
     await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
     const categories = await this.categoryService.all()
+    const unreadMessagesCount = await this.discussionService.countNewMessages(ctx.auth.user?.id || '')
     ctx.inertia.share({
       categories: categories.map((category: any) => new CategoryDto(category)),
+      unreadMessagesCount,
     })
     return next()
   }

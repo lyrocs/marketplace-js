@@ -7,7 +7,7 @@ import DiscussionDto from '#dtos/discussion'
 @inject()
 export default class ChatController {
   constructor(private discussionService: DiscussionService  ) {}
-  async list({ inertia, auth }: HttpContext) {
+  async list({ inertia, auth, request }: HttpContext) {
     const matrixHost = process.env.MATRIX_HOST
     const user = auth.user
     const discussions = await this.discussionService.getDiscussionsByUser(user?.id ?? '')
@@ -15,6 +15,13 @@ export default class ChatController {
       user: user ? new UserDto(user) : null,
       matrixHost,
       discussions: discussions.map(discussion => new DiscussionDto(discussion)),
+      csrfToken: request.csrfToken,
     })
+  }
+  async read({ auth, request, response }: HttpContext) {
+    const user = auth.user
+    const discussionId = request.param('id')
+    await this.discussionService.markAsRead(user?.id ?? '', Number(discussionId))
+    return response.redirect().back()
   }
 }
