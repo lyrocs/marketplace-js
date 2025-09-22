@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue'
 import { useMatrix } from '~/composables/useMatrix'
+import { router } from '@inertiajs/vue3'
 import ChatList from '~/components/chat/ChatList.vue'
 import ChatRoom from '~/components/chat/ChatRoom.vue'
 import { IconCloudAlertOutline, IconCloseSmall } from '@iconify-prerendered/vue-material-symbols'
@@ -13,7 +14,6 @@ const props = defineProps<{
   user: UserDto
   matrixHost: string
   unreadMessagesCount: number
-  csrfToken: string
   discussions: (DiscussionDto & { messages?: Array<{ sender: string; body: string; ts: number }> })[]
 }>()
 
@@ -84,15 +84,7 @@ const handleRoomSelect = async (roomId: string) => {
   state.value.error = null
   if (props.unreadMessagesCount > 0) {
     const discussionId = chatRooms.value.find(room => room.matrixRoomId === roomId)?.id
-    // await router.post(`/chat/${discussionId}/read`, {})
-    const response = await fetch(`/chat/${discussionId}/read`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'X-CSRF-TOKEN': props.csrfToken,
-        'Accept': 'application/json',
-      },
-    })
+    router.post(`/chat/${discussionId}/read`)
   }
 }
 

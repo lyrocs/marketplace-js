@@ -6,16 +6,15 @@ import DiscussionDto from '#dtos/discussion'
 
 @inject()
 export default class ChatController {
-  constructor(private discussionService: DiscussionService  ) {}
-  async list({ inertia, auth, request }: HttpContext) {
+  constructor(private discussionService: DiscussionService) {}
+  async list({ inertia, auth }: HttpContext) {
     const matrixHost = process.env.MATRIX_HOST
     const user = auth.user
     const discussions = await this.discussionService.getDiscussionsByUser(user?.id ?? '')
-    return inertia.render('chat/list', {      
+    return inertia.render('chat/list', {
       user: user ? new UserDto(user) : null,
       matrixHost,
-      discussions: discussions.map(discussion => new DiscussionDto(discussion)),
-      csrfToken: request.csrfToken,
+      discussions: discussions.map((discussion) => new DiscussionDto(discussion)),
     })
   }
   async read({ auth, request, response }: HttpContext) {
