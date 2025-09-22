@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DealDto from '#dtos/deal'
 import { router } from '@inertiajs/vue3';
+import { IconArrowForwardIos, IconHelpOutline, IconAddPhotoAlternateOutline, IconVerifiedUserOutline, IconStar, IconStarHalf, IconStarOutline, IconLocationOnOutline, IconHandshakeOutline, IconChatBubbleOutline, IconPerson2Outline } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps<{ deal: DealDto }>()
 
@@ -85,7 +86,7 @@ const makeOffer = () => {
                             </div>
                             <a href="#" class="flex-shrink-0 ml-4 text-slate-400 hover:text-slate-700"
                                 title="Voir la fiche officielle">
-                                <ion-icon name="arrow-forward-circle-outline" class="text-3xl"></ion-icon>
+                                <IconArrowForwardIos class="text-3xl"></IconArrowForwardIos>
                             </a>
                         </div>
                     </div>
@@ -96,14 +97,14 @@ const makeOffer = () => {
                     <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                         <div>
                             <h4 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <ion-icon name="help-circle-outline" class="text-slate-500"></ion-icon>Raison de la
-                                vente
+                                <IconHelpOutline class="text-slate-500"></IconHelpOutline>Raison de la vente
                             </h4>
                             <p class="text-sm text-gray-600 mt-1 pl-6">{{ details.saleReason }}</p>
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-800 flex items-center gap-2">
-                                <ion-icon name="images-outline" class="text-slate-500"></ion-icon>Photos
+                                <IconAddPhotoAlternateOutline class="text-slate-500"></IconAddPhotoAlternateOutline>
+                                Photos
                                 supplémentaires
                             </h4>
                             <p class="text-sm text-gray-600 mt-1 pl-6">{{ details.extraPhotos }}</p>
@@ -111,8 +112,8 @@ const makeOffer = () => {
                     </div>
                     <ul class="mt-6 pt-6 border-t space-y-4">
                         <li v-for="(attr, i) in details.attributes" :key="i" class="flex items-start gap-3">
-                            <ion-icon name="shield-checkmark-outline"
-                                class="text-green-500 text-2xl flex-shrink-0 mt-0.5"></ion-icon>
+                            <IconVerifiedUserOutline class="text-green-500 text-2xl flex-shrink-0 mt-0.5">
+                            </IconVerifiedUserOutline>
                             <div>
                                 <h4 class="font-semibold text-gray-800">{{ attr }}</h4>
                             </div>
@@ -129,12 +130,14 @@ const makeOffer = () => {
                             <img :src="seller.avatar" alt="avatar" class="w-16 h-16 rounded-full" />
                             <div>
                                 <a href="#" class="font-semibold text-gray-800 hover:text-slate-600">{{ seller.name
-                                    }}</a>
+                                }}</a>
                                 <div class="flex items-center gap-2 mt-1">
                                     <div class="flex text-yellow-400 text-sm">
-                                        <ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon
-                                            name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon
-                                            name="star-half-outline"></ion-icon>
+                                        <IconStar class="text-yellow-400"></IconStar>
+                                        <IconStar class="text-yellow-400"></IconStar>
+                                        <IconStar class="text-yellow-400"></IconStar>
+                                        <IconStarHalf class="text-yellow-400"></IconStarHalf>
+                                        <IconStarOutline class="text-yellow-400"></IconStarOutline>
                                     </div>
                                     <span class="text-xs text-gray-500">({{ seller.reviews }} avis)</span>
                                 </div>
@@ -142,11 +145,11 @@ const makeOffer = () => {
                         </div>
                         <div class="text-sm text-gray-600 space-y-3 mt-4 pt-4 border-t">
                             <div class="flex items-center gap-2">
-                                <ion-icon name="location-outline" class="text-lg"></ion-icon><span>Situé à {{
+                                <IconLocationOnOutline class="text-lg"></IconLocationOnOutline><span>Situé à {{
                                     seller.location }}</span>
                             </div>
                             <div v-for="(method, i) in seller.shippingMethods" :key="i" class="flex items-center gap-2">
-                                <ion-icon name="people-outline" class="text-lg"></ion-icon><span>{{ method }}</span>
+                                <IconHandshakeOutline class="text-lg"></IconHandshakeOutline><span>{{ method }}</span>
                             </div>
                         </div>
                     </div>
@@ -162,7 +165,7 @@ const makeOffer = () => {
                         <div class="mt-6 flex flex-col gap-3">
                             <button @click="makeOffer"
                                 class="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center gap-2">
-                                <ion-icon name="chatbubble-ellipses-outline" class="text-xl"></ion-icon> Contacter
+                                <IconChatBubbleOutline class="text-xl"></IconChatBubbleOutline> Contacter
                             </button>
                             <button @click="makeOffer"
                                 class="w-full bg-white border-2 border-slate-700 text-slate-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-100 transition-colors duration-300">
@@ -175,24 +178,20 @@ const makeOffer = () => {
                         <h3 class="font-bold text-lg text-gray-800 mb-4">Spécifications clés</h3>
                         <ul class="text-sm text-gray-700 space-y-4">
                             <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600"><ion-icon name="hourglass-outline"
-                                        class="text-slate-500"></ion-icon> Temps de vol</span><span
+                                <span class="flex items-center gap-2 text-gray-600">Temps de vol</span><span
                                     class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.flightTime
                                     }}</span>
                             </li>
                             <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600"><ion-icon name="wifi-outline"
-                                        class="text-slate-500"></ion-icon> Portée</span><span
+                                <span class="flex items-center gap-2 text-gray-600">Portée</span><span
                                     class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.range }}</span>
                             </li>
                             <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600"><ion-icon name="camera-outline"
-                                        class="text-slate-500"></ion-icon> Capteur</span><span
+                                <span class="flex items-center gap-2 text-gray-600">Capteur</span><span
                                     class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.sensor }}</span>
                             </li>
                             <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600"><ion-icon name="scale-outline"
-                                        class="text-slate-500"></ion-icon> Poids</span><span
+                                <span class="flex items-center gap-2 text-gray-600">Poids</span><span
                                     class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.weight }}</span>
                             </li>
                         </ul>
@@ -223,10 +222,10 @@ const makeOffer = () => {
                         </p>
                         <div class="text-xs text-gray-500 mt-2 flex items-center gap-4">
                             <div class="flex items-center gap-1">
-                                <ion-icon name="person-circle-outline"></ion-icon><span>{{ sdeal.sellerName }}</span>
+                                <IconPerson2Outline></IconPerson2Outline><span>{{ sdeal.sellerName }}</span>
                             </div>
                             <div class="flex items-center gap-1">
-                                <ion-icon name="location-outline"></ion-icon><span>{{ sdeal.location }}</span>
+                                <IconLocationOnOutline></IconLocationOnOutline><span>{{ sdeal.location }}</span>
                             </div>
                         </div>
                     </div>

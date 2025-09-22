@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUpdated, ref } from 'vue'
 import type { ChatRoomProps } from '~/types/chat'
-import { IconArrowForwardIos } from '@iconify-prerendered/vue-material-symbols'
+import { IconArrowForwardIos, IconChatBubbleOutline } from '@iconify-prerendered/vue-material-symbols'
 import MessageInput from './MessageInput.vue'
 
 const props = defineProps<ChatRoomProps>()
@@ -161,7 +161,7 @@ onUpdated(() => {
       <!-- Empty state -->
       <div v-if="!isLoading && sortedMessages.length === 0"
         class="flex flex-col items-center justify-center h-32 text-gray-500">
-        <ion-icon name="chatbubbles-outline" class="text-4xl mb-2"></ion-icon>
+        <IconChatBubbleOutline class="text-4xl mb-2" />
         <p>Aucun message dans cette conversation</p>
         <p class="text-sm">Envoyez le premier message !</p>
       </div>
@@ -173,7 +173,7 @@ onUpdated(() => {
 
   <!-- No room selected -->
   <div v-else class="md:col-span-3 flex flex-col items-center justify-center h-full bg-slate-50 text-gray-500">
-    <ion-icon name="chatbubbles-outline" class="text-6xl mb-4"></ion-icon>
+    <IconChatBubbleOutline class="text-6xl mb-4" />
     <h3 class="text-xl font-medium mb-2">Sélectionnez une conversation</h3>
     <p>Choisissez une conversation dans la liste pour commencer à discuter</p>
   </div>

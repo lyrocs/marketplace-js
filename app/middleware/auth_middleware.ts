@@ -33,7 +33,7 @@ export default class AuthMiddleware {
     const unreadMessagesCount = await this.discussionService.countNewMessages(ctx.auth.user?.id || '')
     ctx.inertia.share({
       categories: categories.map((category: any) => new CategoryDto(category)),
-      unreadMessagesCount,
+      unreadMessagesCount: Number(unreadMessagesCount),
     })
     return next()
   }

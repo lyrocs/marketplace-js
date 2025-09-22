@@ -70,12 +70,12 @@ export class DiscussionService {
     return discussionStatus
   }
 
-  async countNewMessages(userId: string) {
+  async countNewMessages(userId: string): Promise<number> {
     const discussionStatus = await DiscussionStatus.query()
       .where('user_id', userId)
       .where('new_message', true)
       .count('*', 'total')
-    return discussionStatus[0]?.$extras.total || 0
+    return Number(discussionStatus[0]?.$extras.total) || 0
   }
 
   async markAsRead(userId: string, discussionId: number) {

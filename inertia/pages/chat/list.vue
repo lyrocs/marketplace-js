@@ -3,6 +3,7 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useMatrix } from '~/composables/useMatrix'
 import ChatList from '~/components/chat/ChatList.vue'
 import ChatRoom from '~/components/chat/ChatRoom.vue'
+import { IconCloudAlertOutline, IconCloseSmall } from '@iconify-prerendered/vue-material-symbols'
 import type UserDto from '#dtos/user'
 import type DiscussionDto from '#dtos/discussion'
 import type { ChatRoom as ChatRoomType, ChatState } from '~/types/chat'
@@ -54,7 +55,7 @@ const chatRooms = computed<ChatRoomType[]>(() => {
   return props.discussions.map(discussion => {
     const matrixRoom = matrixRooms.value.find(r => r.roomId === discussion.matrixRoomId)
     const messages = matrixRoom?.messages || discussion.messages || []
-    
+
     return {
       ...discussion,
       messages,
@@ -145,13 +146,13 @@ watch(error, (newError) => {
   <main class="w-full mx-auto">
     <!-- Error Banner -->
     <div v-if="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-      <ion-icon name="alert-circle-outline" class="text-red-500 text-xl flex-shrink-0"></ion-icon>
+      <IconCloudAlertOutline class="text-red-500 text-xl flex-shrink-0"></IconCloudAlertOutline>
       <div class="flex-grow">
         <p class="text-red-800 font-medium">Erreur de connexion</p>
         <p class="text-red-600 text-sm">{{ error }}</p>
       </div>
       <button @click="state.error = null" class="text-red-500 hover:text-red-700 transition-colors">
-        <ion-icon name="close-outline" class="text-xl"></ion-icon>
+        <IconCloseSmall class="text-xl"></IconCloseSmall>
       </button>
     </div>
 
