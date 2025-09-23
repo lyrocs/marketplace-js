@@ -4,7 +4,7 @@ import { createSSRApp, h, type DefineComponent } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import GuestLayout from '~/layouts/GuestLayout.vue'
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'Marketplace.js'
 
 export default function render(page: any) {
   return createInertiaApp({

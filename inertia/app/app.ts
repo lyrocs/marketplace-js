@@ -9,7 +9,7 @@ import { resolvePageComponent } from '@adonisjs/inertia/helpers'
 import { Link } from '@inertiajs/vue3'
 import GuestLayout from '~/layouts/GuestLayout.vue'
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'Marketplace.js'
 
 createInertiaApp({
   progress: { color: '#5468FF' },
