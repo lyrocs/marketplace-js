@@ -6,25 +6,24 @@ A modern, full-stack marketplace application built with AdonisJS, Vue 3, and Typ
 
 Try the live demo: [https://marketplace.lyrocs.ovh/](https://marketplace.lyrocs.ovh/)
 
-## 🚀 Features
+## ✨ Key Features
 
-- **Modern Stack**: Built with AdonisJS 6, Vue 3, and TypeScript
-- **Authentication & Authorization**: Secure user authentication and role-based access control
-- **Real-time Updates**: Interactive UI with real-time features
-- **Responsive Design**: Works on desktop and mobile devices
-- **Type Safety**: Full TypeScript support throughout the application
-- **Modern UI**: Built with Radix Vue and Tailwind CSS
+- **Product Listings**: Browse a catalog of products from various sellers.
+- **User-Managed Deals**: Allow users to create, manage, and promote their own product deals.
+- **Real-Time Chat**: Integrated chat system for seamless communication between buyers and sellers, powered by the Matrix protocol.
+- **Secure Authentication**: Robust and secure user authentication with role-based access control (users and admins).
+- **Admin Panel**: A dedicated dashboard for administrators to manage users, listings, and other platform settings.
+- **Responsive Design**: Fully responsive and mobile-friendly interface for a great user experience on any device.
 
 ## 🛠️ Tech Stack
 
 - **Backend**: AdonisJS 6 (Node.js)
-- **Frontend**: Vue 3 with Inertia.js
+- **Frontend**: Vue 3 with Inertia.js & TypeScript
 - **Database**: PostgreSQL
-- **Styling**: Tailwind CSS with Radix Vue components
-- **Authentication**: AdonisJS Auth
-- **Form Handling**: Vee-Validate
-- **Icons**: Lucide Icons
-- **State Management**: Vue Composition API
+- **Real-time Chat**: Matrix Protocol via `matrix-js-sdk`
+- **Components**: Shadcn/vue based on Radix UI
+- **Styling**: Tailwind CSS with Radix Vue
+- **Icons**: Iconify.design & Material Symbols
 
 ## 🚀 Getting Started
 
