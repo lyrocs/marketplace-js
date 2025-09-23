@@ -12,6 +12,7 @@ export interface ChatMessage {
 export interface ChatRoom extends DiscussionDto {
   messages: ChatMessage[]
   lastActivity?: number
+  loaded?: boolean
   unreadCount?: number
 }
 
@@ -34,6 +35,7 @@ export interface ChatRoomProps {
   currentUser: ChatUser
   isLoading?: boolean
   onSendMessage: (message: string) => void
+  onLoadMore?: (roomId: string) => void
 }
 
 export interface MessageInputProps {

@@ -13,6 +13,7 @@ export interface MatrixRoom {
   roomId: string
   name: string
   messages: MatrixMessage[]
+  loaded: boolean
   lastActivity?: number
 }
 
@@ -33,6 +34,7 @@ export interface UseMatrixReturn {
   disconnect: () => void
   sendMessage: (roomId: string, message: string) => Promise<void>
   joinRoom: (roomId: string) => Promise<void>
+  loadMore: (roomId: string) => Promise<void>
 }
 
 export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
@@ -126,6 +128,7 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
         roomId: room.roomId,
         name: room.name || 'Unnamed Room',
         messages,
+        loaded: false,
         lastActivity: messages.length > 0 ? Math.max(...messages.map((m: any) => m.ts)) : 0,
       }
     })
@@ -237,6 +240,38 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
     }
   }
 
+  const loadMore = async (roomId: string) => {
+    if (!client.value) {
+      throw new Error('Matrix client is not initialized')
+    }
+
+    try {
+      const room = await client.value.getRoom(roomId)
+      const scrollback = await client.value.scrollback(room)
+      const events = scrollback.getLiveTimeline().getEvents()
+      const messages: MatrixMessage[] = []
+      events.forEach(event => {
+        const type = event.getType()
+        if (type === 'm.room.message') {
+          messages.push({
+            sender: event.getSender()!,
+            body: event.getContent().body,
+            ts: event.getTs(),
+            id: event.getId(),
+          })
+        }
+      })
+      const currentRoomIndex = rooms.value.findIndex(r => r.roomId === roomId)
+      if (currentRoomIndex !== -1) {
+        rooms.value[currentRoomIndex].messages = messages
+        rooms.value[currentRoomIndex].loaded = true
+      }
+    } catch (err) {
+      setError(err as Error)
+      throw err
+    }
+  }
+
   return {
     client,
     isConnected,
@@ -247,5 +282,6 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
     disconnect,
     sendMessage,
     joinRoom,
+    loadMore,
   }
 }

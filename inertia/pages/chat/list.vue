@@ -32,7 +32,8 @@ const {
   error: matrixError,
   rooms: matrixRooms,
   connect,
-  sendMessage: sendMatrixMessage
+  sendMessage: sendMatrixMessage,
+  loadMore
 } = useMatrix({
   user: props.user,
   matrixHost: props.matrixHost,
@@ -59,6 +60,7 @@ const chatRooms = computed<ChatRoomType[]>(() => {
     return {
       ...discussion,
       messages,
+      loaded: matrixRoom?.loaded || false,
       lastActivity: messages.length > 0 ? Math.max(...messages.map(m => m.ts)) : 0,
       unreadCount: discussion.status.find(status => status.userId === props.user.id)?.newMessages ? 1 : 0
     }
@@ -117,6 +119,9 @@ const handleSendMessage = async (message: string) => {
   }
 }
 
+const handleLoadMore = async (roomId: string) => {
+  await loadMore(roomId)
+}
 // Lifecycle
 onMounted(async () => {
   try {
@@ -189,9 +194,10 @@ watch(error, (newError) => {
         <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
           :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
 
+
         <!-- Chat Room -->
         <ChatRoom :room="currentRoom" :current-user="props.user" :is-loading="isLoading"
-          @send-message="handleSendMessage" />
+          @send-message="handleSendMessage" @load-more="handleLoadMore" />
       </div>
     </div>
   </main>
