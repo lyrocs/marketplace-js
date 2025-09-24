@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { PropType } from 'vue'
 import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
@@ -40,7 +40,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'submit', 'upload-image'])
+const emit = defineEmits(['update:modelValue', 'submit', 'upload-image', 'publish'])
 
 const showImagePopin = ref(false)
 const selectedImageUrl = ref('')
@@ -116,6 +116,13 @@ function removeFeature(fIdx: number) {
 function uploadImage() {
   emit('upload-image')
 }
+function publish() {
+  emit('publish')
+}
+
+const hasExternalImages = computed(() => {
+  return localForm.value.images.some((img: string) => !img.includes(props.s3BaseUrl))
+})
 
 
 </script>
@@ -222,8 +229,12 @@ function uploadImage() {
       </div>
     </div>
     <div class="flex gap-2 mt-2">
-      <button type="button" @click="uploadImage()" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Upload
+      <button v-if="hasExternalImages" type="button" @click="uploadImage()"
+        class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Upload
         Image</button>
+
+      <button v-if="localForm.status === ProductStatus.IMPORTED" type="button" @click="publish()"
+        class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Publish</button>
 
       <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">{{ props.isEdit ? 'Save Product' :
         'Create Product' }}</button>
