@@ -103,7 +103,9 @@ export class ProductService {
   // }
 
   async attachSpecs(product: Product, specs: Spec[]) {
-    await product.related('specs').attach(specs.map((spec) => spec.id))
+    // specs Ids should not have duplicates
+    const specsIds = [...new Set(specs.map((spec) => spec.id))]
+    await product.related('specs').attach(specsIds)
   }
 
   async syncSpecs(product: Product, specs: number[]) {

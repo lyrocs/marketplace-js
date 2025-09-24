@@ -21,7 +21,17 @@ export default class ImportController {
 
   async import({ request, inertia }: HttpContext) {
     const data = request.all()
-    const requestData = await importValidator.validate(data)
+    let requestData: any
+    try {
+    requestData = await importValidator.validate(data)
+    } catch(e) {
+
+      return inertia.render('admin/import/form', {
+        messages: {
+          errorsBag: e.messages.map((message: any) => message.message)
+        }
+      })
+    }
     const products = requestData.products
     if (!products.length) {
       throw new Error('No products found')

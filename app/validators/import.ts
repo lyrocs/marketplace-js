@@ -7,8 +7,8 @@ export const importValidator = vine.compile(
         name: vine.string().trim().minLength(2),
         description: vine.string().trim(),
         features: vine.array(vine.object({
-          title: vine.string().trim(),
-          items: vine.array(vine.string().trim()),
+          title: vine.string().trim().optional(),
+          items: vine.array(vine.string().trim()).optional(),
         })).optional(),
         images: vine.array(vine.string()),
         manufacturer_name: vine.string().trim(),
