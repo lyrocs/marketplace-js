@@ -8,8 +8,9 @@ export class ProductService {
   async byCategory({
     specs = [],
     category = undefined,
+    status = undefined,
     page = 1,
-  }: { specs?: number[]; category?: number; page?: number } = {}) {
+  }: { specs?: number[]; category?: number; status?: string; page?: number } = {}) {
     const products = Product.query()
 
     if (category) {
@@ -20,6 +21,9 @@ export class ProductService {
       products.whereHas('specs', (specQuery) => {
         specQuery.whereIn('id', specs)
       })
+    }
+    if (status) {
+      products.where('status', status)
     }
     return products.preload('category').preload('specs', (specQuery) => {
       specQuery.preload('type')

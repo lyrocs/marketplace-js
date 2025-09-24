@@ -4,6 +4,7 @@ import { ProductService } from '#services/product_service'
 import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
 import { importValidator } from '#validators/import'
+import ProductStatus from '#enums/product_status'
 import type { HttpContext } from '@adonisjs/core/http'
 
 @inject()
@@ -61,7 +62,7 @@ export default class ImportController {
       const productPayload = {
         name: payload.name,
         images: JSON.parse(JSON.stringify(payload.images)),
-        status: 'PENDING',
+        status: ProductStatus.IMPORTED,
         category_id: category?.id,
         brand_id: brand.id,
         description: payload.description,

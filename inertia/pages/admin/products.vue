@@ -4,6 +4,7 @@ import ProductDto from '#dtos/product'
 import CategoryDto from '#dtos/category'
 import MetaDto from '#dtos/meta'
 import SpecDto from '#dtos/spec'
+import ProductStatus from '#enums/product_status'
 import { usePage, router } from '@inertiajs/vue3'
 import {
     IconAdd
@@ -26,6 +27,7 @@ const searchParams = new URLSearchParams(queryString);
 const queryParams = Object.fromEntries(searchParams.entries());
 const specsParams = queryParams.specs?.split(',').map(Number) || []
 const categoryParams = queryParams.category ? Number(queryParams.category) : null
+const statusParams = queryParams.status ? String(queryParams.status) : null
 
 function handleChangePage(value: number) {
     const url = new URL(window.location.href)
@@ -56,6 +58,16 @@ function handleChangeCategory(id: number) {
     router.get(url.toString())
 }
 
+function handleChangeStatus(value: string) {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('status')
+    if (value) {
+        url.searchParams.set('status', value)
+    }
+
+    router.get(url.toString())
+}
+
 function createProduct() {
     router.get('/admin/product/create')
 }
@@ -64,8 +76,9 @@ function createProduct() {
 
 <template>
     <div class="flex flex-col gap-4">
-        <Filters @change="handleChange" @change:category="handleChangeCategory" :specs="specs"
-            :selectedIds="specsParams" :categories="categories" :category="categoryParams" inline />
+        <Filters @change="handleChange" @change:category="handleChangeCategory" @change:status="handleChangeStatus"
+            :specs="specs" :selectedIds="specsParams" :categories="categories" :category="categoryParams"
+            :statuses="ProductStatus" :selectedStatus="statusParams" inline />
         <Button @click="createProduct">
             <IconAdd class="size-12" />Create Product
         </Button>
