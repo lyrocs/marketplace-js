@@ -4,6 +4,7 @@ import type { PropType } from 'vue'
 import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
+import ProductStatus from '#enums/product_status'
 
 const props = defineProps({
   modelValue: {
@@ -106,9 +107,7 @@ function removeFeature(fIdx: number) {
       <label class="block font-semibold mb-1">Status</label>
       <select v-model="localForm.status" @change="updateField('status', localForm.status)"
         class="border px-2 py-1 rounded w-full">
-        <option value="PENDING">Pending</option>
-        <option value="ACTIVE">Active</option>
-        <option value="INACTIVE">Inactive</option>
+        <option v-for="status in ProductStatus" :key="status" :value="status">{{ status }}</option>
       </select>
     </div>
     <div class="mb-4">

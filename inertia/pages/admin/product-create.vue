@@ -6,6 +6,7 @@ import ProductForm from '~/components/ui/ProductForm.vue'
 import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
+import ProductStatus from '#enums/product_status'
 
 defineOptions({ layout: AdminLayout })
 
@@ -17,7 +18,7 @@ const props = defineProps<{
 
 const form = ref({
   name: '',
-  status: 'PENDING',
+  status: ProductStatus.DRAFT,
   images: [],
   specs: [],
   category_id: '',
