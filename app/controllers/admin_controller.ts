@@ -7,6 +7,7 @@ import { BrandService } from '#services/brand_service'
 import { UserService } from '#services/user_service'
 import { adminProductValidator } from '#validators/admin_product'
 import type { HttpContext } from '@adonisjs/core/http'
+import env from '#start/env'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
 import SpecDto from '#dtos/spec'
@@ -15,6 +16,8 @@ import ProductDto from '#dtos/product'
 import MetaDto from '#dtos/meta'
 import SpecTypeDto from '#dtos/spec_type'
 import { adminCategoryValidator } from '#validators/admin_category'
+import drive from '@adonisjs/drive/services/main'
+import crypto from 'node:crypto'
 @inject()
 export default class ImportController {
   constructor(
@@ -60,11 +63,13 @@ export default class ImportController {
     const specs = await this.specService.all()
     const categories = await this.categoryService.all()
     const brands = await this.brandService.all()
+    const s3BaseUrl = env.get('S3_BASE_URL')
     return inertia.render('admin/product', { 
       product: new ProductDto(product), 
       specs: specs.map((spec: any) => new SpecDto(spec)), 
       categories: categories.map((category: any) => new CategoryDto(category)), 
-      brands: brands.map((brand: any) => new BrandDto(brand)) 
+      brands: brands.map((brand: any) => new BrandDto(brand)),
+      s3BaseUrl
     })
   }
 
@@ -87,6 +92,51 @@ export default class ImportController {
       categories: categories.map((category: any) => new CategoryDto(category)), 
       brands: brands.map((brand: any) => new BrandDto(brand)) 
     })
+  }
+
+  async uploadProductImage({ request, response, session }: HttpContext) {
+    const { imageUrls } = request.only(['imageUrls'])
+    const id = Number(request.param('id'))
+    
+    if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length === 0) {
+      const errorMsg = 'imageUrls is required and must be a non-empty array'
+      session.flashErrors({ errorMsg })
+      return response.redirect().back()
+    }
+    const filteredUrls = imageUrls.filter((url: string) => !url.includes(env.get('S3_BASE_URL')))
+    if (filteredUrls.length === 0) {
+      const errorMsg = 'No new images to upload'
+      session.flashErrors({ errorMsg })
+      return response.redirect().back()
+    }
+    try {
+      const uploadedUrls = []
+      const disk = drive.use()
+
+      for (const imageUrl of filteredUrls) {
+        const imageResponse = await fetch(imageUrl)
+        if (!imageResponse.ok) {
+          // Skip failed fetches or return an error
+          console.warn(`Failed to fetch image: ${imageUrl}`)
+          continue
+        }
+
+        const arrayBuffer = await imageResponse.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+
+        const fileName = `product/${id}/${crypto.randomBytes(16).toString('hex')}.jpg`
+
+        await disk.put(fileName, buffer)
+        const url = await disk.getUrl(fileName)
+        uploadedUrls.push(url)
+      }
+
+      await this.productService.update(id, { images: uploadedUrls })
+      return response.redirect().back()
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      return response.internalServerError({ error: 'Failed to upload images' })
+    }
   }
 
   async updateProduct({ request, response }: HttpContext) {

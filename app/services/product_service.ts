@@ -136,7 +136,7 @@ export class ProductService {
     return Product.findOrFail(source.productId)
   }
 
-  async update(id: number, data: { name: string; images: string[]; status: string }) {
+  async update(id: number, data: { name?: string; images?: string[]; status?: string }) {
     const product = await Product.findOrFail(id)
     product.merge(data)
     await product.save()

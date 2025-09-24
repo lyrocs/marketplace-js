@@ -54,6 +54,7 @@ router
     router.post('/admin/product', [AdminController, 'createProduct']).as('admin.products.create')
     router.get('/admin/product/:id', [AdminController, 'product']).as('admin.product')
     router.put('/admin/product/:id', [AdminController, 'updateProduct']).as('admin.product.update')
+    router.post('/admin/product/:id/images', [AdminController, 'uploadProductImage']).as('admin.product.upload-image')
     router
       .get('/admin/product/create', [AdminController, 'createProductPage'])
       .as('admin.product.create')

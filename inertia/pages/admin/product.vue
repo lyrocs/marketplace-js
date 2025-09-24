@@ -13,6 +13,7 @@ const props = defineProps<{
     specs: SpecDto[]
     categories: CategoryDto[]
     brands: BrandDto[]
+    s3BaseUrl: string
 }>()
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
@@ -39,6 +40,12 @@ function updateProduct() {
     messages.value.success = 'Product updated successfully'
 }
 
+async function uploadImage() {
+    router.post(`/admin/product/${props.product.id}/images`, {
+        imageUrls: form.value.images,
+    })
+}
+
 const messages = ref({
     success: '',
     errorsBag: {},
@@ -54,7 +61,8 @@ const messages = ref({
             <!-- Left column: Global info -->
             <div class="flex-1 min-w-0">
                 <ProductForm v-model="form" :specs="props.specs" :categories="props.categories" :brands="props.brands"
-                    :messages="messages" :isEdit="true" @submit="updateProduct">
+                    :messages="messages" :isEdit="true" :s3BaseUrl="s3BaseUrl" @submit="updateProduct"
+                    @upload-image="uploadImage">
                 </ProductForm>
             </div>
         </div>

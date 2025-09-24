@@ -5,6 +5,9 @@ import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
 import ProductStatus from '#enums/product_status'
+import {
+  IconCloudDoneOutline
+} from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps({
   modelValue: {
@@ -31,9 +34,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  s3BaseUrl: {
+    type: String,
+    required: true,
+  },
 })
 
-const emit = defineEmits(['update:modelValue', 'submit'])
+const emit = defineEmits(['update:modelValue', 'submit', 'upload-image'])
 
 const localForm = ref({ ...props.modelValue })
 
@@ -93,6 +100,10 @@ function removeFeature(fIdx: number) {
   localForm.value.features.splice(fIdx, 1)
 }
 
+function uploadImage() {
+  emit('upload-image')
+}
+
 
 </script>
 
@@ -115,6 +126,8 @@ function removeFeature(fIdx: number) {
       <div class="flex flex-wrap gap-2 mb-2">
         <div v-for="(img, idx) in localForm.images" :key="idx" class="relative group">
           <img :src="img" class="w-20 h-20 object-cover rounded border" />
+          <IconCloudDoneOutline v-if="img.includes(s3BaseUrl)"
+            class="absolute -top-1 -left-1 text-green-600 p-1 text-3xl" />
           <button type="button" @click="removeImage(idx)"
             class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">&times;</button>
         </div>
@@ -182,11 +195,16 @@ function removeFeature(fIdx: number) {
       </div>
       <div class="flex gap-2 mt-2">
         <input v-model="newFeatureTitle" placeholder="New feature title..." class="border px-2 py-1 rounded flex-1" />
-        <button type="button" @click="addFeature()" class="bg-blue-500 text-white px-2 py-1 rounded">Add
+        <button type="button" @click="addFeature()" class="bg-blue-500 text-white px-4 py-2 rounded">Add
           Feature</button>
       </div>
     </div>
-    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">{{ props.isEdit ? 'Save Product' :
-      'Create Product' }}</button>
+    <div class="flex gap-2 mt-2">
+      <button type="button" @click="uploadImage()" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Upload
+        Image</button>
+
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">{{ props.isEdit ? 'Save Product' :
+        'Create Product' }}</button>
+    </div>
   </form>
 </template>
