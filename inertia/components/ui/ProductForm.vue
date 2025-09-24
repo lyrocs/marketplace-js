@@ -42,6 +42,19 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'submit', 'upload-image'])
 
+const showImagePopin = ref(false)
+const selectedImageUrl = ref('')
+
+function openImagePopin(imageUrl: string) {
+  selectedImageUrl.value = imageUrl
+  showImagePopin.value = true
+}
+
+function closeImagePopin() {
+  showImagePopin.value = false
+  selectedImageUrl.value = ''
+}
+
 const localForm = ref({ ...props.modelValue })
 
 function updateField(field: string, value: any) {
@@ -124,16 +137,25 @@ function uploadImage() {
     <div class="mb-4">
       <label class="block font-semibold mb-1">Images</label>
       <div class="flex flex-wrap gap-2 mb-2">
-        <div v-for="(img, idx) in localForm.images" :key="idx" class="relative group">
+        <div v-for="(img, idx) in localForm.images" :key="idx" class="relative group cursor-pointer"
+          @click="openImagePopin(img)">
           <img :src="img" class="w-20 h-20 object-cover rounded border" />
           <IconCloudDoneOutline v-if="img.includes(s3BaseUrl)"
             class="absolute -top-1 -left-1 text-green-600 p-1 text-3xl" />
-          <button type="button" @click="removeImage(idx)"
+          <button type="button" @click.stop="removeImage(idx)"
             class="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs opacity-80 hover:opacity-100 group-hover:opacity-100">&times;</button>
         </div>
       </div>
       <input v-model="newImage" placeholder="Add image URL..." class="border px-2 py-1 rounded w-full mb-2" />
       <button type="button" @click="addImage" class="bg-blue-500 text-white px-2 py-1 rounded">Add Image</button>
+
+      <div v-if="showImagePopin" @click="closeImagePopin"
+        class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="relative max-w-4xl max-h-full p-4">
+          <img :src="selectedImageUrl" class="max-w-full max-h-full object-contain" @click.stop />
+          <button @click="closeImagePopin" class="absolute top-4 right-4 text-white text-3xl font-bold">&times;</button>
+        </div>
+      </div>
     </div>
     <div class="mb-4">
       <label class="block font-semibold mb-1">Category</label>
