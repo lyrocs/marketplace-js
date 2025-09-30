@@ -27,15 +27,15 @@ const search = () => {
   <div>
     <section class="relative flex h-[60vh] min-h-[400px] items-center">
       <div class="absolute inset-0 size-full bg-cover bg-center" style="
-          backgroundimg: 'url(https://imgs.unsplash.com/photo-1527977966376-94a8625442A3?q=80&w=2070&auto=format&fit=crop)';
+          background-image: url('https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/home-banner.jpeg');
         "></div>
       <div class="absolute inset-0 size-full bg-slate-900/60"></div>
       <div class="container relative mx-auto px-4 text-center text-white">
         <h1 class="text-4xl font-extrabold tracking-tight md:text-6xl">
-          Title
+          La marketplace des passionnés de drones FPV
         </h1>
         <p class="mx-auto mt-4 max-w-3xl text-lg text-slate-200 md:text-xl">
-          Description
+          Découvrez les meilleurs produits des boutiques françaises et trouvez des offres exclusives entre particuliers pour vos drones et pièces détachées FPV
         </p>
         <div class="mx-auto mt-8 max-w-xl flex items-center justify-center">
           <div class="relative w-full max-w-sm">
