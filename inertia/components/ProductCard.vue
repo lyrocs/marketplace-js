@@ -4,11 +4,12 @@ defineProps<{ product: any }>()
 
 <template>
     <a :href="`/product/${product.id}`" class="group flex flex-col overflow-hidden rounded-xl bg-white shadow-lg">
-        <!-- <img :src="product.images ? product.images[0] : 'https://placehold.co/400x300/475569/white?text=Image'"
-            class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Product image" /> -->
-        <img src="https://placehold.co/400x300/475569/white?text="
+        <img :src="product.images ? product.images[0] : 'https://placehold.co/400x300/475569/white?text=Image'"
             class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
             alt="Product image" />
+        <!-- <img src="https://placehold.co/400x300/475569/white?text="
+            class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            alt="Product image" /> -->
         <div class="flex grow flex-col p-4">
             <h3 class="my-2 text-lg font-bold text-gray-800 hover:text-slate-600">{{ product.name }}</h3>
             <div class="flex gap-4">

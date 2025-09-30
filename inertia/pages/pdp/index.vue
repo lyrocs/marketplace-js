@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ProductDto from '#dtos/product';
 import CategoryDto from '#dtos/category';
 
@@ -8,6 +9,12 @@ const props = defineProps<{
 }>()
 
 const parentCategory = props.categories.find((category) => category.id === props.product.category.parentId)
+
+const selectedImageIndex = ref(0)
+const defaultImage = 'https://placehold.co/400x300/475569/white?text=Image'
+const productImages = props.product.images && props.product.images.length > 0
+    ? props.product.images
+    : [defaultImage]
 </script>
 
 <template>
@@ -21,8 +28,21 @@ const parentCategory = props.categories.find((category) => category.id === props
                 </div>
 
                 <div class="rounded-xl bg-white p-4 shadow-lg">
-                    <img src="https://placehold.co/1200x700/1e293b/white?text=Photo+Officielle+DJI"
-                        alt="Image principale du drone" class="size-full rounded-lg object-cover" />
+                    <img :src="productImages[selectedImageIndex]" class="size-full rounded-lg object-cover"
+                        alt="Image principale du produit" />
+
+                    <div v-if="productImages.length > 1" class="mt-4 flex gap-2 overflow-x-auto">
+                        <button v-for="(image, index) in productImages" :key="index" @click="selectedImageIndex = index"
+                            :class="[
+                                'flex-shrink-0 rounded-lg border-2 transition-all',
+                                selectedImageIndex === index
+                                    ? 'border-slate-600 ring-2 ring-slate-300'
+                                    : 'border-transparent hover:border-slate-300'
+                            ]">
+                            <img :src="image" class="h-20 w-20 rounded-lg object-cover"
+                                :alt="`Image ${index + 1} du produit`" />
+                        </button>
+                    </div>
                 </div>
 
                 <div class="rounded-xl bg-white p-6 shadow-lg md:p-8">
@@ -56,9 +76,12 @@ const parentCategory = props.categories.find((category) => category.id === props
                         <div class="space-y-3">
                             <a v-for="shop in product.shops" :key="shop.id" :href="shop.url"
                                 class="flex items-center gap-4 rounded-lg border p-3 hover:bg-slate-50">
-                                <img :src="shop.shop" :alt="shop.shop" class="h-8 w-auto" />
                                 <span
                                     class="inline-block w-fit rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-800">
+                                    {{ shop.name }}
+                                </span>
+                                <span class="inline-block w-fit rounded-full px-2 py-0.5 text-xs font-semibold"
+                                    :class="shop.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                                     {{ shop.available ? "Disponible" : "Non disponible" }}
                                 </span>
                                 <div class="grow text-right">
