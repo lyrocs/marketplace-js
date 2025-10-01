@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Card, CardContent, CardFooter, CardHeader } from '~/components/ui/card'
-import { Button } from '~/components/ui/button'
-import { Badge } from '~/components/ui/badge'
 import DealDto from '#dtos/deal'
 
 const props = defineProps<{

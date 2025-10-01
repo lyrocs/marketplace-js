@@ -1,4 +1,5 @@
 import * as sdk from 'matrix-js-sdk'
+import {Visibility, Preset} from 'matrix-js-sdk'
 import env from '#start/env'
 import { inject } from '@adonisjs/core'
 import { MatrixContractService } from '#contracts/matrix_service'
@@ -44,7 +45,7 @@ export class MatrixService implements MatrixContractService {
     }
     this.client?.startClient()
 
-    this.client.on(sdk.RoomEvent.Timeline, async (event, room, toStartOfTimeline) => {
+    this.client?.on(sdk.RoomEvent.Timeline, async (event, room, toStartOfTimeline) => {
       if (toStartOfTimeline || event.getType() !== 'm.room.message') {
         return // don't print paginated results
       }
@@ -118,14 +119,13 @@ export class MatrixService implements MatrixContractService {
     buyerName: string
   }) {
     const response = await this.client?.createRoom({
-      visibility: 'private', // or "public"
+      visibility: Visibility.Private, // or "public"
       name,
       topic: name,
       invite: [sellerName, buyerName], // optional
-      preset: 'private_chat', // or "public_chat"
+      preset: Preset.PrivateChat, // or "public_chat"
       is_direct: false, // set true if it's a direct chat
     })
-    console.log(response)
-    return response.room_id
+    return response?.room_id || ''
   }
 }

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, nextTick, computed } from 'vue'
-import { Button } from '~/components/ui/button'
-import { Textarea } from '~/components/ui/textarea'
 import type { MessageInputProps } from '~/types/chat'
 import { IconSendOutline } from '@iconify-prerendered/vue-material-symbols'
 
