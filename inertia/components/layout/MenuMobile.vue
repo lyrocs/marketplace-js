@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useMenu } from '~/composables/useMenu'
+import CategoryDto from '#dtos/category'
 
 const props = defineProps<{
     categories: CategoryDto[]

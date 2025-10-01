@@ -1,74 +1,50 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3'
-import { ref } from 'vue'
 import {
   IconSupervisedUserCircle,
   IconStoreOutline,
   IconShieldPerson,
   IconBook,
   IconChat,
-  IconSearch,
 } from '@iconify-prerendered/vue-material-symbols'
 import ProductDto from '#dtos/product'
-
-const searchInput = ref('')
 
 const props = defineProps<{
   products: ProductDto[]
 }>()
-
-const search = () => {
-  router.get(`/products/search/${searchInput.value}`)
-}
-
 </script>
 
 <template>
   <div>
-    <section class="relative flex h-[60vh] min-h-[400px] items-center">
-      <div class="absolute inset-0 size-full bg-cover bg-center" style="
-          background-image: url('https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/home-banner.jpeg');
-        "></div>
-      <div class="absolute inset-0 size-full bg-slate-900/60"></div>
-      <div class="container relative mx-auto px-4 text-center text-white">
-        <h1 class="text-4xl font-extrabold tracking-tight md:text-6xl">
-          La marketplace des passionnés de drones FPV
-        </h1>
-        <p class="mx-auto mt-4 max-w-3xl text-lg text-slate-200 md:text-xl">
-          Découvrez les meilleurs produits des boutiques françaises et trouvez des offres exclusives entre particuliers pour vos drones et pièces détachées FPV
-        </p>
-        <div class="mx-auto mt-8 max-w-xl flex items-center justify-center">
-          <div class="relative w-full max-w-sm">
-            <Input v-model="searchInput" @keyup.enter="search" id="search" type="text"
-              placeholder="Que recherchez-vous ?" class="pl-10 text-black" />
-            <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-              <IconSearch class="size-6 text-muted-foreground" />
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
+    <HeroSection
+      title="La marketplace des passionnés de drones FPV"
+      description="Découvrez les meilleurs produits des boutiques françaises et trouvez des offres exclusives entre particuliers pour vos drones et pièces détachées FPV"
+      background-image="https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/home-banner.jpeg"
+      search-placeholder="Que recherchez-vous ?"
+    />
 
     <div class="container mx-auto px-4 py-12 md:py-20">
       <section class="grid grid-cols-1 gap-6 text-center md:grid-cols-2 lg:gap-8">
-        <a href="#"
-          class="block rounded-xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-          <IconSupervisedUserCircle class="ri-group-2-fill mx-auto text-5xl text-slate-500" />
-          <h2 class="mt-4 text-2xl font-bold text-gray-800">Explorer les Annonces</h2>
-          <p class="mt-1 text-gray-600">
+        <FeatureCard href="#">
+          <template #icon>
+            <IconSupervisedUserCircle />
+          </template>
+          <template #title>Explorer les Annonces</template>
+          <template #description>
             Trouvez la perle rare auprès de vendeurs passionnés et vérifiés.
-          </p>
-          <span class="group mt-4 inline-block font-semibold text-slate-600">Voir les annonces &rarr;</span>
-        </a>
-        <a href="#"
-          class="block rounded-xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-          <IconStoreOutline class="ri-store-2-line mx-auto text-5xl text-slate-500" />
-          <h2 class="mt-4 text-2xl font-bold text-gray-800">Consulter le Catalogue</h2>
-          <p class="mt-1 text-gray-600">
+          </template>
+          <template #link>Voir les annonces &rarr;</template>
+        </FeatureCard>
+
+        <FeatureCard href="#">
+          <template #icon>
+            <IconStoreOutline />
+          </template>
+          <template #title>Consulter le Catalogue</template>
+          <template #description>
             Comparez les produits neufs et les fiches techniques officielles.
-          </p>
-          <span class="group mt-4 inline-block font-semibold text-slate-600">Accéder au catalogue &rarr;</span>
-        </a>
+          </template>
+          <template #link>Accéder au catalogue &rarr;</template>
+        </FeatureCard>
       </section>
 
       <!-- <section class="mt-20">
@@ -151,43 +127,38 @@ const search = () => {
           </p>
         </div>
         <div class="mt-12 grid grid-cols-1 gap-8 text-center md:grid-cols-3">
-          <div>
-            <IconShieldPerson class="ri-shield-check-line mx-auto text-5xl text-slate-500" />
-            <h3 class="mt-4 text-xl font-bold text-gray-800">Vendeurs Vérifiés</h3>
-            <p class="mt-1 text-gray-600">
+          <FeatureIcon>
+            <IconShieldPerson />
+            <template #title>Vendeurs Vérifiés</template>
+            <template #description>
               Un système de notation et d'avis transparent pour chaque vendeur.
-            </p>
-          </div>
-          <div>
-            <IconBook class="ri-book-open-line mx-auto text-5xl text-slate-500" />
-            <h3 class="mt-4 text-xl font-bold text-gray-800">Catalogue de Référence</h3>
-            <p class="mt-1 text-gray-600">
+            </template>
+          </FeatureIcon>
+
+          <FeatureIcon>
+            <IconBook />
+            <template #title>Catalogue de Référence</template>
+            <template #description>
               Chaque annonce est liée à une fiche produit officielle pour plus de clarté.
-            </p>
-          </div>
-          <div>
-            <IconChat class="ri-wechat-line mx-auto text-5xl text-slate-500" />
-            <h3 class="mt-4 text-xl font-bold text-gray-800">Contact Direct</h3>
-            <p class="mt-1 text-gray-600">
+            </template>
+          </FeatureIcon>
+
+          <FeatureIcon>
+            <IconChat />
+            <template #title>Contact Direct</template>
+            <template #description>
               Échangez facilement avec les vendeurs pour poser vos questions.
-            </p>
-          </div>
+            </template>
+          </FeatureIcon>
         </div>
       </section>
 
-      <section class="mt-20">
-        <div class="rounded-xl bg-slate-700 p-12 text-center">
-          <h2 class="text-3xl font-bold text-white">Vous avez du matériel à vendre ?</h2>
-          <p class="mx-auto mt-2 max-w-xl text-slate-200">
-            Rejoignez notre communauté de passionnés et donnez une seconde vie à votre équipement.
-            La création d'annonce est simple et rapide.
-          </p>
-          <a href="#"
-            class="mt-6 inline-block rounded-lg bg-white px-8 py-3 text-lg font-bold text-slate-800 transition-colors hover:bg-slate-200">
-            Créer une annonce gratuitement
-          </a>
-        </div>
-      </section>
+      <CTASection
+        title="Vous avez du matériel à vendre ?"
+        description="Rejoignez notre communauté de passionnés et donnez une seconde vie à votre équipement. La création d'annonce est simple et rapide."
+        button-text="Créer une annonce gratuitement"
+        button-href="#"
+      />
     </div>
   </div>
 </template>
