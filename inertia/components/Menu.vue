@@ -1,28 +1,17 @@
 <script setup lang="ts">
 import CategoryDto from "#dtos/category";
+import { useMenu } from "~/composables/useMenu";
 
 const props = defineProps<{
   categories: CategoryDto[]
 }>()
 
-const parentCategories = props.categories.filter((category) => category.parentId === null)
-const menuParentCategories = parentCategories.map((category) => ({
-  title: category.name,
-  children: props.categories.filter((childCategory) => childCategory.parentId === category.id).map((childCategory) => ({
-    title: childCategory.name,
-    href: `/products/${childCategory.key.toLowerCase()}`,
-    image: childCategory.image,
-    description: childCategory.description,
-  }))
-}))
+const { menuParentCategories } = useMenu({ categories: props.categories })
 
 </script>
 
 <template>
-  <div class="flex gap-4 items-center">
-    <a href="/" class="text-2xl font-semibold">
-      Marketplace.js
-    </a>
+  <div>
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem v-for="parentCategory in menuParentCategories" :key="parentCategory.title">
