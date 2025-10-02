@@ -2,7 +2,6 @@
 import SpecDto from '#dtos/spec';
 import CategoryDto from '#dtos/category';
 import { computed, ref, watch } from 'vue'
-import FilterCard from './FilterCard.vue'
 
 const props = defineProps<{
     specs: SpecDto[],

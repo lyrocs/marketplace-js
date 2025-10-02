@@ -50,7 +50,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkScreenSize)
-  router.off('navigate', closeMobileMenu)
 })
 </script>
 

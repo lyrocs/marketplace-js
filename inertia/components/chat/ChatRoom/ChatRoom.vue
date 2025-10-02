@@ -2,7 +2,6 @@
 import { computed, nextTick, onMounted, onUpdated, ref } from 'vue'
 import type { ChatRoomProps } from '~/types/chat'
 import { IconArrowForwardIos, IconChatBubbleOutline } from '@iconify-prerendered/vue-material-symbols'
-import MessageInput from './MessageInput.vue'
 
 const props = defineProps<ChatRoomProps>()
 

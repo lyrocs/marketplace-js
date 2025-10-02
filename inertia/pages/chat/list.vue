@@ -2,8 +2,6 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useMatrix } from '~/composables/useMatrix'
 import { router } from '@inertiajs/vue3'
-import ChatList from '~/components/chat/ChatList.vue'
-import ChatRoom from '~/components/chat/ChatRoom.vue'
 import type UserDto from '#dtos/user'
 import type DiscussionDto from '#dtos/discussion'
 import type { ChatRoom as ChatRoomType, ChatState } from '~/types/chat'
@@ -154,22 +152,11 @@ watch(error, (newError) => {
       <ChatHeader :is-connected="isConnected" :is-loading="isLoading" :has-error="!!error" />
 
       <div class="chat-layout">
-        <ChatList
-          :rooms="chatRooms"
-          :selected-room-id="state.selectedRoomId"
-          :current-user="props.user"
-          :search-query="state.searchQuery"
-          @room-select="handleRoomSelect"
-          @search="handleSearch"
-        />
+        <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
+          :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
 
-        <ChatRoom
-          :room="currentRoom"
-          :current-user="props.user"
-          :is-loading="isLoading"
-          @send-message="handleSendMessage"
-          @load-more="handleLoadMore"
-        />
+        <ChatRoom :room="currentRoom" :current-user="props.user" :is-loading="isLoading"
+          @send-message="handleSendMessage" @load-more="handleLoadMore" />
       </div>
     </div>
   </main>
