@@ -4,7 +4,6 @@ import { useMatrix } from '~/composables/useMatrix'
 import { router } from '@inertiajs/vue3'
 import ChatList from '~/components/chat/ChatList.vue'
 import ChatRoom from '~/components/chat/ChatRoom.vue'
-import { IconCloudAlertOutline, IconCloseSmall } from '@iconify-prerendered/vue-material-symbols'
 import type UserDto from '#dtos/user'
 import type DiscussionDto from '#dtos/discussion'
 import type { ChatRoom as ChatRoomType, ChatState } from '~/types/chat'
@@ -148,57 +147,44 @@ watch(error, (newError) => {
 </script>
 
 <template>
-  <main class="w-full mx-auto">
-    <!-- Error Banner -->
-    <div v-if="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-      <IconCloudAlertOutline class="text-red-500 text-xl flex-shrink-0"></IconCloudAlertOutline>
-      <div class="flex-grow">
-        <p class="text-red-800 font-medium">Erreur de connexion</p>
-        <p class="text-red-600 text-sm">{{ error }}</p>
-      </div>
-      <button @click="state.error = null" class="text-red-500 hover:text-red-700 transition-colors">
-        <IconCloseSmall class="text-xl"></IconCloseSmall>
-      </button>
-    </div>
+  <main class="chat-main">
+    <ErrorBanner v-if="error" :error="error" @dismiss="state.error = null" />
 
-    <!-- Main Chat Container -->
-    <div class="bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden">
-      <!-- Header -->
-      <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
-        <div class="flex items-center gap-3">
-          <h1 class="text-2xl font-bold text-gray-800">Messagerie</h1>
+    <div class="chat-container">
+      <ChatHeader :is-connected="isConnected" :is-loading="isLoading" :has-error="!!error" />
 
-          <!-- Connection Status -->
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full" :class="{
-              'bg-green-500': isConnected,
-              'bg-yellow-500': isLoading,
-              'bg-red-500': error && !isLoading
-            }"></div>
-            <span class="text-sm text-gray-600">
-              {{ isConnected ? 'Connecté' : isLoading ? 'Connexion...' : 'Déconnecté' }}
-            </span>
-          </div>
-        </div>
+      <div class="chat-layout">
+        <ChatList
+          :rooms="chatRooms"
+          :selected-room-id="state.selectedRoomId"
+          :current-user="props.user"
+          :search-query="state.searchQuery"
+          @room-select="handleRoomSelect"
+          @search="handleSearch"
+        />
 
-        <!-- Loading Indicator -->
-        <div v-if="isLoading" class="flex items-center gap-2 text-gray-600">
-          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-700"></div>
-          <span class="text-sm">Chargement...</span>
-        </div>
-      </div>
-
-      <!-- Chat Layout -->
-      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden">
-        <!-- Chat List -->
-        <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
-          :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
-
-
-        <!-- Chat Room -->
-        <ChatRoom :room="currentRoom" :current-user="props.user" :is-loading="isLoading"
-          @send-message="handleSendMessage" @load-more="handleLoadMore" />
+        <ChatRoom
+          :room="currentRoom"
+          :current-user="props.user"
+          :is-loading="isLoading"
+          @send-message="handleSendMessage"
+          @load-more="handleLoadMore"
+        />
       </div>
     </div>
   </main>
 </template>
+
+<style scoped>
+.chat-main {
+  @apply w-full mx-auto;
+}
+
+.chat-container {
+  @apply bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden;
+}
+
+.chat-layout {
+  @apply grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden;
+}
+</style>

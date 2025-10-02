@@ -4,7 +4,7 @@ interface Props {
   min?: number
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   min: 1,
 })
 
@@ -25,7 +25,6 @@ const handleInput = (e: Event) => {
   emit('update:modelValue', Math.max(props.min, isNaN(value) ? props.min : value))
 }
 
-const props = defineProps<Props>()
 </script>
 
 <template>
@@ -33,13 +32,7 @@ const props = defineProps<Props>()
     <button type="button" @click="decrease" class="quantity-button quantity-button-left" :disabled="modelValue <= min">
       -
     </button>
-    <input
-      type="number"
-      :value="modelValue"
-      @input="handleInput"
-      :min="min"
-      class="quantity-value"
-    />
+    <input type="number" :value="modelValue" @input="handleInput" :min="min" class="quantity-value" />
     <button type="button" @click="increase" class="quantity-button quantity-button-right">
       +
     </button>
