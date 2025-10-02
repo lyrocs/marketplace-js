@@ -95,10 +95,8 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
       if (state === 'PREPARED') {
         isConnected.value = true
         isLoading.value = false
-        loadRooms(newClient)
-        setupMessageListener(newClient)
-        setupInviteListener(newClient)
         onConnected?.()
+        loadRooms(newClient)
       }
     })
 
@@ -108,12 +106,14 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
       }
     })
 
+    setupMessageListener(newClient)
+    setupInviteListener(newClient)
+
     return newClient
   }
 
   const loadRooms = (matrixClient: any) => {
-    const matrixRooms = matrixClient.getRooms()
-    
+    const matrixRooms = matrixClient.getRooms()    
     rooms.value = matrixRooms.map((room: any) => {
       const messages = room.timeline
         ?.filter((event: any) => event.getType() === 'm.room.message')
@@ -158,13 +158,10 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
   }
 
   const setupInviteListener = (matrixClient: any) => {
-    matrixClient.on('RoomMember.membership' as any, (_event: any, member: any) => {
-      if (
-        member.userId === matrixClient.getUserId() &&
-        member.membership === 'invite'
-      ) {
-        joinRoom(member.roomId).catch((err: any) => {
-          console.error(`Failed to join room ${member.roomId}:`, err)
+    matrixClient.on(sdk.RoomEvent.MyMembership, (room: any, membership: string) => {
+      if (membership === sdk.KnownMembership.Invite) {
+        joinRoom(room.roomId).catch((err: any) => {
+          console.error(`Failed to join room ${room.roomId}:`, err)
         })
       }
     })
@@ -183,7 +180,7 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
       const newClient = initializeClient(token)
       client.value = newClient
 
-      newClient.startClient()
+      newClient.startClient({initialSyncLimit: 10})
     } catch (err) {
       isLoading.value = false
       setError(err as Error)
@@ -229,7 +226,7 @@ export function useMatrix(options: UseMatrixOptions): UseMatrixReturn {
 
     try {
       await client.value.joinRoom(roomId)
-      console.log(`Joined room ${roomId} automatically`)
+      console.log(`Joined room ${roomId}`)
       // Refresh rooms after joining
       if (isConnected.value) {
         loadRooms(client.value)
