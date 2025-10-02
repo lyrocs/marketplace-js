@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import DealDto from '#dtos/deal'
-import { router } from '@inertiajs/vue3';
-import { IconArrowForwardIos, IconHelpOutline, IconAddPhotoAlternateOutline, IconVerifiedUserOutline, IconStar, IconStarHalf, IconStarOutline, IconLocationOnOutline, IconHandshakeOutline, IconChatBubbleOutline, IconPerson2Outline } from '@iconify-prerendered/vue-material-symbols'
+import { router } from '@inertiajs/vue3'
+import { computed } from 'vue'
+import { IconHelpOutline, IconAddPhotoAlternateOutline, IconVerifiedUserOutline, IconStar, IconStarHalf, IconStarOutline } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps<{ deal: DealDto }>()
 
@@ -22,23 +23,22 @@ const details = {
     extraPhotos: 'Disponibles sur simple demande.',
     attributes: ['Drone jamais crashé', "Facture d'achat fournie"],
 }
-const specs = {
-    flightTime: '34 min',
-    range: '10 km',
-    sensor: '48MP',
-    weight: '570 g',
-}
+
+const specsData = computed(() => [
+    { label: 'Temps de vol', value: '34 min' },
+    { label: 'Portée', value: '10 km' },
+    { label: 'Capteur', value: '48MP' },
+    { label: 'Poids', value: '570 g' },
+])
+
 const similarDeals = [
     {
         id: 1,
         title: 'Combo Drone DJI FPV',
-        state: 'Bon état',
-        description:
-            'Pack complet DJI FPV, idéal pour débuter en immersion. Quelques rayures d\'usage sur la coque mais n\'affecte en rien le vol. Vendu avec le casque V2.',
-        sellerName: 'Marc_FPV',
-        location: 'Bordeaux, France',
         price: 850,
-        image: 'https://placehold.co/300x300/64748b/white?text=DJI+FPV',
+        currency: '€',
+        images: ['https://placehold.co/300x300/64748b/white?text=DJI+FPV'],
+        location: 'Bordeaux, France',
     },
 ]
 
@@ -68,29 +68,7 @@ const makeOffer = () => {
                     </p>
                 </div>
 
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    <h2 class="text-2xl font-bold text-gray-800">Produit(s) de référence du catalogue</h2>
-                    <p class="text-sm text-gray-500 mt-1">
-                        Cette annonce est composée des produits officiels suivants.
-                    </p>
-                    <div class="mt-6 space-y-4">
-                        <div v-for="(product, index) in deal.products" :key="index"
-                            class="flex items-center gap-4 border border-slate-200 rounded-lg p-3 hover:bg-slate-50 hover:shadow-sm transition-all">
-                            <div class="w-20 h-20 flex-shrink-0 bg-gray-200 rounded-md overflow-hidden">
-                                <img :src="product.images[0]" :alt="product.name" class="w-full h-full object-cover" />
-                            </div>
-                            <div class="flex-grow">
-                                <span class="text-xs font-semibold text-gray-500">{{ product.brand }}</span>
-                                <h4 class="font-bold text-gray-800 leading-tight">{{ product.name }}</h4>
-                                <p class="text-sm text-gray-600 mt-1 hidden sm:block">{{ product.description }}</p>
-                            </div>
-                            <a href="#" class="flex-shrink-0 ml-4 text-slate-400 hover:text-slate-700"
-                                title="Voir la fiche officielle">
-                                <IconArrowForwardIos class="text-3xl"></IconArrowForwardIos>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <ProductReferenceList :products="deal.products" />
 
                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800">Détails de l'annonce</h2>
@@ -124,78 +102,29 @@ const makeOffer = () => {
 
             <div class="lg:col-span-1 mt-8 lg:mt-0">
                 <div class="lg:sticky lg:top-28 space-y-6">
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h3 class="font-bold text-lg text-gray-800 mb-3">Vendeur et modalités</h3>
-                        <div class="flex items-center gap-4">
-                            <img :src="seller.avatar" alt="avatar" class="w-16 h-16 rounded-full" />
-                            <div>
-                                <a href="#" class="font-semibold text-gray-800 hover:text-slate-600">{{ seller.name
-                                }}</a>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <div class="flex text-yellow-400 text-sm">
-                                        <IconStar class="text-yellow-400"></IconStar>
-                                        <IconStar class="text-yellow-400"></IconStar>
-                                        <IconStar class="text-yellow-400"></IconStar>
-                                        <IconStarHalf class="text-yellow-400"></IconStarHalf>
-                                        <IconStarOutline class="text-yellow-400"></IconStarOutline>
-                                    </div>
-                                    <span class="text-xs text-gray-500">({{ seller.reviews }} avis)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-sm text-gray-600 space-y-3 mt-4 pt-4 border-t">
+                    <SellerCard :seller="seller">
+                        <template #rating>
                             <div class="flex items-center gap-2">
-                                <IconLocationOnOutline class="text-lg"></IconLocationOnOutline><span>Situé à {{
-                                    seller.location }}</span>
+                                <div class="flex text-yellow-400 text-sm">
+                                    <IconStar class="text-yellow-400" />
+                                    <IconStar class="text-yellow-400" />
+                                    <IconStar class="text-yellow-400" />
+                                    <IconStarHalf class="text-yellow-400" />
+                                    <IconStarOutline class="text-yellow-400" />
+                                </div>
+                                <span class="text-xs text-gray-500">({{ seller.reviews }} avis)</span>
                             </div>
-                            <div v-for="(method, i) in seller.shippingMethods" :key="i" class="flex items-center gap-2">
-                                <IconHandshakeOutline class="text-lg"></IconHandshakeOutline><span>{{ method }}</span>
-                            </div>
-                        </div>
-                    </div>
+                        </template>
+                    </SellerCard>
 
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <div class="text-center">
-                            <p class="text-4xl font-bold text-gray-900">{{ deal.price }} €</p>
-                            <span class="text-sm text-gray-500 mt-1">(Prix négociable)</span>
-                        </div>
-                        <span
-                            class="mt-3 block text-center bg-slate-100 text-slate-800 text-sm font-semibold px-3 py-1 rounded-full w-fit mx-auto">État
-                            : {{ dealState }}</span>
-                        <div class="mt-6 flex flex-col gap-3">
-                            <button @click="makeOffer"
-                                class="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-800 transition-colors duration-300 flex items-center justify-center gap-2">
-                                <IconChatBubbleOutline class="text-xl"></IconChatBubbleOutline> Contacter
-                            </button>
-                            <button @click="makeOffer"
-                                class="w-full bg-white border-2 border-slate-700 text-slate-700 font-bold py-3 px-6 rounded-lg text-lg hover:bg-slate-100 transition-colors duration-300">
-                                Faire une offre
-                            </button>
-                        </div>
-                    </div>
+                    <PriceCard
+                        :price="deal.price"
+                        :state="dealState"
+                        @contact="makeOffer"
+                        @make-offer="makeOffer"
+                    />
 
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h3 class="font-bold text-lg text-gray-800 mb-4">Spécifications clés</h3>
-                        <ul class="text-sm text-gray-700 space-y-4">
-                            <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600">Temps de vol</span><span
-                                    class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.flightTime
-                                    }}</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600">Portée</span><span
-                                    class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.range }}</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600">Capteur</span><span
-                                    class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.sensor }}</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="flex items-center gap-2 text-gray-600">Poids</span><span
-                                    class="font-semibold bg-slate-100 px-2.5 py-1 rounded-md">{{ specs.weight }}</span>
-                            </li>
-                        </ul>
-                    </div>
+                    <SpecsList :specs="specsData" />
                 </div>
             </div>
         </div>
@@ -203,37 +132,8 @@ const makeOffer = () => {
             <h2 class="text-2xl font-bold text-gray-800 mb-6">
                 Autres annonces qui pourraient vous intéresser
             </h2>
-            <div class="space-y-6">
-                <div v-for="sdeal in similarDeals" :key="sdeal.id"
-                    class="bg-white rounded-lg shadow p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center transition-shadow hover:shadow-lg">
-                    <a href="#"
-                        class="sm:col-span-2 aspect-square sm:aspect-auto h-full block bg-gray-200 rounded-md overflow-hidden">
-                        <img :src="sdeal.image" alt="Produit" class="w-full h-full object-cover" />
-                    </a>
-                    <div class="sm:col-span-7">
-                        <span
-                            class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">État
-                            : {{ sdeal.state }}</span>
-                        <h3 class="font-bold text-lg text-gray-800 mt-1 hover:text-slate-600">
-                            <a href="#">{{ sdeal.title }}</a>
-                        </h3>
-                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                            {{ sdeal.description }}
-                        </p>
-                        <div class="text-xs text-gray-500 mt-2 flex items-center gap-4">
-                            <div class="flex items-center gap-1">
-                                <IconPerson2Outline></IconPerson2Outline><span>{{ sdeal.sellerName }}</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <IconLocationOnOutline></IconLocationOnOutline><span>{{ sdeal.location }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sm:col-span-3 text-center sm:text-right">
-                        <p class="text-2xl font-bold text-gray-900">{{ sdeal.price }} €</p>
-                        <a href="#" class="text-sm font-semibold text-slate-600 hover:underline">Voir l'annonce</a>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <SimilarDealCard v-for="sdeal in similarDeals" :key="sdeal.id" :deal="sdeal" />
             </div>
         </div>
     </main>

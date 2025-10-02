@@ -29,9 +29,19 @@ const form = useForm({
 const previewImages = ref<string[]>(props.deal.images || [])
 const products = ref<Array<Product & { pivot?: { quantity: number } }>>(props.deal.products || [])
 
-const addImages = async (newImages: File[]) => {
+const handleImageUpload = async (files: File[]) => {
+    // Create previews
+    files.forEach(file => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            previewImages.value.push(e.target?.result as string)
+        }
+        reader.readAsDataURL(file)
+    })
+
+    // Upload images
     const formData = new FormData()
-    newImages.forEach(file => {
+    files.forEach(file => {
         formData.append('images', file)
     })
 
@@ -45,24 +55,7 @@ const addImages = async (newImages: File[]) => {
         body: formData
     })
     const images = await response.json()
-    previewImages.value = [...previewImages.value, ...images.data]
-}
-
-const handleImageUpload = (e: Event) => {
-    const target = e.target as HTMLInputElement
-    if (!target.files?.length) return
-
-    const newImages = Array.from(target.files)
-
-    // Create previews
-    newImages.forEach(file => {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            previewImages.value.push(e.target?.result as string)
-        }
-        reader.readAsDataURL(file)
-    })
-    addImages(newImages)
+    previewImages.value = [...previewImages.value.filter(img => !img.startsWith('data:')), ...images.data]
 }
 
 const removeImage = async (url: string) => {
@@ -114,11 +107,8 @@ const submitForm = () => {
 
         <form @submit.prevent="submitForm" class="space-y-8">
             <!-- Deal Information Card -->
-            <div class="bg-white shadow rounded-lg overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Deal Information</h2>
-                </div>
-                <div class="p-6 space-y-4">
+            <FormSection title="Deal Information">
+                <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
@@ -155,19 +145,19 @@ const submitForm = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </FormSection>
 
             <!-- Products Card -->
-            <div class="bg-white shadow rounded-lg overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-lg font-medium text-gray-900">Products</h2>
+            <FormSection title="Products">
+                <template #actions>
                     <button type="button"
                         class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                         @click="router.visit(`/deals/${deal.id || 'new'}/search-product`)">
                         Add Product
                     </button>
-                </div>
-                <div class="p-6">
+                </template>
+
+                <div>
                     <div v-if="products.length > 0" class="space-y-2">
                         <div v-for="(product, index) in products" :key="product.id"
                             class="flex items-center justify-between p-3 border-b">
@@ -180,22 +170,10 @@ const submitForm = () => {
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
-                                <div class="flex items-center">
-                                    <button type="button"
-                                        @click="updateQuantity(product.id, form.products[index].quantity - 1)"
-                                        class="px-2 py-1 border rounded-l-md hover:bg-gray-100"
-                                        :disabled="form.products[index].quantity <= 1">
-                                        -
-                                    </button>
-                                    <input type="number" v-model.number="form.products[index].quantity"
-                                        @change="updateQuantity(product.id, form.products[index].quantity)" min="1"
-                                        class="w-16 text-center border-t border-b border-gray-300 py-1" />
-                                    <button type="button"
-                                        @click="updateQuantity(product.id, form.products[index].quantity + 1)"
-                                        class="px-2 py-1 border rounded-r-md hover:bg-gray-100">
-                                        +
-                                    </button>
-                                </div>
+                                <QuantityInput
+                                    v-model="form.products[index].quantity"
+                                    @update:model-value="updateQuantity(product.id, $event)"
+                                />
                                 <button type="button" @click="removeProduct(product.id)"
                                     class="text-red-500 hover:text-red-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
@@ -212,34 +190,12 @@ const submitForm = () => {
                         No products added yet. Click "Add Product" to get started.
                     </div>
                 </div>
-            </div>
+            </FormSection>
 
             <!-- Images Card -->
-            <div class="bg-white shadow rounded-lg overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Images</h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <div v-for="(image, index) in previewImages" :key="index" class="relative group">
-                            <img :src="image" class="w-full h-32 object-cover rounded-md" />
-                            <button type="button" @click="removeImage(image)"
-                                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                ×
-                            </button>
-                        </div>
-
-                        <label
-                            class="flex items-center justify-center border-2 border-dashed rounded-md h-32 cursor-pointer hover:bg-gray-50">
-                            <div class="text-center p-4">
-                                <span class="block text-gray-400">+ Add Image</span>
-                                <input type="file" class="hidden" accept="image/*" multiple
-                                    @change="handleImageUpload" />
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
+            <FormSection title="Images">
+                <ImageUploadGrid :images="previewImages" @upload="handleImageUpload" @remove="removeImage" />
+            </FormSection>
 
             <!-- Submit Button -->
             <div class="flex justify-end">

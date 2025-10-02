@@ -91,108 +91,54 @@ const clearFilters = () => {
 
 <template>
   <div class="min-h-screen bg-gray-50/50">
-    <!-- Page Header -->
-    <div class="bg-white border-b border-gray-200 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="py-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 class="text-3xl font-bold text-gray-900">Mes Annonces</h1>
-              <p class="mt-2 text-sm text-gray-600">
-                Gérez et suivez toutes vos annonces en un seul endroit
-              </p>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <Button as="a" href="/deals/create" class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Nouvelle annonce
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PageHeader title="Mes Annonces" subtitle="Gérez et suivez toutes vos annonces en un seul endroit">
+      <template #actions>
+        <Button as="a" href="/deals/create" class="flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Nouvelle annonce
+        </Button>
+      </template>
+    </PageHeader>
 
     <!-- Stats Cards -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">Total</p>
-              <p class="text-2xl font-bold text-gray-900">{{ dealStats.total }}</p>
-            </div>
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <StatsCard label="Total" :value="dealStats.total" icon-color="blue">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </StatsCard>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">Actives</p>
-              <p class="text-2xl font-bold text-green-600">{{ dealStats.active }}</p>
-            </div>
-            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <StatsCard label="Actives" :value="dealStats.active" icon-color="green" value-color="text-green-600">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </StatsCard>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">En attente</p>
-              <p class="text-2xl font-bold text-yellow-600">{{ dealStats.pending }}</p>
-            </div>
-            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <StatsCard label="En attente" :value="dealStats.pending" icon-color="yellow" value-color="text-yellow-600">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </StatsCard>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">Vendues</p>
-              <p class="text-2xl font-bold text-blue-600">{{ dealStats.completed }}</p>
-            </div>
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <StatsCard label="Vendues" :value="dealStats.completed" icon-color="blue" value-color="text-blue-600">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </StatsCard>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">Valeur totale</p>
-              <p class="text-2xl font-bold text-gray-900">{{ Math.round(dealStats.totalValue).toLocaleString('fr-FR')
-                }}€</p>
-            </div>
-            <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        <StatsCard label="Valeur totale" :value="`${Math.round(dealStats.totalValue).toLocaleString('fr-FR')}€`"
+          icon-color="gray">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+          </svg>
+        </StatsCard>
       </div>
 
       <!-- Filters and Controls -->
@@ -247,30 +193,7 @@ const clearFilters = () => {
             </Button>
 
             <!-- View Mode Toggle -->
-            <div class="flex items-center border border-gray-200 rounded-lg p-1">
-              <button :class="[
-                'p-2 rounded-md transition-colors',
-                viewMode === 'grid'
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700'
-              ]" @click="viewMode = 'grid'" title="Vue grille">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-              </button>
-              <button :class="[
-                'p-2 rounded-md transition-colors',
-                viewMode === 'list'
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700'
-              ]" @click="viewMode = 'list'" title="Vue liste">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
+            <ViewModeToggle v-model="viewMode" />
           </div>
         </div>
 
@@ -318,40 +241,28 @@ const clearFilters = () => {
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-16">
-        <div class="max-w-md mx-auto">
-          <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      <EmptyState
+        v-else
+        :title="props.deals.length === 0 ? 'Aucune annonce' : 'Aucun résultat'"
+        :message="
+          props.deals.length === 0
+            ? 'Vous n\'avez pas encore créé d\'annonce. Commencez dès maintenant !'
+            : 'Aucune annonce ne correspond à vos critères de recherche.'
+        "
+      >
+        <template #actions>
+          <Button v-if="props.deals.length === 0" as="a" href="/deals/create" class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-          </div>
+            Créer ma première annonce
+          </Button>
 
-          <h3 class="text-lg font-medium text-gray-900 mb-2">
-            {{ props.deals.length === 0 ? 'Aucune annonce' : 'Aucun résultat' }}
-          </h3>
-
-          <p class="text-gray-600 mb-6">
-            {{ props.deals.length === 0
-              ? 'Vous n\'avez pas encore créé d\'annonce. Commencez dès maintenant !'
-              : 'Aucune annonce ne correspond à vos critères de recherche.'
-            }}
-          </p>
-
-          <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button v-if="props.deals.length === 0" as="a" href="/deals/create" class="flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-              </svg>
-              Créer ma première annonce
-            </Button>
-
-            <Button v-else variant="outline" @click="clearFilters">
-              Effacer les filtres
-            </Button>
-          </div>
-        </div>
-      </div>
+          <Button v-else variant="outline" @click="clearFilters">
+            Effacer les filtres
+          </Button>
+        </template>
+      </EmptyState>
     </div>
   </div>
 </template>
