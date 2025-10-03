@@ -94,6 +94,7 @@ router
     router.get('/admin/users', [AdminController, 'users']).as('admin.users')
   })
   .use(middleware.auth())
+  .use(middleware.admin())
 
 router.get('/auth/login', [AuthController, 'login']).as('auth.login')
 router.post('/auth/login', [AuthController, 'loginPost']).as('auth.login.post')
