@@ -17,6 +17,11 @@ export default class DealDto extends BaseModelDto {
   declare products: DealProductDto[]
   declare images: string[]
   declare discussions: DiscussionDto[]
+  declare features: { label: string; value: string }[]
+  declare condition: string
+  declare invoiceAvailable: boolean
+  declare sellingReason: string
+  declare canBeDelivered: boolean
 
   constructor(deal?: Deal) {
     super()
@@ -35,5 +40,10 @@ export default class DealDto extends BaseModelDto {
     this.products = deal.products && deal.products.map((product) => new DealProductDto(product, product.$extras.pivot_quantity))
     this.images = deal.images || []
     this.discussions = DiscussionDto.fromArray(deal.discussions)
+    this.features = deal.features || []
+    this.condition = deal.condition || 'GOOD'
+    this.invoiceAvailable = deal.invoiceAvailable || false
+    this.sellingReason = deal.sellingReason || ''
+    this.canBeDelivered = deal.canBeDelivered || false
   }
 }

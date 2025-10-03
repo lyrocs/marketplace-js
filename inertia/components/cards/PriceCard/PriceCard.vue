@@ -11,6 +11,7 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   currency: '€',
   negotiable: true,
+  state: 'Bon état',
 })
 
 const emit = defineEmits<{

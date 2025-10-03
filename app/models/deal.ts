@@ -46,7 +46,7 @@ export default class Deal extends BaseModel {
   @column({
     prepare: (value) => JSON.stringify(value),
   })
-  declare features: { title: string; items: string[] }[]
+  declare features: { label: string; value: string }[]
 
   @column()
   declare condition: string

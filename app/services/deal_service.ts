@@ -80,7 +80,7 @@ export class DealService {
       invoiceAvailable?: boolean
       sellingReason?: string
       canBeDelivered?: boolean
-      features?: { title: string; items: string[] }[]
+      features?: { label: string; value: string }[]
       condition?: string
       products: { productId: number; quantity: number }[]
     }

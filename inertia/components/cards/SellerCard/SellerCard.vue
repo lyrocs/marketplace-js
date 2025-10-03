@@ -5,7 +5,6 @@ interface Seller {
   name: string
   avatar: string
   location: string
-  shippingMethods: string[]
 }
 
 interface Props {
@@ -31,10 +30,6 @@ defineProps<Props>()
       <div class="seller-detail-item">
         <IconLocationOnOutline class="text-lg" />
         <span>Situé à {{ seller.location }}</span>
-      </div>
-      <div v-for="(method, i) in seller.shippingMethods" :key="i" class="seller-detail-item">
-        <IconHandshakeOutline class="text-lg" />
-        <span>{{ method }}</span>
       </div>
     </div>
   </div>

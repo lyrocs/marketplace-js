@@ -6,23 +6,51 @@ import { IconHelpOutline, IconAddPhotoAlternateOutline, IconVerifiedUserOutline,
 
 const props = defineProps<{ deal: DealDto }>()
 
-// mock to be replace later
-const dealState = 'Très bon état'
-const category = { name: 'DRONE CINÉMATIQUE' }
-const seller = {
-    name: 'Julien78',
-    avatar: 'https://i.pravatar.cc/64',
-    rating: 4.5,
-    reviews: 28,
-    location: 'Lyon, France',
-    shippingMethods: ['Remise en main propre acceptée', 'Livraison possible (Colissimo)'],
-}
+// Deal attributes from the actual deal data
+const dealState = computed(() => {
+  const conditionMap: Record<string, string> = {
+    'NEW': 'Neuf',
+    'LIKE_NEW': 'Comme neuf',
+    'GOOD': 'Très bon état',
+    'FAIR': 'Bon état',
+    'POOR': 'État correct'
+  }
+  return conditionMap[props.deal.condition] || 'Bon état'
+})
 
-const details = {
-    saleReason: 'Passage au modèle supérieur (DJI Mavic 3).',
-    extraPhotos: 'Disponibles sur simple demande.',
-    attributes: ['Drone jamais crashé', "Facture d'achat fournie"],
-}
+const category = computed(() => {
+  return { name: props.deal.products?.[0]?.category?.name || 'CATÉGORIE' }
+})
+
+const seller = computed(() => {
+  return {
+    name: props.deal.user?.name || 'Vendeur',
+    avatar: props.deal.user?.image || 'https://i.pravatar.cc/64',
+    rating: 4.5, // This would come from user ratings in a real app
+    reviews: 28, // This would come from user reviews in a real app
+    location: props.deal.location || 'Non spécifié',
+    shippingMethods: props.deal.canBeDelivered 
+      ? ['Livraison possible', 'Remise en main propre acceptée']
+      : ['Remise en main propre acceptée'],
+  }
+})
+
+const details = computed(() => {
+  const attributes = []
+  
+  if (props.deal.invoiceAvailable) {
+    attributes.push("Facture d'achat fournie")
+  }
+
+  if (props.deal.canBeDelivered) {
+    attributes.push('Livraison possible')
+  }
+  
+  return {
+    saleReason: props.deal.sellingReason || 'Aucune raison spécifiée',
+    attributes: attributes.length > 0 ? attributes : []
+  }
+})
 
 const specsData = computed(() => [
     { label: 'Temps de vol', value: '34 min' },
@@ -42,6 +70,17 @@ const similarDeals = [
     },
 ]
 
+const getConditionClass = (condition: string) => {
+  const classMap: Record<string, string> = {
+    'NEW': 'bg-green-100 text-green-800',
+    'LIKE_NEW': 'bg-blue-100 text-blue-800',
+    'GOOD': 'bg-yellow-100 text-yellow-800',
+    'FAIR': 'bg-orange-100 text-orange-800',
+    'POOR': 'bg-red-100 text-red-800'
+  }
+  return classMap[condition] || 'bg-gray-100 text-gray-800'
+}
+
 const makeOffer = () => {
     router.post(`/deals/${props.deal.id}/contact`)
 }
@@ -51,14 +90,16 @@ const makeOffer = () => {
     <main class="container mx-auto px-4 py-8 md:py-12">
         <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-12">
             <div class="lg:col-span-2 space-y-8">
-                <div>
-                    <span class="text-sm font-medium text-slate-600">{{ category.name }}</span>
                     <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mt-1">{{ deal.title }}</h1>
-                </div>
-
                 <div class="bg-white p-4 rounded-xl shadow-lg">
-                    <img src="https://placehold.co/1200x700/475569/white?text=Vue+principale"
-                        alt="Image principale du drone" class="rounded-lg w-full h-full object-cover" />
+                    <img v-if="deal.images && deal.images.length > 0" 
+                        :src="deal.images[0]" 
+                        :alt="`Image principale de ${deal.title}`" 
+                        class="rounded-lg w-full h-full object-cover" />
+                    <img v-else
+                        src="https://placehold.co/1200x700/475569/white?text=Image+non+disponible"
+                        alt="Image non disponible" 
+                        class="rounded-lg w-full h-full object-cover" />
                 </div>
 
                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
@@ -85,7 +126,6 @@ const makeOffer = () => {
                                 Photos
                                 supplémentaires
                             </h4>
-                            <p class="text-sm text-gray-600 mt-1 pl-6">{{ details.extraPhotos }}</p>
                         </div>
                     </div>
                     <ul class="mt-6 pt-6 border-t space-y-4">
@@ -124,7 +164,7 @@ const makeOffer = () => {
                         @make-offer="makeOffer"
                     />
 
-                    <SpecsList :specs="specsData" />
+                     <SpecsList :specs="deal.features?.map(f => ({ label: f.label, value: f.value })) || []" />
                 </div>
             </div>
         </div>

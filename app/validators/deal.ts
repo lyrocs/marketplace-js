@@ -28,8 +28,8 @@ export const updateDealValidator = vine.compile(
     canBeDelivered: vine.boolean().optional(),
     features: vine.array(
       vine.object({
-        title: vine.string().trim(),
-        items: vine.array(vine.string().trim())
+        label: vine.string().trim(),
+        value: vine.string().trim()
       })
     ).optional(),
     condition: vine.enum(['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'POOR']).optional(),
