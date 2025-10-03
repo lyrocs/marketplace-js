@@ -34,6 +34,23 @@ export default class Deal extends BaseModel {
   })
   declare images: string[]
 
+  @column()
+  declare invoiceAvailable: boolean
+
+  @column()
+  declare sellingReason: string | null
+
+  @column()
+  declare canBeDelivered: boolean
+
+  @column({
+    prepare: (value) => JSON.stringify(value),
+  })
+  declare features: { title: string; items: string[] }[]
+
+  @column()
+  declare condition: string
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

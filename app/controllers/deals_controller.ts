@@ -129,6 +129,11 @@ export default class DealsController {
       location: payload.location || '',
       currency: payload.currency || '',
       price: payload.price,
+      invoiceAvailable: payload.invoiceAvailable,
+      sellingReason: payload.sellingReason,
+      canBeDelivered: payload.canBeDelivered,
+      features: payload.features || [],
+      condition: payload.condition,
       products: payload.products || [],
     })
     response.redirect().back()

@@ -23,6 +23,16 @@ export const updateDealValidator = vine.compile(
     location: vine.string().trim().optional(),
     currency: vine.string().trim().optional(),
     price: vine.number(),
+    invoiceAvailable: vine.boolean().optional(),
+    sellingReason: vine.string().trim().optional(),
+    canBeDelivered: vine.boolean().optional(),
+    features: vine.array(
+      vine.object({
+        title: vine.string().trim(),
+        items: vine.array(vine.string().trim())
+      })
+    ).optional(),
+    condition: vine.enum(['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'POOR']).optional(),
     products: vine
       .array(
         vine.object({

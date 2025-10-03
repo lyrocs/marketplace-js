@@ -77,6 +77,11 @@ export class DealService {
       location: string
       currency: string
       price: number
+      invoiceAvailable?: boolean
+      sellingReason?: string
+      canBeDelivered?: boolean
+      features?: { title: string; items: string[] }[]
+      condition?: string
       products: { productId: number; quantity: number }[]
     }
   ) {
@@ -87,6 +92,11 @@ export class DealService {
       location: data.location,
       currency: data.currency,
       price: data.price,
+      invoiceAvailable: data.invoiceAvailable,
+      sellingReason: data.sellingReason,
+      canBeDelivered: data.canBeDelivered,
+      features: data.features || [],
+      condition: data.condition,
     })
     await existingDeal.save()
 
