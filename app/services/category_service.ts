@@ -50,6 +50,7 @@ export class CategoryService {
 
   async delete(id: number) {
     const category = await Category.findOrFail(id)
+    await category.related('specTypes').detach()
     await category.delete()
   }
 }
