@@ -29,16 +29,23 @@ router
     router.get('/deals/create', [DealsController, 'create']).as('deals.create')
     router.get('/deals/my', [DealsController, 'my']).as('deals.my')
     router.get('/deals/:id', [DealsController, 'view']).as('deals.view')
-    router.get('/deals/:id/edit', [DealsController, 'edit']).as('deals.edit')
     router
-      .get('/deals/:id/search-product', [DealsController, 'searchProduct'])
-      .as('deals.search-product')
-    router.post('/deals/:id/add-product', [DealsController, 'addProduct']).as('deals.add-product')
-    router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
-    router.post('/deals/:id/images', [DealsController, 'addImages']).as('deals.add-images')
-    router.delete('/deals/:id/images', [DealsController, 'deleteImages']).as('deals.delete-images')
+      .group(() => {
+        router.get('/deals/:id/edit', [DealsController, 'edit']).as('deals.edit')
+        router
+          .get('/deals/:id/search-product', [DealsController, 'searchProduct'])
+          .as('deals.search-product')
+        router
+          .post('/deals/:id/add-product', [DealsController, 'addProduct'])
+          .as('deals.add-product')
+        router.post('/deals/:id', [DealsController, 'update']).as('deals.update')
+        router.post('/deals/:id/images', [DealsController, 'addImages']).as('deals.add-images')
+        router
+          .delete('/deals/:id/images', [DealsController, 'deleteImages'])
+          .as('deals.delete-images')
+      })
+      .use(middleware.dealOwner())
     router.post('deals/:id/contact', [DealsController, 'contact']).as('deals.contact')
-
     // CHAT
     router.get('/chat', [ChatController, 'list']).as('chat.list')
     router.post('/chat/:id/read', [ChatController, 'read']).as('chat.read')
@@ -54,7 +61,9 @@ router
     router.post('/admin/product', [AdminController, 'createProduct']).as('admin.products.create')
     router.get('/admin/product/:id', [AdminController, 'product']).as('admin.product')
     router.put('/admin/product/:id', [AdminController, 'updateProduct']).as('admin.product.update')
-    router.post('/admin/product/:id/images', [AdminController, 'uploadProductImage']).as('admin.product.upload-image')
+    router
+      .post('/admin/product/:id/images', [AdminController, 'uploadProductImage'])
+      .as('admin.product.upload-image')
     router
       .get('/admin/product/create', [AdminController, 'createProductPage'])
       .as('admin.product.create')
