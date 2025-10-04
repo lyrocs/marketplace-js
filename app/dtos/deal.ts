@@ -22,6 +22,7 @@ export default class DealDto extends BaseModelDto {
   declare invoiceAvailable: boolean
   declare sellingReason: string
   declare canBeDelivered: boolean
+  declare reasonDeclined: string
 
   constructor(deal?: Deal) {
     super()
@@ -45,5 +46,6 @@ export default class DealDto extends BaseModelDto {
     this.invoiceAvailable = deal.invoiceAvailable || false
     this.sellingReason = deal.sellingReason || ''
     this.canBeDelivered = deal.canBeDelivered || false
+    this.reasonDeclined = deal.reasonDeclined || ''
   }
 }

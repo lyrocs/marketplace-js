@@ -5,6 +5,7 @@ import { ProductService } from '#services/product_service'
 import { CategoryService } from '#services/category_service'
 import { BrandService } from '#services/brand_service'
 import { UserService } from '#services/user_service'
+import { DealService } from '#services/deal_service'
 import { adminProductValidator } from '#validators/admin_product'
 import type { HttpContext } from '@adonisjs/core/http'
 import env from '#start/env'
@@ -13,6 +14,7 @@ import BrandDto from '#dtos/brand'
 import SpecDto from '#dtos/spec'
 import UserDto from '#dtos/user'
 import ProductDto from '#dtos/product'
+import DealDto from '#dtos/deal'
 import MetaDto from '#dtos/meta'
 import SpecTypeDto from '#dtos/spec_type'
 import { adminCategoryValidator } from '#validators/admin_category'
@@ -26,11 +28,35 @@ export default class ImportController {
     private productService: ProductService,
     private categoryService: CategoryService,
     private brandService: BrandService,
-    private userService: UserService
+    private userService: UserService,
+    private dealService: DealService
   ) {}
 
   async home({ inertia }: HttpContext) {
     return inertia.render('admin/home')
+  }
+
+  async deals({ inertia, request }: HttpContext) {
+    const queryString = request.qs()
+    const status = queryString.status || 'DRAFT'
+    const page = queryString.page || 1
+    
+    const deals = await this.dealService.getPaginated({
+      status,
+      page: Number(page),
+      limit: 20
+    })
+    
+    return inertia.render('admin/deals', { deals: DealDto.fromArray(Array.from(deals)),  meta: new MetaDto(deals.getMeta()), })
+  }
+
+  async updateDealStatus({ params, request, response }: HttpContext) {
+    const { id } = params
+    const { status, reason } = request.only(['status', 'reason'])
+    
+    await this.dealService.updateStatus(Number(id), status, reason)
+    
+    return response.redirect().back()
   }
 
   async products({ inertia, request }: HttpContext) {

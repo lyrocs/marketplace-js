@@ -17,6 +17,7 @@ const props = defineProps<{
             </div>
             <nav class="flex flex-col gap-2 m-4">
                 <a href="/admin" class="desktop-link">Dashboard</a>
+                <a href="/admin/deals" class="desktop-link">Deals</a>
                 <a href="/admin/products" class="desktop-link">Products</a>
                 <a href="/admin/categories" class="desktop-link">Categories</a>
                 <a href="/admin/brands" class="desktop-link">Brands</a>

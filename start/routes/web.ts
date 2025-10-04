@@ -101,6 +101,8 @@ router
       .as('admin.spec-types.delete')
     // USER
     router.get('/admin/users', [AdminController, 'users']).as('admin.users')
+    router.get('/admin/deals', [AdminController, 'deals']).as('admin.deals')
+    router.post('/admin/deals/:id/status', [AdminController, 'updateDealStatus']).as('admin.deals.update-status')
   })
   .use(middleware.auth())
   .use(middleware.admin())

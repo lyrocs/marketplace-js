@@ -24,6 +24,25 @@ export class DealService {
     return deals
   }
 
+  async getPaginated({ status, page, limit }: { status: string; page: number; limit: number }) {
+    const deals = await Deal.query()
+      .where('status', status)
+      .preload('products')
+      .preload('user')
+      .paginate(page, limit)
+    return deals
+  }
+
+  async updateStatus(id: number, status: string, reason?: string) {
+    const deal = await Deal.findOrFail(id)
+    deal.status = status
+    if (reason) {
+      deal.reasonDeclined = reason
+    }
+    await deal.save()
+    return deal
+  }
+
   async search({
     specs = [],
     category = undefined,

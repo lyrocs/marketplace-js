@@ -132,6 +132,13 @@ const submitForm = () => {
     <h1 class="text-3xl font-bold mb-8">{{ deal.id ? 'Edit Deal' : 'Create New Deal' }}</h1>
 
     <form @submit.prevent="submitForm" class="space-y-8">
+      <FormSection v-if="deal.status === 'DECLINED'" title="Decline Reason">
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <span class="text-sm text-red-500">{{ deal.reasonDeclined }}</span>
+          </div>
+        </div>
+      </FormSection>
       <!-- Deal Information Card -->
       <FormSection title="Deal Information">
         <div class="space-y-4">

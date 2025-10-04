@@ -1,8 +1,9 @@
-import { BaseModel, column, manyToMany, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, manyToMany, hasMany, belongsTo } from '@adonisjs/lucid/orm'
+import type { HasMany, ManyToMany, BelongsTo } from '@adonisjs/lucid/types/relations'
 import type { DateTime } from 'luxon'
 import Product from './product.js'
 import Discussion from './discussion.js'
+import User from './user.js'
 
 export default class Deal extends BaseModel {
   @column({ isPrimary: true })
@@ -51,6 +52,9 @@ export default class Deal extends BaseModel {
   @column()
   declare condition: string
 
+  @column()
+  declare reasonDeclined: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -65,4 +69,7 @@ export default class Deal extends BaseModel {
 
   @hasMany(() => Discussion, { foreignKey: 'deal_id' })
   declare discussions: HasMany<typeof Discussion>
+
+  @belongsTo(() => User, { foreignKey: 'user_id' })
+  declare user: BelongsTo<typeof User>
 }
