@@ -23,6 +23,7 @@ export class TestUtils {
   static async createCategory(data: Partial<{ name: string; description?: string }> = {}) {
     return Category.create({
       name: data.name || `Test Category ${Date.now()}`,
+      key: data.name?.toUpperCase() || `test-category-${Date.now()}`,
       description: data.description || 'Test category description'
     })
   }
@@ -60,7 +61,8 @@ export class TestUtils {
       name: data.name || `Test Product ${Date.now()}`,
       description: data.description || 'Test product description',
       brand_id: brand.id,
-      category_id: category.id
+      category_id: category.id,
+      status: 'DRAFT'
     })
   }
 
