@@ -3,6 +3,10 @@ import Category from '#models/category'
 import Product from '#models/product'
 import User from '#models/user'
 import Deal from '#models/deal'
+import Shop from '#models/shop'
+import Spec from '#models/spec'
+import SpecType from '#models/spec_type'
+import db from '@adonisjs/lucid/services/db'
 
 /**
  * Test utilities for creating test data
@@ -97,7 +101,11 @@ export class TestUtils {
    * Clean up all test data
    */
   static async cleanup() {
+    // Delete in order to respect foreign key constraints
     await Deal.query().delete()
+    await Shop.query().delete()
+    await Spec.query().delete()
+    await SpecType.query().delete()
     await Product.query().delete()
     await Category.query().delete()
     await Brand.query().delete()
