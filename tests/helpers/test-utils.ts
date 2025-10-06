@@ -6,6 +6,7 @@ import Deal from '#models/deal'
 import Shop from '#models/shop'
 import Spec from '#models/spec'
 import SpecType from '#models/spec_type'
+import Account from '#models/account'
 import db from '@adonisjs/lucid/services/db'
 
 /**
@@ -104,11 +105,16 @@ export class TestUtils {
     // Delete in order to respect foreign key constraints
     await Deal.query().delete()
     await Shop.query().delete()
+    // Delete pivot table entries first
+    await db.raw('DELETE FROM product_specs')
+    await db.raw('DELETE FROM product_components')
     await Spec.query().delete()
     await SpecType.query().delete()
     await Product.query().delete()
     await Category.query().delete()
     await Brand.query().delete()
+    // Delete accounts before users
+    await Account.query().delete()
     await User.query().delete()
   }
 
