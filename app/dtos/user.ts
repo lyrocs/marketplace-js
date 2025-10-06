@@ -6,6 +6,7 @@ export default class UserDto extends BaseModelDto {
   declare id: string
   declare name: string | null
   declare email: string
+  declare image: string | null
   declare password: string
   declare matrixLogin: string | null
   declare matrixPassword: string | null
@@ -22,6 +23,7 @@ export default class UserDto extends BaseModelDto {
     this.id = user.id
     this.name = user.name
     this.email = user.email
+    this.image = user.image
     this.password = user.password
     this.matrixLogin = user.matrixLogin ?? null
     this.matrixPassword = user.matrixPassword ?? null
