@@ -24,6 +24,19 @@ export class DealService {
     return deals
   }
 
+  async getUserPublishedDeals(userId: string, page: number = 1, limit: number = 12) {
+    const deals = await Deal.query()
+      .where('user_id', userId)
+      .where('status', 'PUBLISHED')
+      .preload('user')
+      .preload('products', (productQuery) => {
+        productQuery.preload('category').preload('brand')
+      })
+      .orderBy('created_at', 'desc')
+      .paginate(page, limit)
+    return deals
+  }
+
   async getPaginated({ status, page, limit }: { status: string; page: number; limit: number }) {
     const deals = await Deal.query()
       .where('status', status)
@@ -48,9 +61,11 @@ export class DealService {
     category = undefined,
     page = 1,
   }: { specs?: number[]; category?: number; page?: number } = {}) {
-    const products = Deal.query().preload('products', (productQuery) => {
-      productQuery.preload('category').preload('specs')
-    })
+    const products = Deal.query()
+      .preload('user')
+      .preload('products', (productQuery) => {
+        productQuery.preload('category').preload('specs')
+      })
 
     products.whereHas('products', (productQuery) => {
       if (category) {

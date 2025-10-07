@@ -6,6 +6,7 @@ const AdminController = () => import('#controllers/admin_controller')
 const DealsController = () => import('#controllers/deals_controller')
 const ChatController = () => import('#controllers/chat_controller')
 const ProfileController = () => import('#controllers/profile_controller')
+const UserController = () => import('#controllers/user_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -19,6 +20,7 @@ router
     router.get('/products/:category', [ProductsController, 'plp']).as('products.plp')
     router.get('/products/:category/deal', [DealsController, 'plp']).as('products.plp.deal')
     router.get('/product/:id', [ProductsController, 'pdp']).as('product.pdp')
+    router.get('/user/:user-id', [UserController, 'show']).as('user.show')
   })
   .use(middleware.guest())
 

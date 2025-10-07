@@ -54,6 +54,25 @@ const firstProductImage = computed(() => {
           View Deal
         </button>
       </div>
+
+      <!-- Vendeur -->
+      <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <img 
+            :src="deal.user?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.user?.name || 'User')}&background=6366f1&color=fff&size=32`" 
+            :alt="deal.user?.name || 'Vendeur'"
+            class="w-6 h-6 rounded-full"
+          />
+          <span class="text-sm text-gray-600">{{ deal.user?.name || 'Vendeur' }}</span>
+        </div>
+        <a 
+          :href="`/user/${deal.user_id}`"
+          class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+          @click.stop
+        >
+          Voir profil
+        </a>
+      </div>
     </div>
   </a>
 </template>
