@@ -20,6 +20,8 @@ import SpecTypeDto from '#dtos/spec_type'
 import { adminCategoryValidator } from '#validators/admin_category'
 import drive from '@adonisjs/drive/services/main'
 import crypto from 'node:crypto'
+import { adminDealUpdateStatusValidator } from '#validators/admin_deal'
+
 @inject()
 export default class ImportController {
   constructor(
@@ -32,98 +34,134 @@ export default class ImportController {
     private dealService: DealService
   ) {}
 
+  // [GET] /admin
   async home({ inertia }: HttpContext) {
     return inertia.render('admin/home')
   }
 
+  // [GET] /admin/deals
   async deals({ inertia, request }: HttpContext) {
     const queryString = request.qs()
     const status = queryString.status || 'DRAFT'
     const page = queryString.page || 1
-    
+
     const deals = await this.dealService.getPaginated({
       status,
       page: Number(page),
-      limit: 20
+      limit: 20,
     })
-    
-    return inertia.render('admin/deals', { deals: DealDto.fromArray(Array.from(deals)),  meta: new MetaDto(deals.getMeta()), })
+
+    return inertia.render('admin/deals', {
+      deals: DealDto.fromArray(Array.from(deals)),
+      meta: new MetaDto(deals.getMeta()),
+    })
   }
 
-  async updateDealStatus({ params, request, response }: HttpContext) {
+  // [POST] /admin/deals/:id/status
+  async updateDealStatus({ params, request, response, session }: HttpContext) {
     const { id } = params
-    const { status, reason } = request.only(['status', 'reason'])
-    
-    await this.dealService.updateStatus(Number(id), status, reason)
-    
-    return response.redirect().back()
+    try {
+      const data = await request.validateUsing(adminDealUpdateStatusValidator)
+      await this.dealService.updateStatus(Number(id), data)
+      session.flash('success', 'Deal status updated successfully')
+      return response.redirect().back()
+    } catch (error) {
+      session.flashErrors({ errorMsg: 'Failed to update deal status' })
+      return response.redirect().back()
+    }
   }
 
+  // [GET] /admin/products
   async products({ inertia, request }: HttpContext) {
+    try {
       const queryString = request.qs()
-       const categories = await this.categoryService.all()
-       let category
-       let specsData
-       if (queryString.category) {
+      const categories = await this.categoryService.all()
+      let category
+      let specsData
+      if (queryString.category) {
         category = await this.categoryService.getById(Number(queryString.category))
-        specsData = await this.specService.byTypes(category?.specTypes?.map((type: any) => type.key) as any)
-       }
-     
-       const status = queryString.status || null
-       const specs = queryString.specs?.split(',') || []
-       const page = queryString.page || 1
-       const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
-      
-       const products = await this.productService.byCategory({ category: category?.id, specs: specsIds, page, status })
-   
-       return inertia.render('admin/products', {
-         categories: categories.map((category: any) => new CategoryDto(category)),
-         products: ProductDto.fromArray(Array.from(products)),
-         meta: new MetaDto(products.getMeta()),
-         specs: specsData?.map((spec: any) => new SpecDto(spec))
-       })
+        specsData = await this.specService.byTypes(
+          category?.specTypes?.map((type: any) => type.key) as any
+        )
+      }
+
+      const status = queryString.status || null
+      const specs = queryString.specs?.split(',') || []
+      const page = queryString.page || 1
+      const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+
+      const products = await this.productService.byCategory({
+        category: category?.id,
+        specs: specsIds,
+        page,
+        status,
+      })
+
+      return inertia.render('admin/products', {
+        categories: categories.map((category: any) => new CategoryDto(category)),
+        products: ProductDto.fromArray(Array.from(products)),
+        meta: new MetaDto(products.getMeta()),
+        specs: specsData?.map((spec: any) => new SpecDto(spec)),
+      })
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Products not found',
+      })
+    }
   }
-  // PRODUCT
+
+  // [GET] /admin/product/:id
   async product({ inertia, params }: HttpContext) {
-    const product = await this.productService.one(Number(params.id))
+    try {
+      const product = await this.productService.one(Number(params.id))
+      const specs = await this.specService.all()
+      const categories = await this.categoryService.all()
+      const brands = await this.brandService.all()
+      const s3BaseUrl = env.get('S3_BASE_URL')
+      return inertia.render('admin/product', {
+        product: new ProductDto(product),
+        specs: specs.map((spec: any) => new SpecDto(spec)),
+        categories: categories.map((category: any) => new CategoryDto(category)),
+        brands: brands.map((brand: any) => new BrandDto(brand)),
+        s3BaseUrl,
+      })
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Product not found',
+      })
+    }
+  }
+
+  // [GET] /admin/product/create
+  async createProductPage({ inertia }: HttpContext) {
     const specs = await this.specService.all()
     const categories = await this.categoryService.all()
     const brands = await this.brandService.all()
-    const s3BaseUrl = env.get('S3_BASE_URL')
-    return inertia.render('admin/product', { 
-      product: new ProductDto(product), 
-      specs: specs.map((spec: any) => new SpecDto(spec)), 
-      categories: categories.map((category: any) => new CategoryDto(category)), 
+    return inertia.render('admin/product-create', {
+      specs: specs.map((spec: any) => new SpecDto(spec)),
+      categories: categories.map((category: any) => new CategoryDto(category)),
       brands: brands.map((brand: any) => new BrandDto(brand)),
-      s3BaseUrl
     })
   }
 
-  async createProduct({ request, response }: HttpContext) {
+  // [POST] /admin/product
+  async createProduct({ request, response, inertia }: HttpContext) {
     try {
       const data = await request.validateUsing(adminProductValidator)
       const product = await this.productService.create(data)
       return response.redirect().toRoute('admin.product', { id: product.id })
     } catch (error) {
-      return response.redirect().back()
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create product',
+      })
     }
   }
 
-  async createProductPage({ inertia }: HttpContext) {
-    const specs = await this.specService.all()
-    const categories = await this.categoryService.all()
-    const brands = await this.brandService.all()
-    return inertia.render('admin/product-create', { 
-      specs: specs.map((spec: any) => new SpecDto(spec)), 
-      categories: categories.map((category: any) => new CategoryDto(category)), 
-      brands: brands.map((brand: any) => new BrandDto(brand)) 
-    })
-  }
-
+  // [POST] /admin/product/:id/images
   async uploadProductImage({ request, response, session }: HttpContext) {
     const { imageUrls } = request.only(['imageUrls'])
     const id = Number(request.param('id'))
-    
+
     if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length === 0) {
       const errorMsg = 'imageUrls is required and must be a non-empty array'
       session.flashErrors({ errorMsg })
@@ -160,115 +198,225 @@ export default class ImportController {
       await this.productService.update(id, { images: uploadedUrls })
       return response.redirect().back()
     } catch (error) {
-      console.error('Error uploading images:', error)
-      return response.internalServerError({ error: 'Failed to upload images' })
+      session.flashErrors(error.messages.map((message: any) => message.message).join(', '))
+      return response.redirect().back()
     }
   }
 
-  async updateProduct({ request, response }: HttpContext) {
-    const data = await request.validateUsing(adminProductValidator)
-    const id = Number(request.param('id'))
-    await this.productService.one(id)
-    const productData = {
-      name: data.name,
-      images: data.images,
-      status: data.status,
-      category_id: data.category_id,
-      brand_id: data.brand_id,
-      description: data.description,
-      features: data.features || [],
+  // [PUT] /admin/product/:id
+  async updateProduct({ request, response, session, inertia }: HttpContext) {
+    try {
+      const data = await request.validateUsing(adminProductValidator)
+      const id = Number(request.param('id'))
+      await this.productService.one(id)
+      const productData = {
+        name: data.name,
+        images: data.images,
+        status: data.status,
+        category_id: data.category_id,
+        brand_id: data.brand_id,
+        description: data.description,
+        features: data.features || [],
+      }
+      await this.productService.update(id, productData)
+      await this.productService.syncSpecs(await this.productService.one(id), data.specs)
+      return response.redirect().toRoute('admin.product', { id })
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to update product',
+      })
     }
-    await this.productService.update(id, productData)
-    await this.productService.syncSpecs(await this.productService.one(id), data.specs)
-    return response.redirect().toRoute('admin.product', { id })
   }
-  // CATEGORY
+
+  // [GET] /admin/categories
   async categories({ inertia }: HttpContext) {
     const categories = await this.categoryService.all()
     const categoriesFormated = categories.map((category: any) => new CategoryDto(category))
-    return inertia.render('admin/categories', { categories: CategoryDto.sortTree(categoriesFormated) })
+    return inertia.render('admin/categories', {
+      categories: CategoryDto.sortTree(categoriesFormated),
+    })
   }
-  async createCategory({ request, response, session }: HttpContext) {
+
+  // [POST] /admin/categories
+  async createCategory({ request, response, session, inertia }: HttpContext) {
     try {
       const data = await request.validateUsing(adminCategoryValidator)
       await this.categoryService.create(data)
       session.flash('success', 'Category created successfully')
       return response.redirect().toRoute('admin.categories')
     } catch (error) {
-      session.flashErrors(error.messages.map((message: any) => message.message).join(', '))
-      return response.redirect().back()
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create category',
+      })
     }
   }
-  async updateCategory({ request, response }: HttpContext) {
-    const data = await request.validateUsing(adminCategoryValidator)
-    await this.categoryService.update(request.param('id'), data)
-    return response.redirect().toRoute('admin.categories')
+
+  // [PUT] /admin/categories/:id
+  async updateCategory({ request, response, inertia }: HttpContext) {
+    try {
+      const data = await request.validateUsing(adminCategoryValidator)
+      await this.categoryService.update(request.param('id'), data)
+      return response.redirect().toRoute('admin.categories')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to update category',
+      })
+    }
   }
-  async deleteCategory({ request, response }: HttpContext) {
-    await this.categoryService.delete(request.param('id'))
-    return response.redirect().toRoute('admin.categories')
+
+  // [DELETE] /admin/categories/:id
+  async deleteCategory({ request, response, session, inertia }: HttpContext) {
+    try {
+      await this.categoryService.delete(request.param('id'))
+      session.flash('success', 'Category deleted successfully')
+      return response.redirect().toRoute('admin.categories')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to delete category',
+      })
+    }
   }
-  // BRAND
+
+  // [GET] /admin/brands
   async brands({ inertia }: HttpContext) {
     const brands = await this.brandService.all()
     const brandsFormated = brands.map((brand: any) => new BrandDto(brand))
     return inertia.render('admin/brands', { brands: brandsFormated })
   }
-  async createBrand({ request, response }: HttpContext) {
-    const { name } = request.only(['name'])
-    await this.brandService.create({ name })
-    return response.redirect().toRoute('admin.brands')
+
+  // [POST] /admin/brands
+  async createBrand({ request, response, inertia }: HttpContext) {
+    try {
+      const { name } = request.only(['name'])
+      await this.brandService.create({ name })
+      return response.redirect().toRoute('admin.brands')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create brand',
+      })
+    }
   }
-  async updateBrand({ request, response }: HttpContext) {
-    const { name } = request.only(['name'])
-    await this.brandService.update(request.param('id'), { name })
-    return response.redirect().toRoute('admin.brands')
+
+  // [PUT] /admin/brands/:id
+  async updateBrand({ request, response, inertia }: HttpContext) {
+    try {
+      const { name } = request.only(['name'])
+      await this.brandService.update(request.param('id'), { name })
+      return response.redirect().toRoute('admin.brands')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to update brand',
+      })
+    }
   }
-  async deleteBrand({ request, response }: HttpContext) {
-    await this.brandService.delete(request.param('id'))
-    return response.redirect().toRoute('admin.brands')
+
+  // [DELETE] /admin/brands/:id
+  async deleteBrand({ request, response, inertia }: HttpContext) {
+    try {
+      await this.brandService.delete(request.param('id'))
+      return response.redirect().toRoute('admin.brands')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to delete brand',
+      })
+    }
   }
-  // SPEC
+
+  // [GET] /admin/specs
   async specs({ inertia }: HttpContext) {
     const specs = await this.specService.all()
     const types = await this.specService.allTypes()
     const specsFormated = specs.map((spec: any) => new SpecDto(spec))
-    return inertia.render('admin/specs', { specs: specsFormated, types: types.map((type: any) => new SpecTypeDto(type)) })
+    return inertia.render('admin/specs', {
+      specs: specsFormated,
+      types: types.map((type: any) => new SpecTypeDto(type)),
+    })
   }
-  async createSpec({ request, response }: HttpContext) {
-    const { specTypeId, value } = request.only(['specTypeId', 'value'])
-    await this.specService.create({ specTypeId, value })
-    return response.redirect().toRoute('admin.specs')
+
+  // [POST] /admin/specs
+  async createSpec({ request, response, inertia }: HttpContext) {
+    try {
+      const { specTypeId, value } = request.only(['specTypeId', 'value'])
+      await this.specService.create({ specTypeId, value })
+      return response.redirect().toRoute('admin.specs')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
   }
-  async updateSpec({ request, response }: HttpContext) {
-    const { specTypeId, value } = request.only(['specTypeId', 'value'])
-    await this.specService.update(request.param('id'), { specTypeId, value })
-    return response.redirect().toRoute('admin.specs')
+
+  // [PUT] /admin/specs/:id
+  async updateSpec({ request, response, inertia }: HttpContext) {
+    try {
+      const { specTypeId, value } = request.only(['specTypeId', 'value'])
+      await this.specService.update(request.param('id'), { specTypeId, value })
+      return response.redirect().toRoute('admin.specs')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
   }
-  async deleteSpec({ request, response }: HttpContext) {
-    await this.specService.delete(request.param('id'))
-    return response.redirect().toRoute('admin.specs')
-  } 
-  // SPEC TYPE
+
+  // [DELETE] /admin/specs/:id
+  async deleteSpec({ request, response, inertia }: HttpContext) {
+    try {
+      await this.specService.delete(request.param('id'))
+      return response.redirect().toRoute('admin.specs')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
+  }
+
+  // [GET] /admin/spec-types
   async specTypes({ inertia }: HttpContext) {
     const types = await this.specTypeService.all()
     const typesFormated = types.map((type: any) => new SpecTypeDto(type))
     return inertia.render('admin/spec-types', { types: typesFormated })
   }
-  async createSpecType({ request, response }: HttpContext) {
-    const { key, label, description } = request.only(['key', 'label', 'description'])
-    await this.specTypeService.create({ key, label, description })
-    return response.redirect().toRoute('admin.spec-types')
+
+  // [POST] /admin/spec-types
+  async createSpecType({ request, response, inertia }: HttpContext) {
+    try {
+      const { key, label, description } = request.only(['key', 'label', 'description'])
+      await this.specTypeService.create({ key, label, description })
+      return response.redirect().toRoute('admin.spec-types')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
   }
-  async updateSpecType({ request, response }: HttpContext) {
-    const { key, label, description } = request.only(['key', 'label', 'description'])
-    await this.specTypeService.update(request.param('id'), { key, label, description })
-    return response.redirect().toRoute('admin.spec-types')
+
+  // [PUT] /admin/spec-types/:id
+  async updateSpecType({ request, response, inertia }: HttpContext) {
+    try {
+      const { key, label, description } = request.only(['key', 'label', 'description'])
+      await this.specTypeService.update(request.param('id'), { key, label, description })
+      return response.redirect().toRoute('admin.spec-types')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
   }
-  async deleteSpecType({ request, response }: HttpContext) {
-    await this.specTypeService.delete(request.param('id'))
-    return response.redirect().toRoute('admin.spec-types')
-  } 
+
+  // [DELETE] /admin/spec-types/:id
+  async deleteSpecType({ request, response, inertia }: HttpContext) {
+    try {
+      await this.specTypeService.delete(request.param('id'))
+      return response.redirect().toRoute('admin.spec-types')
+    } catch (error) {
+      return inertia.render('errors/not_found', {
+        message: 'Failed to create spec',
+      })
+    }
+  }
+
+  // [GET] /admin/users
   async users({ inertia }: HttpContext) {
     const users = await this.userService.all()
     const usersFormated = users.map((user: any) => new UserDto(user))

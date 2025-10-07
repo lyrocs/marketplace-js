@@ -98,7 +98,7 @@ test.group('DealService', (group) => {
     const user = await TestUtils.createUser()
     const deal = await dealService.create({ user_id: user.id })
 
-    const updatedDeal = await dealService.updateStatus(deal.id, DealStatus.PUBLISHED)
+    const updatedDeal = await dealService.updateStatus(deal.id, { status: DealStatus.PUBLISHED })
 
     assert.equal(updatedDeal.id, deal.id)
     assert.equal(updatedDeal.status, DealStatus.PUBLISHED)
@@ -109,7 +109,7 @@ test.group('DealService', (group) => {
     const deal = await dealService.create({ user_id: user.id })
     const reason = 'Product not available'
 
-    const updatedDeal = await dealService.updateStatus(deal.id, DealStatus.DECLINED, reason)
+    const updatedDeal = await dealService.updateStatus(deal.id, { status: DealStatus.DECLINED, reason })
 
     assert.equal(updatedDeal.id, deal.id)
     assert.equal(updatedDeal.status, DealStatus.DECLINED)
@@ -120,7 +120,7 @@ test.group('DealService', (group) => {
     const nonExistentId = 99999
 
     await assert.rejects(
-      () => dealService.updateStatus(nonExistentId, DealStatus.PUBLISHED),
+      () => dealService.updateStatus(nonExistentId, { status: DealStatus.PUBLISHED}),
       'Row not found'
     )
   })
@@ -132,8 +132,8 @@ test.group('DealService', (group) => {
     const deal1 = await dealService.create({ user_id: user.id })
     const deal2 = await dealService.create({ user_id: user.id })
     
-    await dealService.updateStatus(deal1.id, DealStatus.PUBLISHED)
-    await dealService.updateStatus(deal2.id, DealStatus.DRAFT)
+    await dealService.updateStatus(deal1.id, { status: DealStatus.PUBLISHED })
+    await dealService.updateStatus(deal2.id, { status: DealStatus.DRAFT })
 
     const publishedDeals = await dealService.getPaginated({
       status: DealStatus.PUBLISHED,

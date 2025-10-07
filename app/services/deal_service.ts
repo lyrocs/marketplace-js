@@ -46,11 +46,11 @@ export class DealService {
     return deals
   }
 
-  async updateStatus(id: number, status: string, reason?: string) {
+  async updateStatus(id: number, data: { status: string, reason?: string }) {
     const deal = await Deal.findOrFail(id)
-    deal.status = status
-    if (reason) {
-      deal.reasonDeclined = reason
+    deal.status = data.status
+    if (data.reason) {
+      deal.reasonDeclined = data.reason
     }
     await deal.save()
     return deal
