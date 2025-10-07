@@ -10,24 +10,30 @@ import SpecDto from '#dtos/spec'
 @inject()
 export default class ProductsController {
   constructor(
-    private productService: ProductService, 
+    private productService: ProductService,
     private categoryService: CategoryService,
     private specService: SpecService
   ) {}
 
+  // [GET] /products/:category
   async plp({ inertia, request, params, response }: HttpContext) {
-    const categories = await this.categoryService.all()
-    const category = await this.categoryService.getByKey(params.category.toUpperCase())
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
     const page = queryString.page || 1
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+    const categories = await this.categoryService.all()
+    const category = await this.categoryService.getByKey(params.category.toUpperCase())
     if (!category) {
       return response.redirect().back()
     }
-    const specsData = await this.specService.byTypes(category.specTypes.map((specType: any) => specType.key) as any)
-    const products = await this.productService.byCategory({ category: category.id, specs: specsIds, page })
-
+    const specsData = await this.specService.byTypes(
+      category.specTypes.map((specType: any) => specType.key) as any
+    )
+    const products = await this.productService.byCategory({
+      category: category.id,
+      specs: specsIds,
+      page,
+    })
     return inertia.render('plp/index', {
       categories: categories.map((category: any) => new CategoryDto(category)),
       products: ProductDto.fromArray(Array.from(products)),
@@ -38,27 +44,24 @@ export default class ProductsController {
     })
   }
 
+  // [GET] /products/search/:name
   async search({ request, params, inertia }: HttpContext) {
-    // get name from query string
     const queryName = params.name
-
-    // get page from query string
     const queryPage = request.qs().page || 1
-    const page = queryPage ? Number(queryPage) : queryPage
-
+    const page = Number(queryPage)
     const products = await this.productService.search({ name: queryName, page })
     const categories = await this.categoryService.all()
-
     return inertia.render('search/index', {
       products: ProductDto.fromArray(Array.from(products)),
       categories: categories.map((category: any) => new CategoryDto(category)),
       meta: new MetaDto(products.getMeta()),
-      name: queryName
+      name: queryName,
     })
   }
 
+  // [GET] /product/:id
   async pdp({ params, inertia }: HttpContext) {
-    const id = params.id
+    const id = Number(params.id)
     const product = await this.productService.one(id)
     const categories = await this.categoryService.all()
     return inertia.render('pdp/index', {

@@ -8,6 +8,8 @@ export default class HomeController {
   constructor(
     private productService: ProductService
 ) {}
+
+  // [GET] /
   async home({ inertia }: HttpContext) {
     const products = await this.productService.recent()
     return inertia.render('landing', {      

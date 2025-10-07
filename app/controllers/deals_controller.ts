@@ -25,34 +25,49 @@ export default class DealsController {
     private dealService: DealService,
     private discussionService: DiscussionService,
     private matrix: MatrixContractService,
-    private userService: UserService,
+    private userService: UserService
   ) {}
 
+  // [GET] /deals/:id
   async view({ inertia, params }: HttpContext) {
-    const deal = await this.dealService.one(Number(params.id))
+    const dealId = Number(params.id)
+    const deal = await this.dealService.one(dealId)
     return inertia.render('deals/view', { deal: new DealDto(deal) })
   }
 
+  // [GET] /deals/my
   async my({ inertia, auth }: HttpContext) {
-    const user = auth.user
-    const deals = await this.dealService.byUser(user?.id || '')
+    const userId = auth.user?.id || ''
+    const deals = await this.dealService.byUser(userId)
     return inertia.render('deals/my', { deals: DealDto.fromArray(deals) })
   }
 
+  // [GET] /deals/create
   async create({ auth, response }: HttpContext) {
+    const userId = auth.user?.id || ''
     const deal = await this.dealService.create({
-      user_id: auth.user?.id || '',
+      user_id: userId,
     })
     return response.redirect().toRoute('deals.edit', { id: deal.id })
   }
 
+  // [GET] /deals/:id/edit
   async edit({ inertia, params, request }: HttpContext) {
-    const deal = await this.dealService.one(Number(params.id))
-    return inertia.render('deals/edit', { deal: new DealDto(deal), csrfToken: request.csrfToken })
+    const dealId = Number(params.id)
+    const deal = await this.dealService.one(dealId)
+    return inertia.render('deals/edit', {
+      deal: new DealDto(deal),
+      csrfToken: request.csrfToken,
+    })
   }
 
+  // [GET] /deals/:id/search-product
   async searchProduct({ inertia, request, params }: HttpContext) {
+    const dealId = Number(params.id)
     const queryString = request.qs()
+    const specs = queryString.specs?.split(',') || []
+    const page = queryString.page || 1
+    const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
     const categories = await this.categoryService.all()
     let category
     let specsData
@@ -62,13 +77,7 @@ export default class DealsController {
         category?.specTypes?.map((type: any) => type.key) as any
       )
     }
-
-    const specs = queryString.specs?.split(',') || []
-    const page = queryString.page || 1
-    const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
-
-    const deal = await this.dealService.one(Number(params.id))
-
+    const deal = await this.dealService.one(dealId)
     const products = await this.productService.byCategory({
       category: category?.id,
       specs: specsIds,
@@ -83,6 +92,7 @@ export default class DealsController {
     })
   }
 
+  // [POST] /deals/:id/add-product
   async addProduct({ request, response, params }: HttpContext) {
     const data = request.only(['product_id'])
     const dealId = Number(params.id)
@@ -93,6 +103,7 @@ export default class DealsController {
     return response.redirect().toRoute('deals.edit', { id: dealId })
   }
 
+  // [POST] /deals/:id/images
   async addImages({ request, params, response }: HttpContext) {
     const images = request.files('images')
     let imagesData = []
@@ -106,6 +117,7 @@ export default class DealsController {
     return response.json(imagesData)
   }
 
+  // [DELETE] /deals/:id/images
   async deleteImages({ request, params }: HttpContext) {
     const data = request.all()
     const images = data.images
@@ -119,11 +131,12 @@ export default class DealsController {
     return images
   }
 
+  // [POST] /deals/:id
   async update({ request, params, response }: HttpContext) {
     const data = request.all()
-    const id = params.id
+    const dealId = Number(params.id)
     const payload = await updateDealValidator.validate(data)
-    await this.dealService.update(id, {
+    await this.dealService.update(dealId, {
       title: payload.title,
       description: payload.description || '',
       location: payload.location || '',
@@ -139,13 +152,14 @@ export default class DealsController {
     response.redirect().back()
   }
 
+  // [GET] /products/:category/deal
   async plp({ inertia, request, params, response }: HttpContext) {
-    const categories = await this.categoryService.all()
-    const category = await this.categoryService.getByKey(params.category.toUpperCase())
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
     const page = queryString.page || 1
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
+    const categories = await this.categoryService.all()
+    const category = await this.categoryService.getByKey(params.category.toUpperCase())
     if (!category) {
       return response.redirect().back()
     }
@@ -163,13 +177,15 @@ export default class DealsController {
       isDeal: true,
     })
   }
+
+  // [POST] /deals/:id/contact
   async contact({ auth, params, response }: HttpContext) {
     await auth.authenticate()
     if (!auth.isAuthenticated) {
       return null
     }
     const user = auth.getUserOrFail()
-    const dealId = params.id
+    const dealId = Number(params.id)
     const deal = await this.dealService.one(dealId)
     if (!deal) {
       return null

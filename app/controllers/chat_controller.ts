@@ -7,6 +7,8 @@ import DiscussionDto from '#dtos/discussion'
 @inject()
 export default class ChatController {
   constructor(private discussionService: DiscussionService) {}
+
+  // [GET] /chat
   async list({ inertia, auth }: HttpContext) {
     const matrixHost = process.env.MATRIX_HOST
     const user = auth.user
@@ -17,6 +19,8 @@ export default class ChatController {
       discussions: discussions.map((discussion) => new DiscussionDto(discussion)),
     })
   }
+
+  // [POST] /chat/:id/read
   async read({ auth, request, response }: HttpContext) {
     const user = auth.user
     const discussionId = request.param('id')
