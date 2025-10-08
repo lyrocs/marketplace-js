@@ -54,7 +54,7 @@ const form = useForm({
                         autocomplete="current-password"
                         :error="form.errors.password"
                         :required="true"
-                        :helper-link="{ text: 'Mot de passe oublié ?', href: '#' }"
+                        :helper-link="{ text: 'Mot de passe oublié ?', href: '/forgot-password' }"
                     />
 
                     <div>
