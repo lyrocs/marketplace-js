@@ -154,35 +154,47 @@ export default class HomeController {
   }
 
   // [GET] /google/callback
-  async googleCallback({ auth, ally, response }: { ally: any; auth: any; response: any }) {
-    const gh = ally.use('google')
-
-    if (gh.accessDenied()) {
-      return 'You have cancelled the login process'
-    }
-
-    if (gh.stateMisMatch()) {
-      return 'We are unable to verify the request. Please try again'
-    }
-
-    if (gh.hasError()) {
-      return gh.getError()
-    }
-
-    const user = await gh.user()
+  async googleCallback({ auth, ally, response, inertia }: HttpContext) {
     try {
-      const existingAccount = await this.userService.getAccount(user.id)
-      // replace true by  !!request.input('remember_me')
-      await auth.use('web').login(existingAccount.user, true)
-    } catch {
-      const matrixUser = await this.matrixService.createUser()
-      if (!matrixUser) {
-        return 'Unable to create matrix user'
+      const gh = ally.use('google')
+
+      if (gh.accessDenied()) {
+        return 'You have cancelled the login process'
       }
 
-      const newUser = await this.userService.createGoogleAccount(user, matrixUser)
-      await auth.use('web').login(newUser, true)
+      if (gh.stateMisMatch()) {
+        return 'We are unable to verify the request. Please try again'
+      }
+
+      if (gh.hasError()) {
+        return gh.getError()
+      }
+
+      const user = await gh.user()
+      try {
+        const existingAccount = await this.userService.getAccount(user.id)
+        // replace true by  !!request.input('remember_me')
+        await auth.use('web').login(existingAccount.user, true)
+      } catch {
+        const matrixUser = await this.matrixService.createUser()
+        if (!matrixUser) {
+          return 'Unable to create matrix user'
+        }
+        const newUser = await this.userService.createGoogleAccount(user, matrixUser)
+        await auth.use('web').login(newUser, true)
+      }
+      return response.redirect().toRoute('home')
+    } catch (error) {
+      let errorMsg = 'Une erreur est survenue. Veuillez réessayer.'
+      if (error.code === '23505' || error.constraint === 'users_email_unique') {
+        errorMsg =
+          'Cette adresse email est déjà utilisée, veuillez vous connecter avec votre email et mot de passe.'
+      }
+      return inertia.render('auth/login', {
+        errors: {
+          errorMsg,
+        },
+      })
     }
-    return response.redirect().toRoute('home')
   }
 }
