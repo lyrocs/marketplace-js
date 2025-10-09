@@ -7,7 +7,7 @@ import { UserService } from '#services/user_service'
 import UserRole from '#enums/roles'
 import { MatrixContractService } from '#contracts/matrix_service'
 import { PasswordResetService } from '#services/password_reset_service'
-import { forgotPasswordValidator } from '#validators/password_reset'
+import { forgotPasswordValidator, resetPasswordValidator } from '#validators/password_reset'
 
 @inject()
 export default class HomeController {
@@ -102,6 +102,39 @@ export default class HomeController {
         throw new Error('Something went wrong')
       }
       return response.redirect().back()
+    } catch (error) {
+      session.flashErrors({ errorMsg: 'Une erreur est survenue. Veuillez réessayer.' })
+      return response.redirect().back()
+    }
+  }
+
+  // [GET] /auth/reset-password/:token
+  async resetPassword({ inertia, params }: HttpContext) {
+    const token = params.token
+    const validation = await this.passwordResetService.validateToken(token)
+    if (!validation.valid) {
+      return inertia.render('auth/reset-password', {
+        error: validation.error,
+        invalidToken: true,
+      })
+    }
+    return inertia.render('auth/reset-password', {
+      token,
+      user: validation.user,
+    })
+  }
+
+  // [POST] /auth/reset-password
+  async updatePassword({ request, response, session }: HttpContext) {
+    try {
+      const data = await request.validateUsing(resetPasswordValidator)
+      const result = await this.passwordResetService.resetPassword(data.token, data.password)
+      if (result.success) {
+        session.flash('success', true)
+        return response.redirect().toRoute('auth.login')
+      } else {
+        throw new Error('Something went wrong')
+      }
     } catch (error) {
       session.flashErrors({ errorMsg: 'Une erreur est survenue. Veuillez réessayer.' })
       return response.redirect().back()

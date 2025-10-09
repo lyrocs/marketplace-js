@@ -6,39 +6,30 @@ import env from '#start/env'
 import crypto from 'node:crypto'
 import { DateTime } from 'luxon'
 
-
 @inject()
 export class PasswordResetService {
-  /**
-   * Envoie un email de réinitialisation de mot de passe
-   */
   async sendResetEmail(email: string): Promise<boolean> {
     try {
-      // Vérifier si l'utilisateur existe
       const user = await User.findBy('email', email)
       if (!user) {
-        // Ne pas révéler si l'email existe ou non pour des raisons de sécurité
+        // Do not reveal if the email exists or not for security reasons
         return true
       }
-
-        // Supprimer les anciens tokens non utilisés
-         await PasswordResetToken.query()
+      await PasswordResetToken.query()
         .where('user_id', user.id)
         .whereNull('used_at')
         .where('expires_at', '>', DateTime.now().toJSDate())
         .delete()
 
-       // Créer un nouveau token
-       const token = crypto.randomBytes(32).toString('hex')
-       const expiresAt = DateTime.now().plus({ hours: 1 }) // Token valide 1 heure
+      const token = crypto.randomBytes(32).toString('hex')
+      const expiresAt = DateTime.now().plus({ hours: 1 })
 
-      const resetToken =  await PasswordResetToken.create({
+      const resetToken = await PasswordResetToken.create({
         userId: user.id,
         token,
         expiresAt: expiresAt,
       })
 
-      // Envoyer l'email
       await mail.send((message) => {
         message
           .to(email)
@@ -46,16 +37,13 @@ export class PasswordResetService {
           .subject('Réinitialisation de votre mot de passe')
           .htmlView('emails/reset_password', {
             user: user,
-            resetUrl: `${env.get('APP_URL')}/reset-password/${resetToken.token}`,
+            resetUrl: `${env.get('APP_URL')}/auth/reset-password/${resetToken.token}`,
             token: resetToken.token,
-            expiresIn: '1 heure'
+            expiresIn: '1 heure',
           })
       })
-
-      console.log('Email sent')
       return true
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'email de réinitialisation:', error)
       return false
     }
   }
@@ -83,7 +71,10 @@ export class PasswordResetService {
     }
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const validation = await this.validateToken(token)
       if (!validation.valid || !validation.user) {

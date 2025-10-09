@@ -7,7 +7,6 @@ const DealsCtrl = () => import('#controllers/deals_controller')
 const ChatCtrl = () => import('#controllers/chat_controller')
 const ProfileCtrl = () => import('#controllers/profile_controller')
 const UserCtrl = () => import('#controllers/user_controller')
-const PasswordResetCtrl = () => import('#controllers/password_reset_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -31,12 +30,8 @@ router
     router
       .post('/auth/forgot-password', [AuthCtrl, 'sendResetEmail'])
       .as('auth.forgot-password.post')
-    router
-      .get('/reset-password/:token', [PasswordResetCtrl, 'resetPassword'])
-      .as('auth.reset-password')
-    router
-      .post('/reset-password', [PasswordResetCtrl, 'updatePassword'])
-      .as('auth.reset-password.post')
+    router.get('/auth/reset-password/:token', [AuthCtrl, 'resetPassword']).as('auth.reset-password')
+    router.post('/auth/reset-password', [AuthCtrl, 'updatePassword']).as('auth.reset-password.post')
 
     router.get('/google/redirect', ({ ally }) => {
       return ally.use('google').redirect()

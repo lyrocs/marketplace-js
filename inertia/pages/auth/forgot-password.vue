@@ -47,7 +47,8 @@ const onSubmit = handleSubmit((values) => {
     <ErrorAlert :errors="errors" />
     <div class="mt-4 w-full sm:mx-auto sm:max-w-md">
       <div class="card">
-        <form v-if="!messages?.success" @submit="onSubmit" class="space-y-6">
+        <InfoCard v-if="messages?.success" :title="$t('auth.emailSent')" />
+        <form v-else @submit="onSubmit" class="space-y-6">
           <FormField v-slot="{ componentField }" name="email" :validate-on-blur="!isFieldDirty">
             <FormItem>
               <FormLabel>{{ $t('auth.email') }}</FormLabel>
@@ -63,7 +64,7 @@ const onSubmit = handleSubmit((values) => {
             {{ $t('auth.sendResetEmail') }}
           </Button>
         </form>
-        <InfoCard v-else :title="$t('auth.emailSent')" />
+
       </div>
     </div>
     <p class="mt-6 text-center text-sm">
