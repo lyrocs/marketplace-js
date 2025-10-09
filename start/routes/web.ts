@@ -69,6 +69,7 @@ router
     router.post('/profile/image', [ProfileCtrl, 'uploadImage']).as('profile.upload-image')
     router.delete('/profile/image', [ProfileCtrl, 'removeImage']).as('profile.remove-image')
   })
+  .use(middleware.guest())
   .use(middleware.auth())
 
 // admin routes
@@ -116,6 +117,7 @@ router
       .post('/admin/deals/:id/status', [AdminCtrl, 'updateDealStatus'])
       .as('admin.deals.update-status')
   })
+  .use(middleware.guest())
   .use(middleware.auth())
   .use(middleware.admin())
 
