@@ -57,25 +57,30 @@ export default class HomeController {
   }
 
   // [POST] /auth/register
-  async registerPost({ auth, request, response }: HttpContext) {
-    const data = await request.validateUsing(registerValidator)
-    const firstUser = await this.userService.getFirst()
-    const userData = {
-      ...data,
-      role: firstUser ? UserRole.USER : UserRole.ADMIN,
+  async registerPost({ auth, request, response, session }: HttpContext) {
+    try {
+      const data = await request.validateUsing(registerValidator)
+      const firstUser = await this.userService.getFirst()
+      const userData = {
+        ...data,
+        role: firstUser ? UserRole.USER : UserRole.ADMIN,
+      }
+      const user = await User.create(userData)
+      await auth.use('web').login(user)
+      const matrixUser = await this.matrixService.createUser()
+      if (!matrixUser) {
+        return 'Unable to create matrix user'
+      }
+      const newUser = await this.userService.update(user.id, {
+        matrixLogin: matrixUser.username,
+        matrixPassword: matrixUser.password,
+      })
+      await auth.use('web').login(newUser)
+      return response.redirect().toRoute('home')
+    } catch (error) {
+      session.flashErrors({ errorMsg: 'Invalid email or password' })
+      return response.redirect().back()
     }
-    const user = await User.create(userData)
-    await auth.use('web').login(user)
-    const matrixUser = await this.matrixService.createUser()
-    if (!matrixUser) {
-      return 'Unable to create matrix user'
-    }
-    const newUser = await this.userService.update(user.id, {
-      matrixLogin: matrixUser.username,
-      matrixPassword: matrixUser.password,
-    })
-    await auth.use('web').login(newUser)
-    return response.redirect().toRoute('home')
   }
 
   // [POST] /auth/logout
