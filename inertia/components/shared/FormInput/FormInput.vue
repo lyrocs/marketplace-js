@@ -32,16 +32,9 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="mt-2">
-      <input
-        :id="id"
-        :type="type"
-        :value="modelValue"
-        @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-        :autocomplete="autocomplete"
-        :required="required"
-        class="form-input"
-        :class="error ? 'form-input-error' : 'form-input-default'"
-      />
+      <Input :id="id" :type="type" :value="modelValue"
+        @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)" :autocomplete="autocomplete"
+        :required="required" class="form-inputss" :class="error ? 'form-input-error' : 'form-input-default'" />
     </div>
   </div>
 </template>

@@ -1,87 +1,96 @@
 <script setup lang="ts">
+import {
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '~/components/ui/form'
 import { defineOptions } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { useForm } from "vee-validate"
 import AuthLayout from '~/layouts/AuthLayout.vue'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from "zod";
+import { router } from '@inertiajs/vue3'
 
 defineOptions({
     layout: AuthLayout
 })
 
-
 defineProps<{
     errors?: Record<string, string>
 }>()
 
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-})
-</script>
+const formSchema = toTypedSchema(z.object({
+    email: z.string({ message: 'Le champ email est requis' }).min(2, { message: 'Le champ email est requis' }).max(250),
+    password: z.string({ message: 'Le champ mot de passe est requis' }).min(8, { message: 'Le champ mot de passe est requis' }).max(250),
+}))
 
-<style scoped>
-.login-button {
-  @apply flex w-full justify-center rounded-md bg-slate-700 px-3 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600;
-}
-</style>
+const { isFieldDirty, handleSubmit } = useForm({
+    validationSchema: formSchema,
+})
+
+const onSubmit = handleSubmit((values) => {
+    router.post('/auth/login', values)
+})
+
+</script>
 
 <template>
     <div class="flex flex-col items-center justify-center">
-        <AuthHeader
-            title="Ravi de vous revoir"
-            subtitle="Connectez-vous pour accéder à votre espace."
-        />
+        <AuthHeader title="Ravi de vous (re)voir" subtitle="Connectez-vous pour accéder à votre espace." />
+        <ErrorAlert :errors="errors" />
+        <div class="w-full mt-4 sm:mx-auto sm:max-w-md">
+            <div class="card">
+                <form class="space-y-6" @submit="onSubmit">
+                    <FormField v-slot="{ componentField }" name="email" :validate-on-blur="!isFieldDirty">
+                        <FormItem>
+                            <FormLabel>Adresse e-mail</FormLabel>
+                            <FormControl>
+                                <Input type="email" v-bind="componentField" />
+                            </FormControl>
+                            <FormDescription />
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
 
-        <ErrorAlert :errors="form.errors" />
+                    <FormField v-slot="{ componentField }" name="password">
+                        <FormItem>
+                            <FormLabel class="flex justify-between">
+                                <div>Mot de passe</div>
+                                <a href="/forgot-password" class="text-secondary">Mot de
+                                    passe
+                                    oublié ?</a>
+                            </FormLabel>
+                            <FormControl>
+                                <Input type="password" v-bind="componentField" />
+                            </FormControl>
+                            <FormDescription />
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
 
-        <div class="mt-10 w-full sm:mx-auto sm:max-w-md">
-            <div class="rounded-xl bg-white p-8 shadow-lg">
-                <form @submit.prevent="form.post('/auth/login')" class="space-y-6">
-                    <FormInput
-                        id="email"
-                        v-model="form.email"
-                        label="Adresse e-mail"
-                        type="email"
-                        autocomplete="email"
-                        :error="form.errors.email"
-                    />
-
-                    <FormInput
-                        id="password"
-                        v-model="form.password"
-                        label="Mot de passe"
-                        type="password"
-                        autocomplete="current-password"
-                        :error="form.errors.password"
-                        :required="true"
-                        :helper-link="{ text: 'Mot de passe oublié ?', href: '/forgot-password' }"
-                    />
-
-                    <div>
-                        <button type="submit" class="login-button">
-                            Se connecter
-                        </button>
-                    </div>
+                    <Button type="submit" size="lg" class="w-full">
+                        Se connecter
+                    </Button>
                 </form>
 
-                <div class="mt-8">
+                <div class="mt-6">
                     <Divider text="Ou continuez avec" />
                 </div>
 
                 <div class="mt-6">
-                    <SocialLoginButtons
-                        :providers="[
-                            { name: 'Google', href: '/google/redirect', icon: 'google' },
-                            { name: 'Facebook', href: '#', icon: 'facebook' }
-                        ]"
-                    />
+                    <SocialLoginButtons :providers="[
+                        { name: 'Google', href: '/google/redirect', icon: 'google' },
+                        { name: 'Facebook', href: '#', icon: 'facebook' }
+                    ]" />
                 </div>
             </div>
 
-            <p class="mt-10 text-center text-sm text-gray-500">
+            <p class="mt-6 text-center text-sm text-primary">
                 Pas encore de compte ?
-                <a href="/auth/register"
-                    class="font-semibold leading-6 text-slate-600 hover:text-slate-500">Inscrivez-vous
+                <a href="/auth/register" class="font-semibold leading-6 hover:text-slate-500">Inscrivez-vous
                     gratuitement</a>
             </p>
         </div>

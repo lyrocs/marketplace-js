@@ -29,21 +29,26 @@ export default class HomeController {
 
   // [POST] /auth/login
   async loginPost({ auth, session, request, response }: HttpContext) {
-    const data = await request.validateUsing(loginValidator)
-    const key = `login_${request.ip()}_${data.email}`
-    const [error, user] = await this.limit.penalize(key, () => {
-      return User.verifyCredentials(data.email, data.password)
-    })
-
-    if (error) {
-      session.flashAll()
-      session.flashErrors({
-        E_TOO_MANY_REQUESTS: 'Too many login attempts, please try again later',
+    try {
+      const data = await request.validateUsing(loginValidator)
+      const key = `login_${request.ip()}_${data.email}`
+      const [error, user] = await this.limit.penalize(key, () => {
+        return User.verifyCredentials(data.email, data.password)
       })
-      return null
+
+      if (error) {
+        session.flashAll()
+        session.flashErrors({
+          E_TOO_MANY_REQUESTS: 'Too many login attempts, please try again later',
+        })
+        return response.redirect().back()
+      }
+      await auth.use('web').login(user, data.remember)
+      return response.redirect().toRoute('home')
+    } catch (error) {
+      session.flashErrors({ errorMsg: 'Invalid email or password' })
+      return response.redirect().back()
     }
-    await auth.use('web').login(user, data.remember)
-    return response.redirect().toRoute('home')
   }
 
   // [GET] /auth/register

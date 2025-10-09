@@ -12,9 +12,6 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="auth-header">
-    <a :href="logoHref" class="auth-logo">
-      Marketplace<span class="auth-logo-accent">.js</span>
-    </a>
     <h2 class="auth-title">{{ title }}</h2>
     <p class="auth-subtitle">{{ subtitle }}</p>
   </div>
@@ -34,7 +31,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .auth-title {
-  @apply mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900;
+  @apply mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900;
 }
 
 .auth-subtitle {
