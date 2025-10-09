@@ -6,12 +6,15 @@ import limiter from '@adonisjs/limiter/services/main'
 import { UserService } from '#services/user_service'
 import UserRole from '#enums/roles'
 import { MatrixContractService } from '#contracts/matrix_service'
+import { PasswordResetService } from '#services/password_reset_service'
+import { forgotPasswordValidator } from '#validators/password_reset'
 
 @inject()
 export default class HomeController {
   constructor(
     private matrixService: MatrixContractService,
-    private userService: UserService
+    private userService: UserService,
+    private passwordResetService: PasswordResetService
   ) {}
 
   get limit() {
@@ -79,6 +82,28 @@ export default class HomeController {
       return response.redirect().toRoute('home')
     } catch (error) {
       session.flashErrors({ errorMsg: 'Invalid email or password' })
+      return response.redirect().back()
+    }
+  }
+
+  // [GET] /auth/forgot-password
+  async forgotPassword({ inertia }: HttpContext) {
+    return inertia.render('auth/forgot-password')
+  }
+
+  // [POST] /auth/forgot-password
+  async sendResetEmail({ request, response, session }: HttpContext) {
+    try {
+      const { email } = await request.validateUsing(forgotPasswordValidator)
+      const emailSent = await this.passwordResetService.sendResetEmail(email)
+      if (emailSent) {
+        session.flash('success', true)
+      } else {
+        throw new Error('Something went wrong')
+      }
+      return response.redirect().back()
+    } catch (error) {
+      session.flashErrors({ errorMsg: 'Une erreur est survenue. Veuillez réessayer.' })
       return response.redirect().back()
     }
   }

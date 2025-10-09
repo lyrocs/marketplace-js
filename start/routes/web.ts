@@ -27,11 +27,9 @@ router
     router.post('/auth/register', [AuthCtrl, 'registerPost']).as('auth.register.post')
     router.post('/auth/logout', [AuthCtrl, 'logout']).as('auth.logout')
     router.get('/auth/verify', [AuthCtrl, 'verify']).as('auth.verify').use(middleware.auth())
-
-    // Password reset routes
-    router.get('/forgot-password', [PasswordResetCtrl, 'forgotPassword']).as('auth.forgot-password')
+    router.get('/auth/forgot-password', [AuthCtrl, 'forgotPassword']).as('auth.forgot-password')
     router
-      .post('/forgot-password', [PasswordResetCtrl, 'sendResetEmail'])
+      .post('/auth/forgot-password', [AuthCtrl, 'sendResetEmail'])
       .as('auth.forgot-password.post')
     router
       .get('/reset-password/:token', [PasswordResetCtrl, 'resetPassword'])

@@ -61,7 +61,8 @@ const onSubmit = handleSubmit((values) => {
                         <FormItem>
                             <FormLabel class="flex justify-between">
                                 <div>{{ $t('auth.password') }}</div>
-                                <a href="/forgot-password" class="text-secondary">{{ $t('auth.forgotPassword') }}</a>
+                                <a href="/auth/forgot-password" class="text-secondary">{{ $t('auth.forgotPassword')
+                                    }}</a>
                             </FormLabel>
                             <FormControl>
                                 <Input type="password" v-bind="componentField" />
@@ -91,7 +92,7 @@ const onSubmit = handleSubmit((values) => {
             <p class="mt-6 text-center text-sm text-primary">
                 {{ $t('auth.noAccount') }}
                 <a href="/auth/register" class="font-semibold leading-6 hover:text-slate-500">{{
-                    $t('auth.registerNow')}}</a>
+                    $t('auth.registerNow') }}</a>
             </p>
         </div>
     </div>

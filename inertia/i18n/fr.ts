@@ -16,6 +16,15 @@ export default {
     alreadyHaveAccount: 'Déjà un compte ?',
     registerTitle: 'Créer un compte',
     registerSubtitle: 'Créez votre compte pour commencer',
+    forgotInfoTitle: 'Information',
+    forgotInfoDescription:
+      'Si votre adresse email existe dans notre système, vous recevrez un lien de réinitialisation dans quelques minutes.',
+    sendResetEmail: 'Envoyer le lien',
+    passwordFound: 'Mot de passe trouvé ?',
+    forgotPasswordTitle: 'Mot de passe oublié',
+    forgotPasswordSubtitle:
+      'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.',
+    emailSent: 'Un email de réinitialisation a été envoyé à votre adresse email.',
     error: {
       nameRequired: 'Le champ nom complet est requis',
       emailRequired: 'Le champ email est requis',
