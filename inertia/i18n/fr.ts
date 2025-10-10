@@ -1,4 +1,36 @@
 export default {
+  home: {
+    title: 'La marketplace des passionnés de drones FPV',
+    description:
+      'Découvrez les meilleurs produits des boutiques françaises et trouvez des offres exclusives entre particuliers pour vos drones et pièces détachées FPV',
+    searchPlaceholder: 'Que recherchez-vous ?',
+    exploreDeals: 'Explorer les annonces',
+    exploreProducts: 'Consulter le catalogue',
+    exploreDealsDescription: 'Trouvez la perle rare auprès de vendeurs passionnés et vérifiés.',
+    exploreProductsDescription: 'Comparez les produits neufs et les fiches techniques officielles.',
+    exploreDealsLink: 'Voir les annonces',
+    exploreProductsLink: 'Accéder au catalogue',
+    recentDeals: 'Dernières annonces',
+    buySafely: 'Achetez en toute sécurité',
+    buySafelyDescription:
+      'Achetez en toute sécurité avec notre système de garantie et de protection des acheteurs.',
+    buySafelyLink: 'En savoir plus',
+    trustTitle: 'Achetez et vendez en toute confiance',
+    trustSubtitle:
+      'Notre plateforme est conçue pour les passionnés, par des passionnés. Nous mettons tout en oeuvre pour sécuriser vos échanges.',
+    trustVerifiedUser: 'Vendeurs Vérifiés',
+    trustVerifiedUserDescription:
+      "Un système de notation et d'avis transparent pour chaque vendeur.",
+    trustCatalog: 'Catalogue de Référence',
+    trustCatalogDescription:
+      'Chaque annonce est liée à une fiche produit officielle pour plus de clarté.',
+    trustContact: 'Contact Direct',
+    trustContactDescription: 'Échangez facilement avec les vendeurs pour poser vos questions.',
+    startSelling: 'Vous avez du matériel à vendre ?',
+    startSellingDescription:
+      "Rejoignez notre communauté de passionnés et donnez une seconde vie à votre équipement. La création d'annonce est simple et rapide.",
+    startSellingLink: 'Créer une annonce gratuitemement',
+  },
   auth: {
     welcome: 'Ravi de vous (re)voir',
     subtitle: 'Connectez-vous pour accéder à votre espace.',

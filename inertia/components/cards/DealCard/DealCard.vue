@@ -1,34 +1,41 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import DealDto from '#dtos/deal';
-
+import { computed } from 'vue'
+import DealDto from '#dtos/deal'
 
 const props = defineProps<{
-  deal: DealDto;
-}>();
+  deal: DealDto
+}>()
 
 const currencySymbol = computed(() => {
-  return props.deal.currency === 'EUR' ? '€' : '$';
-});
+  return props.deal.currency === 'EUR' ? '€' : '$'
+})
 
 const firstProductImage = computed(() => {
-  return props.deal.products[0]?.images?.[0] || 'https://placehold.co/400x300/475569/white?text=Deal';
-});
+  return (
+    props.deal.products[0]?.images?.[0] || 'https://placehold.co/400x300/475569/white?text=Deal'
+  )
+})
 </script>
 
 <template>
-  <a :href="`/deals/${deal.id}`"
-    class="group flex flex-col overflow-hidden rounded-xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-    <img :src="firstProductImage"
+  <div
+    class="group flex flex-col overflow-hidden rounded-xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+  >
+    <img
+      :src="firstProductImage"
       class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-      :alt="`${deal.title} deal image`" />
+      :alt="`${deal.title} deal image`"
+    />
 
     <div class="flex flex-col p-4 flex-1">
       <!-- Deal title and location -->
       <div class="flex justify-between items-start mb-2">
-        <h3 class="text-lg font-bold text-gray-800 hover:text-slate-600 line-clamp-2">{{ deal.title }}</h3>
+        <h3 class="text-lg font-bold text-gray-800 hover:text-slate-600 line-clamp-2">
+          {{ deal.title }}
+        </h3>
         <span
-          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2 whitespace-nowrap">
+          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2 whitespace-nowrap"
+        >
           {{ deal.location }}
         </span>
       </div>
@@ -38,7 +45,11 @@ const firstProductImage = computed(() => {
       <div class="mt-auto">
         <h4 class="text-sm font-medium text-gray-700 mb-2">Includes:</h4>
         <ul class="space-y-1">
-          <li v-for="product in deal.products" :key="product.id" class="flex justify-between text-sm">
+          <li
+            v-for="product in deal.products"
+            :key="product.id"
+            class="flex justify-between text-sm"
+          >
             <span class="text-gray-600">{{ product.quantity }}x {{ product.name }}</span>
           </li>
         </ul>
@@ -49,23 +60,25 @@ const firstProductImage = computed(() => {
           <span class="text-xs text-gray-500">Total Price:</span>
           <p class="text-xl font-bold text-gray-900">{{ deal.price }} {{ currencySymbol }}</p>
         </div>
-        <button
-          class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          View Deal
-        </button>
+        <Button as-child>
+          <a :href="`/deals/${deal.id}`"> View Deal </a>
+        </Button>
       </div>
 
       <!-- Vendeur -->
       <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <img 
-            :src="deal.user?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.user?.name || 'User')}&background=6366f1&color=fff&size=32`" 
+          <img
+            :src="
+              deal.user?.image ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.user?.name || 'User')}&background=6366f1&color=fff&size=32`
+            "
             :alt="deal.user?.name || 'Vendeur'"
             class="w-6 h-6 rounded-full"
           />
           <span class="text-sm text-gray-600">{{ deal.user?.name || 'Vendeur' }}</span>
         </div>
-        <a 
+        <a
           :href="`/user/${deal.user_id}`"
           class="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
           @click.stop
@@ -74,5 +87,5 @@ const firstProductImage = computed(() => {
         </a>
       </div>
     </div>
-  </a>
+  </div>
 </template>

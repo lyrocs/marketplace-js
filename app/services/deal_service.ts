@@ -10,17 +10,17 @@ export class DealService {
   }
 
   async one(id: number) {
-    const singleDeal = await Deal.query()
-      .preload('products')
-      .where('id', id)
-      .firstOrFail()
+    const singleDeal = await Deal.query().preload('products').where('id', id).firstOrFail()
     return singleDeal
   }
 
+  async recent() {
+    const deals = await Deal.query().preload('products').orderBy('created_at', 'desc').limit(4)
+    return deals
+  }
+
   async byUser(userId: string) {
-    const deals = await Deal.query()
-      .where('user_id', userId)
-      .preload('products')
+    const deals = await Deal.query().where('user_id', userId).preload('products')
     return deals
   }
 
@@ -46,7 +46,7 @@ export class DealService {
     return deals
   }
 
-  async updateStatus(id: number, data: { status: string, reason?: string }) {
+  async updateStatus(id: number, data: { status: string; reason?: string }) {
     const deal = await Deal.findOrFail(id)
     deal.status = data.status
     if (data.reason) {
