@@ -58,4 +58,28 @@ export class UserService {
 
     return user
   }
+
+  async createFacebookAccount(userData: any, matrixUser: any) {
+    const user = await User.create({
+      email: userData.email,
+      name: userData.original.first_name,
+      matrixLogin: matrixUser?.username,
+      matrixPassword: matrixUser?.password,
+    })
+
+    await Account.create({
+      user_id: user.id,
+      provider: 'facebook',
+      provider_account_id: userData.id,
+      access_token: userData.token.token,
+      refresh_token: '',
+      type: 'oauth',
+      expires_at: userData.token.expires_at,
+      token_type: 'oauth',
+      scope: '',
+      id_token: userData.token.id_token,
+    })
+
+    return user
+  }
 }

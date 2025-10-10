@@ -36,7 +36,11 @@ router
     router.get('/google/redirect', ({ ally }) => {
       return ally.use('google').redirect()
     })
+    router.get('/facebook/redirect', ({ ally }) => {
+      return ally.use('facebook').redirect()
+    })
     router.get('/google/callback', [AuthCtrl, 'googleCallback'])
+    router.get('/facebook/callback', [AuthCtrl, 'facebookCallback'])
   })
   .use(middleware.guest())
 

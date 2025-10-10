@@ -84,7 +84,7 @@ const onSubmit = handleSubmit((values) => {
                 <div class="mt-6">
                     <SocialLoginButtons :providers="[
                         { name: $t('auth.google'), href: '/google/redirect', icon: 'google' },
-                        { name: $t('auth.facebook'), href: '#', icon: 'facebook' }
+                        { name: $t('auth.facebook'), href: '/facebook/redirect', icon: 'facebook' }
                     ]" />
                 </div>
             </div>

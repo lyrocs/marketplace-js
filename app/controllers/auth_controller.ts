@@ -197,4 +197,47 @@ export default class HomeController {
       })
     }
   }
+
+  // [GET] /facebook/callback
+  async facebookCallback({ auth, ally, response, inertia }: HttpContext) {
+    try {
+      const fb = ally.use('facebook')
+      if (fb.accessDenied()) {
+        return 'You have cancelled the login process'
+      }
+
+      if (fb.stateMisMatch()) {
+        return 'We are unable to verify the request. Please try again'
+      }
+
+      if (fb.hasError()) {
+        return fb.getError()
+      }
+
+      const user = await fb.user()
+      try {
+        const existingAccount = await this.userService.getAccount(user.id)
+        await auth.use('web').login(existingAccount.user, true)
+      } catch {
+        const matrixUser = await this.matrixService.createUser()
+        if (!matrixUser) {
+          return 'Unable to create matrix user'
+        }
+        const newUser = await this.userService.createFacebookAccount(user, matrixUser)
+        await auth.use('web').login(newUser, true)
+      }
+      return response.redirect().toRoute('home')
+    } catch (error) {
+      let errorMsg = 'Une erreur est survenue. Veuillez réessayer.'
+      if (error.code === '23505' || error.constraint === 'users_email_unique') {
+        errorMsg =
+          'Cette adresse email est déjà utilisée, veuillez vous connecter avec votre email et mot de passe.'
+      }
+      return inertia.render('auth/login', {
+        errors: {
+          errorMsg,
+        },
+      })
+    }
+  }
 }

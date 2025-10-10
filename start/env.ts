@@ -61,6 +61,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   GOOGLE_CLIENT_ID: Env.schema.string(),
   GOOGLE_CLIENT_SECRET: Env.schema.string(),
+  FACEBOOK_CLIENT_ID: Env.schema.string(),
+  FACEBOOK_CLIENT_SECRET: Env.schema.string(),
 
   /*
   |----------------------------------------------------------
