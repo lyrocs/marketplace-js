@@ -17,20 +17,21 @@ export default class ProductsController {
 
   // [GET] /products/:category
   async plp({ inertia, request, params, response }: HttpContext) {
+    const categoryName = params.category.toUpperCase()
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
     const page = queryString.page || 1
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
     const categories = await this.categoryService.all()
-    const category = await this.categoryService.getByKey(params.category.toUpperCase())
-    if (!category) {
+    const category = await this.categoryService.getByKey(categoryName)
+    if (!category && categoryName !== 'ALL') {
       return response.redirect().back()
     }
     const specsData = await this.specService.byTypes(
-      category.specTypes.map((specType: any) => specType.key) as any
+      (category?.specTypes.map((specType: any) => specType.key) as any) || []
     )
     const products = await this.productService.byCategory({
-      category: category.id,
+      category: category?.id || undefined,
       specs: specsIds,
       page,
     })

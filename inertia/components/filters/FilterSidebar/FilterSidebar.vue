@@ -1,23 +1,34 @@
 <script setup lang="ts">
 import SpecDto from '#dtos/spec'
+import CategoryDto from '#dtos/category'
 
 interface Props {
   title: string
   specs: SpecDto[]
   selectedIds: number[]
+  categories: CategoryDto[]
+  category?: number
 }
 
 defineProps<Props>()
 
 const emit = defineEmits<{
-  change: [ids: number[]]
+  (e: 'change', ids: number[]): void
+  (e: 'change:category', id: number): void
 }>()
 </script>
 
 <template>
   <div class="filter-sidebar">
     <h3 class="filter-sidebar-title">{{ title }}</h3>
-    <Filters @change="(ids) => emit('change', ids)" :specs="specs" :selected-ids="selectedIds" />
+    <Filters
+      @change="(ids) => emit('change', ids)"
+      @change:category="(id) => emit('change:category', id)"
+      :specs="specs"
+      :selected-ids="selectedIds"
+      :categories="categories"
+      :category="category"
+    />
   </div>
 </template>
 

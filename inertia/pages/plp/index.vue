@@ -1,28 +1,32 @@
 <script setup lang="ts">
-import CategoryDto from '#dtos/category';
-import ProductDto from '#dtos/product';
-import MetaDto from '#dtos/meta';
-import SpecDto from '#dtos/spec';
-import DealDto from '#dtos/deal';
+import CategoryDto from '#dtos/category'
+import ProductDto from '#dtos/product'
+import MetaDto from '#dtos/meta'
+import SpecDto from '#dtos/spec'
+import DealDto from '#dtos/deal'
+import { computed } from 'vue'
 
 import { usePage, router } from '@inertiajs/vue3'
-
 
 const props = defineProps<{
   categories: CategoryDto[]
   products: ProductDto[]
   deals: DealDto[]
-  meta: MetaDto,
+  meta: MetaDto
   specs: SpecDto[]
   category: string
   isDeal: boolean
 }>()
 
 const page = usePage()
-const queryString = page.url.split('?')[1] || '';
-const searchParams = new URLSearchParams(queryString);
-const queryParams = Object.fromEntries(searchParams.entries());
+const queryString = page.url.split('?')[1] || ''
+const searchParams = new URLSearchParams(queryString)
+const queryParams = Object.fromEntries(searchParams.entries())
 const specsParams = queryParams.specs?.split(',').map(Number) || []
+
+const currentCategory = computed(() => {
+  return props.categories.find((category) => category.key === props.category)
+})
 
 function handleChangePage(value: number) {
   const url = new URL(window.location.href)
@@ -52,6 +56,11 @@ function redirectDeal() {
     router.get(`/products/${props.category}/deal`)
   }
 }
+
+function handleChangeCategory(id: number) {
+  const category = props.categories.find((category) => category.id === id)
+  router.get(`/products/${category?.key}${props.isDeal ? '/deal' : ''}`)
+}
 </script>
 
 <template>
@@ -59,7 +68,11 @@ function redirectDeal() {
     <PageBanner
       title="Trouvez votre produit"
       description="Explorez les annonces de passionnés ou le catalogue des produits neufs."
-      :background-image="isDeal ? 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-deal.png' : 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-new.png'"
+      :background-image="
+        isDeal
+          ? 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-deal.png'
+          : 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-new.png'
+      "
     >
       <ToggleSwitch
         left-label="Annonces d'Occasion"
@@ -74,7 +87,10 @@ function redirectDeal() {
         title="Filtres pour les annonces"
         :specs="specs"
         :selected-ids="specsParams"
+        :category="currentCategory?.id || undefined"
+        :categories="categories"
         @change="handleChange"
+        @change:category="handleChangeCategory"
       />
       <div class="mt-8 lg:col-span-3 lg:mt-0">
         <!-- <div class="mb-6 flex items-center justify-between">
@@ -96,14 +112,22 @@ function redirectDeal() {
           </template>
           <ProductCard v-else v-for="product in products" :key="product.id" :product="product" />
         </div>
-        <Pagination v-slot="{ page }" :items-per-page="meta.perPage" :total="meta.total"
-          :default-page="meta.currentPage">
+        <Pagination
+          v-slot="{ page }"
+          :items-per-page="meta.perPage"
+          :total="meta.total"
+          :default-page="meta.currentPage"
+        >
           <PaginationContent v-slot="{ items }">
             <PaginationPrevious />
 
             <template v-for="(item, index) in items" :key="index">
-              <PaginationItem @click="handleChangePage(item.value)" v-if="item.type === 'page'" :value="item.value"
-                :is-active="item.value === page">
+              <PaginationItem
+                @click="handleChangePage(item.value)"
+                v-if="item.type === 'page'"
+                :value="item.value"
+                :is-active="item.value === page"
+              >
                 {{ item.value }}
               </PaginationItem>
             </template>
