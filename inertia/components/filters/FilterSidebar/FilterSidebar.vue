@@ -24,6 +24,7 @@ const emit = defineEmits<{
     <Filters
       @change="(ids) => emit('change', ids)"
       @change:category="(id) => emit('change:category', id)"
+      :inline="false"
       :specs="specs"
       :selected-ids="selectedIds"
       :categories="categories"

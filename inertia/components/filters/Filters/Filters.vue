@@ -104,7 +104,12 @@ watch(selectedCategory, (value) => {
           </component>
         </template>
         <template v-if="specs">
-          <div v-for="(specs, type) in specsByType" :key="type" :title="type">
+          <component
+            :is="inline ? 'div' : FilterCard"
+            v-for="(specs, type) in specsByType"
+            :key="type"
+            :title="type"
+          >
             <SelectFilter
               @add="handleAddSpec"
               @remove="handleRemoveSpec"
@@ -113,7 +118,7 @@ watch(selectedCategory, (value) => {
               :type="type"
               :inline="inline"
             />
-          </div>
+          </component>
         </template>
         <div class="flex justify-center items-center">
           <Button
