@@ -1,4 +1,10 @@
 export default {
+  deal: {
+    seeDetails: 'Voir détails',
+    includes: 'Includes',
+    totalPrice: 'Total Price',
+    seeProfile: 'Voir profil',
+  },
   plp: {
     title: 'Trouvez votre produit',
     description: 'Explorez les annonces de passionnés ou le catalogue des produits neufs.',
