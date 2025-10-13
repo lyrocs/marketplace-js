@@ -56,7 +56,9 @@ onUnmounted(() => {
 <template>
   <div class="flex min-h-screen w-full flex-col">
     <!-- Header -->
-    <header class="fixed top-0 z-50 flex h-16 w-full items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header
+      class="fixed top-0 z-50 flex h-16 w-full items-center gap-4 border-b bg-background px-4 md:px-6"
+    >
       <!-- Logo & Desktop Menu -->
       <div class="flex items-center gap-4">
         <a href="/" class="text-2xl font-semibold"> Marketplace.js </a>
@@ -79,7 +81,10 @@ onUnmounted(() => {
     </header>
 
     <!-- Mobile Menu Overlay -->
-    <div v-if="showMobileMenu" class="fixed left-0 top-16 z-50 flex h-screen w-screen flex-col bg-background lg:hidden">
+    <div
+      v-if="showMobileMenu"
+      class="fixed left-0 top-16 z-50 flex h-screen w-screen flex-col bg-background lg:hidden"
+    >
       <MenuMobile :categories="categories" />
 
       <!-- Mobile User Actions -->
@@ -90,8 +95,10 @@ onUnmounted(() => {
     </div>
 
     <!-- Main Content -->
-    <main v-else
-      class="mt-16 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+    <main
+      v-else
+      class="mt-16 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10"
+    >
       <slot />
     </main>
   </div>

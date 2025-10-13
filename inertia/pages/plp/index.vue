@@ -82,7 +82,7 @@ function handleChangeCategory(id: number) {
         @click-right="redirectNew"
       />
     </PageBanner>
-    <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-x-12 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 lg:gap-x-12 mt-6">
       <FilterSidebar
         title="Filtres pour les annonces"
         :specs="specs"
@@ -92,7 +92,7 @@ function handleChangeCategory(id: number) {
         @change="handleChange"
         @change:category="handleChangeCategory"
       />
-      <div class="mt-8 lg:col-span-3 lg:mt-0">
+      <div class="mt-8 lg:col-span-2 xl:col-span-3 2xl:col-span-4 lg:mt-0">
         <!-- <div class="mb-6 flex items-center justify-between">
           <p class="text-gray-600">
             Affichage de
@@ -106,7 +106,9 @@ function handleChangeCategory(id: number) {
             <option>Trier par : Prix décroissant</option>
           </select>
         </div> -->
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 mb-6">
+        <div
+          class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mb-6"
+        >
           <template v-if="isDeal">
             <DealCard v-for="deal in deals" :key="deal.id" :deal="deal" />
           </template>
