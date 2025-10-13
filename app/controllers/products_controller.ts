@@ -41,7 +41,7 @@ export default class ProductsController {
       meta: new MetaDto(products.getMeta()),
       specs: specsData.map((spec: any) => new SpecDto(spec)),
       isDeal: false,
-      category: params.category,
+      category: params.category.toUpperCase(),
     })
   }
 

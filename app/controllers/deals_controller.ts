@@ -178,7 +178,7 @@ export default class DealsController {
       deals: DealDto.fromArray(Array.from(deals)),
       meta: new MetaDto(deals.getMeta()),
       specs: specsData.map((spec: any) => new SpecDto(spec)),
-      category: params.category,
+      category: params.category.toUpperCase(),
       isDeal: true,
     })
   }
