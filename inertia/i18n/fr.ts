@@ -1,4 +1,17 @@
 export default {
+  plp: {
+    title: 'Trouvez votre produit',
+    description: 'Explorez les annonces de passionnés ou le catalogue des produits neufs.',
+    leftLabel: "Annonces d'Occasion",
+    rightLabel: 'Catalogue Neuf',
+    filters: 'Filtres pour les annonces',
+  },
+  product: {
+    seeDetails: 'Voir détails',
+    specs: 'Specs',
+    available: 'Disponible',
+    unavailable: 'Non disponible',
+  },
   home: {
     title: 'La marketplace des passionnés de drones FPV',
     description:

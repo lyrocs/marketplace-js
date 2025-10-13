@@ -41,7 +41,6 @@ function handleChange(ids: number[]) {
   if (ids && ids.length) {
     url.searchParams.set('specs', ids.join(','))
   }
-
   router.get(url.toString())
 }
 
@@ -66,8 +65,8 @@ function handleChangeCategory(id: number) {
 <template>
   <main class="container mx-auto px-4 py-2">
     <PageBanner
-      title="Trouvez votre produit"
-      description="Explorez les annonces de passionnés ou le catalogue des produits neufs."
+      :title="$t('plp.title')"
+      :description="$t('plp.description')"
       :background-image="
         isDeal
           ? 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-deal.png'
@@ -75,8 +74,8 @@ function handleChangeCategory(id: number) {
       "
     >
       <ToggleSwitch
-        left-label="Annonces d'Occasion"
-        right-label="Catalogue Neuf"
+        :left-label="$t('plp.leftLabel')"
+        :right-label="$t('plp.rightLabel')"
         :is-left-active="isDeal"
         @click-left="redirectDeal"
         @click-right="redirectNew"
@@ -84,7 +83,7 @@ function handleChangeCategory(id: number) {
     </PageBanner>
     <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 lg:gap-x-12 mt-6">
       <FilterSidebar
-        title="Filtres pour les annonces"
+        :title="$t('plp.filters')"
         :specs="specs"
         :selected-ids="specsParams"
         :category="currentCategory?.id || undefined"
@@ -93,19 +92,6 @@ function handleChangeCategory(id: number) {
         @change:category="handleChangeCategory"
       />
       <div class="mt-8 lg:col-span-2 xl:col-span-3 2xl:col-span-4 lg:mt-0">
-        <!-- <div class="mb-6 flex items-center justify-between">
-          <p class="text-gray-600">
-            Affichage de
-            <span class="font-semibold">12</span>
-
-            résultats
-          </p>
-          <select class="rounded-md border-gray-300 shadow-sm focus:border-slate-500 focus:ring-slate-500">
-            <option>Trier par : Le plus récent</option>
-            <option>Trier par : Prix croissant</option>
-            <option>Trier par : Prix décroissant</option>
-          </select>
-        </div> -->
         <div
           class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mb-6"
         >
@@ -122,7 +108,6 @@ function handleChangeCategory(id: number) {
         >
           <PaginationContent v-slot="{ items }">
             <PaginationPrevious />
-
             <template v-for="(item, index) in items" :key="index">
               <PaginationItem
                 @click="handleChangePage(item.value)"
@@ -133,9 +118,6 @@ function handleChangeCategory(id: number) {
                 {{ item.value }}
               </PaginationItem>
             </template>
-
-            <!-- <PaginationEllipsis :index="4" /> -->
-
             <PaginationNext />
           </PaginationContent>
         </Pagination>
