@@ -1,9 +1,16 @@
 export default {
   deal: {
     seeDetails: 'Voir détails',
-    includes: 'Includes',
-    totalPrice: 'Total Price',
+    includes: 'Inclus',
+    totalPrice: 'Prix total',
     seeProfile: 'Voir profil',
+    noLocation: 'Non spécifié',
+    noDescription: 'Aucune description disponible',
+    numberArticle_one: '{{count}} article',
+    numberArticle_other: '{{count}} articles',
+    moreProduct_one: '+ {{count}} autre produit',
+    moreProduct_other: '+ {{count}} autres produits',
+    seller: 'Vendeur',
   },
   plp: {
     title: 'Trouvez votre produit',
