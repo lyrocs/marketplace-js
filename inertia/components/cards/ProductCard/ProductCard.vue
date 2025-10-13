@@ -1,9 +1,23 @@
 <script setup lang="ts">
-defineProps<{ product: any }>()
+interface Props {
+  product: any
+  selectable?: boolean
+  selected?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  selectable: false,
+  selected: false,
+})
+
+const emit = defineEmits<{
+  select: [product: any]
+  seeDetails: [product: any]
+}>()
 </script>
 
 <template>
-  <a :href="`/product/${product.id}`" class="product-card group">
+  <a :href="selectable ? '#' : `/product/${product.id}`" class="product-card group">
     <img
       :src="
         product.images ? product.images[0] : 'https://placehold.co/400x300/475569/white?text=Image'
@@ -37,7 +51,15 @@ defineProps<{ product: any }>()
           </p>
         </div>
         <div class="product-card-actions">
-          <Button>{{ $t('product.seeDetails') }}</Button>
+          <Button @click="emit('seeDetails', product)">{{ $t('product.seeDetails') }}</Button>
+          <Button
+            v-if="selectable"
+            @click="emit('select', product)"
+            :variant="selected ? 'ghost' : 'secondary'"
+            :disabled="selected"
+          >
+            {{ selected ? $t('product.selected') : $t('product.select') }}
+          </Button>
         </div>
       </div>
     </div>
@@ -46,9 +68,8 @@ defineProps<{ product: any }>()
 
 <style scoped>
 .product-card {
-  @apply flex flex-col overflow-hidden rounded-xl bg-white shadow-lg;
+  @apply flex flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-200;
 }
-
 .product-card-image {
   @apply h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105;
 }
@@ -90,6 +111,6 @@ defineProps<{ product: any }>()
 }
 
 .product-card-actions {
-  @apply flex-1 flex items-end justify-end gap-2;
+  @apply flex-1 flex flex-col items-end justify-end gap-2;
 }
 </style>

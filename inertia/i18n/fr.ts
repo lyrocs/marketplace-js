@@ -24,6 +24,8 @@ export default {
     specs: 'Specs',
     available: 'Disponible',
     unavailable: 'Non disponible',
+    select: 'Sélectionner',
+    selected: 'Sélectionné',
   },
   home: {
     title: 'La marketplace des passionnés de drones FPV',
