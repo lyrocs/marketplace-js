@@ -55,6 +55,12 @@ function handleProductSeeDetails(selectedProduct: ProductDto) {
 function closeModal() {
   product.value = null
 }
+
+function handleChangePage(value: number) {
+  const url = new URL(window.location.href)
+  url.searchParams.set('page', value.toString())
+  router.get(url.toString())
+}
 </script>
 
 <template>
@@ -66,17 +72,41 @@ function closeModal() {
       :categories="categories"
       @change="handleChange"
       @change:category="handleChangeCategory"
+      class="min-w-64"
     />
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-      <ProductCard
-        v-for="product in props.products"
-        :key="product.id"
-        :product="product"
-        :selectable="true"
-        :selected="props.deal.products.some((p) => p.id === product.id)"
-        @select="handleProductSelect"
-        @seeDetails="handleProductSeeDetails"
-      />
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+        <ProductCard
+          v-for="product in props.products"
+          :key="product.id"
+          :product="product"
+          :selectable="true"
+          :selected="props.deal.products.some((p) => p.id === product.id)"
+          @select="handleProductSelect"
+          @seeDetails="handleProductSeeDetails"
+        />
+      </div>
+      <Pagination
+        v-slot="{ page }"
+        :items-per-page="meta.perPage"
+        :total="meta.total"
+        :default-page="meta.currentPage"
+      >
+        <PaginationContent v-slot="{ items }">
+          <PaginationPrevious />
+          <template v-for="(item, index) in items" :key="index">
+            <PaginationItem
+              @click="handleChangePage(item.value)"
+              v-if="item.type === 'page'"
+              :value="item.value"
+              :is-active="item.value === page"
+            >
+              {{ item.value }}
+            </PaginationItem>
+          </template>
+          <PaginationNext />
+        </PaginationContent>
+      </Pagination>
     </div>
     <Dialog
       v-if="product !== null"
