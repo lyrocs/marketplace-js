@@ -6,6 +6,7 @@ import ProductDto from '#dtos/product'
 import MetaDto from '#dtos/meta'
 import DealDto from '#dtos/deal'
 import { usePage, router } from '@inertiajs/vue3'
+import { IconArrowLeftAlt } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps<{
   categories: CategoryDto[]
@@ -61,19 +62,33 @@ function handleChangePage(value: number) {
   url.searchParams.set('page', value.toString())
   router.get(url.toString())
 }
+
+function handleCreateProduct() {
+  router.get(`/deals/${props.deal.id}/create-product`)
+}
+
+function goBack() {
+  router.get(`/deals/${props.deal.id}/edit`)
+}
 </script>
 
 <template>
   <div class="flex md:flex-row flex-col gap-4">
-    <FilterSidebar
-      :specs="specs"
-      :selected-ids="specsParams"
-      :category="categoryParams"
-      :categories="categories"
-      @change="handleChange"
-      @change:category="handleChangeCategory"
-      class="min-w-64"
-    />
+    <div class="flex flex-col">
+      <Button @click="goBack" variant="outline">
+        <IconArrowLeftAlt />
+        {{ $t('common.back') }}
+      </Button>
+      <FilterSidebar
+        :specs="specs"
+        :selected-ids="specsParams"
+        :category="categoryParams"
+        :categories="categories"
+        @change="handleChange"
+        @change:category="handleChangeCategory"
+        class="min-w-64"
+      />
+    </div>
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         <ProductCard
@@ -85,6 +100,7 @@ function handleChangePage(value: number) {
           @select="handleProductSelect"
           @seeDetails="handleProductSeeDetails"
         />
+        <NewProductCard @create="handleCreateProduct" />
       </div>
       <Pagination
         v-slot="{ page }"

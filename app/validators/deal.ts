@@ -26,12 +26,14 @@ export const updateDealValidator = vine.compile(
     invoiceAvailable: vine.boolean().optional(),
     sellingReason: vine.string().trim().optional(),
     canBeDelivered: vine.boolean().optional(),
-    features: vine.array(
-      vine.object({
-        label: vine.string().trim(),
-        value: vine.string().trim()
-      })
-    ).optional(),
+    features: vine
+      .array(
+        vine.object({
+          label: vine.string().trim(),
+          value: vine.string().trim(),
+        })
+      )
+      .optional(),
     condition: vine.enum(['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'POOR']).optional(),
     products: vine
       .array(
@@ -49,5 +51,15 @@ export const createProductValidator = vine.compile(
     name: vine.string().trim().minLength(2),
     categoryId: vine.number(),
     brandId: vine.number(),
+    description: vine.string().trim().optional(),
+    features: vine
+      .array(
+        vine.object({
+          title: vine.string().trim(),
+          items: vine.array(vine.string().trim()),
+        })
+      )
+      .optional(),
+    images: vine.array(vine.string()),
   })
 )

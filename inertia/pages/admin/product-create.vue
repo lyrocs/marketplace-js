@@ -2,7 +2,6 @@
 import AdminLayout from '~/layouts/AdminLayout.vue'
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
-import ProductForm from '~/components/ui/ProductForm.vue'
 import SpecDto from '#dtos/spec'
 import CategoryDto from '#dtos/category'
 import BrandDto from '#dtos/brand'
@@ -11,9 +10,9 @@ import ProductStatus from '#enums/product_status'
 defineOptions({ layout: AdminLayout })
 
 const props = defineProps<{
-  specs: SpecDto[],
-  categories: CategoryDto[],
-  brands: BrandDto[],
+  specs: SpecDto[]
+  categories: CategoryDto[]
+  brands: BrandDto[]
 }>()
 
 const form = ref({
@@ -39,8 +38,15 @@ function createProduct() {
   <div class="mx-auto bg-white p-6 rounded shadow">
     <h1 class="text-2xl font-bold mb-6">Create Product</h1>
     <ToastManager :messages="messages" />
-    <ProductForm v-model="form" :specs="props.specs" :categories="props.categories" :brands="props.brands"
-      :messages="messages" :isEdit="false" @submit="createProduct">
+    <ProductForm
+      v-model="form"
+      :specs="props.specs"
+      :categories="props.categories"
+      :brands="props.brands"
+      :messages="messages"
+      :isEdit="false"
+      @submit="createProduct"
+    >
     </ProductForm>
   </div>
 </template>

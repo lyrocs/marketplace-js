@@ -61,6 +61,12 @@ router
         router.post('/deals/:id', [DealsCtrl, 'update']).as('deals.update')
         router.post('/deals/:id/images', [DealsCtrl, 'addImages']).as('deals.add-images')
         router.delete('/deals/:id/images', [DealsCtrl, 'deleteImages']).as('deals.delete-images')
+        router
+          .get('/deals/:id/create-product', [DealsCtrl, 'createProductPage'])
+          .as('deals.create-product')
+        router
+          .post('/deals/:id/create-product', [DealsCtrl, 'createProduct'])
+          .as('deals.create-product.post')
       })
       .use(middleware.dealOwner())
     router.post('deals/:id/contact', [DealsCtrl, 'contact']).as('deals.contact')

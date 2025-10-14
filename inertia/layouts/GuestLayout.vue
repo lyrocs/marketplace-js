@@ -9,6 +9,7 @@ interface Props {
   categories: CategoryDto[]
   user?: UserDto
   unreadMessagesCount?: number
+  messages?: any
 }
 
 const props = defineProps<Props>()
@@ -99,6 +100,7 @@ onUnmounted(() => {
       v-else
       class="mt-16 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10"
     >
+      <ToastManager :messages="messages" />
       <slot />
     </main>
   </div>

@@ -3,13 +3,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { CategoryService } from '#services/category_service'
 import { SpecService } from '#services/spec_service'
 import { ProductService } from '#services/product_service'
+import { BrandService } from '#services/brand_service'
 import CategoryDto from '#dtos/category'
 import SpecDto from '#dtos/spec'
 import ProductDto from '#dtos/product'
+import BrandDto from '#dtos/brand'
 import MetaDto from '#dtos/meta'
 import { DealService } from '#services/deal_service'
 import DealDto from '#dtos/deal'
 import { updateDealValidator } from '#validators/deal'
+import { createProductValidator } from '#validators/deal'
 import drive from '@adonisjs/drive/services/main'
 import { cuid } from '@adonisjs/core/helpers'
 import { DiscussionService } from '#services/discussion_service'
@@ -22,6 +25,7 @@ export default class DealsController {
     private categoryService: CategoryService,
     private specService: SpecService,
     private productService: ProductService,
+    private brandService: BrandService,
     private dealService: DealService,
     private discussionService: DiscussionService,
     private matrix: MatrixContractService,
@@ -220,5 +224,45 @@ export default class DealsController {
       return null
     }
     return response.redirect().toRoute('chat.list')
+  }
+
+  // [GET] /deals/:id/create-product
+  async createProductPage({ inertia, params }: HttpContext) {
+    const dealId = Number(params.id)
+    const deal = await this.dealService.one(dealId)
+    const categories = await this.categoryService.all()
+    const specs = await this.specService.all()
+    const brands = await this.brandService.all()
+
+    return inertia.render('deals/createProduct', {
+      deal: new DealDto(deal),
+      categories: categories.map((category: any) => new CategoryDto(category)),
+      specs: specs.map((spec: any) => new SpecDto(spec)),
+      brands: brands.map((brand: any) => new BrandDto(brand)),
+    })
+  }
+
+  // [POST] /deals/:id/create-product
+  async createProduct({ request, response, params, session }: HttpContext) {
+    try {
+      const data = await request.validateUsing(createProductValidator)
+      const dealId = Number(params.id)
+      const productData = {
+        ...data,
+        category_id: data.categoryId,
+        brand_id: data.brandId,
+        status: 'DRAFT',
+      }
+      const product = await this.productService.create(productData)
+      await this.dealService.addProduct({
+        product_id: product.id,
+        deal_id: dealId,
+      })
+      return response.redirect().toRoute('deals.edit', { id: dealId })
+    } catch (error) {
+      console.log(error)
+      session.flashErrors(error.messages.map((message: any) => message.message).join(', '))
+      return response.redirect().back()
+    }
   }
 }
