@@ -248,7 +248,10 @@ export default class DealsController {
       const data = await request.validateUsing(createProductValidator)
       const dealId = Number(params.id)
       const productData = {
-        ...data,
+        name: data.name,
+        description: data.description,
+        features: data.features,
+        images: data.images,
         category_id: data.categoryId,
         brand_id: data.brandId,
         status: 'DRAFT',
@@ -260,8 +263,7 @@ export default class DealsController {
       })
       return response.redirect().toRoute('deals.edit', { id: dealId })
     } catch (error) {
-      console.log(error)
-      session.flashErrors(error.messages.map((message: any) => message.message).join(', '))
+      session.flashErrors({ errorMsg: 'Une erreur est survenue. Veuillez réessayer.' })
       return response.redirect().back()
     }
   }

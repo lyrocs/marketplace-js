@@ -13,22 +13,12 @@ const props = defineProps<{
   brands: BrandDto[]
 }>()
 
-const form = ref({
-  name: '',
-  images: [],
-  specs: [],
-  category_id: '',
-  brand_id: '',
-  description: '',
-  features: [],
-})
-
 const messages = ref({ success: '', errorsBag: {} })
 const isLoading = ref(false)
 
-function createProduct() {
+function createProduct(values: any) {
   isLoading.value = true
-  router.post(`/deals/${props.deal.id}/create-product`, form.value)
+  router.post(`/deals/${props.deal.id}/create-product`, values)
 }
 
 function goBack() {
@@ -75,7 +65,15 @@ function goBack() {
       <div class="bg-white shadow-lg rounded-lg overflow-hidden">
         <div class="px-6 py-8">
           <UserProductForm
-            v-model="form"
+            :modelValue="{
+              name: '',
+              category_id: '',
+              brand_id: '',
+              description: '',
+              images: [],
+              specs: [],
+              features: [],
+            }"
             :specs="props.specs"
             :categories="props.categories"
             :brands="props.brands"

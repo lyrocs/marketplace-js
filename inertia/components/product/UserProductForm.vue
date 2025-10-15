@@ -30,7 +30,7 @@ import {
 
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<any>, // Accepts product form object
+    type: Object as PropType<any>,
     required: true,
   },
   specs: {
@@ -59,11 +59,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'submit', 'upload-image', 'publish'])
+const emit = defineEmits(['update:modelValue', 'submit'])
 
 const { t } = useTranslation()
 
-// Schéma de validation Zod
 const formSchema = toTypedSchema(
   z.object({
     name: z
@@ -85,7 +84,6 @@ const formSchema = toTypedSchema(
   })
 )
 
-// Configuration du formulaire avec validation
 const { isFieldDirty, handleSubmit, setFieldValue, values } = useForm({
   validationSchema: formSchema,
   initialValues: {
@@ -112,10 +110,8 @@ function closeImagePopin() {
   selectedImageUrl.value = ''
 }
 
-// Fonction pour mettre à jour les valeurs du formulaire
 function updateField(field: string, value: any) {
   setFieldValue(field as any, value)
-  // Émettre les valeurs mises à jour vers le parent
   emit('update:modelValue', {
     ...values,
     category_id: values.categoryId,
@@ -123,20 +119,13 @@ function updateField(field: string, value: any) {
   })
 }
 
-// Soumission du formulaire avec validation
-const onSubmit = handleSubmit((values) => {
-  emit('submit', {
-    ...values,
-    category_id: values.categoryId,
-    brand_id: values.brandId,
-  })
+const onSubmit = handleSubmit((formValues) => {
+  emit('submit', formValues)
 })
 
-// Sélection en deux étapes pour les specs
 const selectedSpecType = ref('')
 const selectedSpecValue = ref('')
 
-// Grouper les specs par type
 const specsByType = computed(() => {
   const grouped: Record<string, SpecDto[]> = {}
   props.specs.forEach((spec) => {
@@ -149,7 +138,6 @@ const specsByType = computed(() => {
   return grouped
 })
 
-// Obtenir les valeurs disponibles pour le type sélectionné
 const availableSpecValues = computed(() => {
   if (!selectedSpecType.value) return []
   return specsByType.value[selectedSpecType.value] || []
@@ -161,7 +149,6 @@ function addSpec() {
     const newSpecs = [...values.specs, specId]
     setFieldValue('specs', newSpecs)
     updateField('specs', newSpecs)
-    // Réinitialiser les sélections
     selectedSpecType.value = ''
     selectedSpecValue.value = ''
   }
@@ -175,7 +162,6 @@ function removeSpec(id: number) {
   }
 }
 
-// Réinitialiser la valeur quand le type change
 function onSpecTypeChange() {
   selectedSpecValue.value = ''
 }
@@ -195,33 +181,6 @@ function removeImage(idx: number) {
     updateField('images', newImages)
   }
 }
-
-// Fonctions pour les features (commentées pour l'instant)
-// const newFeatureTitle = ref('')
-// function removeFeatureItem(fIdx: number, itemIdx: number) {
-//   localForm.value.features[fIdx].items.splice(itemIdx, 1)
-// }
-// function addFeatureItem(fIdx: number) {
-//   localForm.value.features[fIdx].items.push('')
-// }
-// function addFeature() {
-//   const title = newFeatureTitle.value.trim()
-//   if (!title) return
-//   localForm.value.features.push({ title, items: [''] })
-//   newFeatureTitle.value = ''
-// }
-// function removeFeature(fIdx: number) {
-//   localForm.value.features.splice(fIdx, 1)
-// }
-// function uploadImage() {
-//   emit('upload-image')
-// }
-// function publish() {
-//   emit('publish')
-// }
-// const hasExternalImages = computed(() => {
-//   return localForm.value.images.some((img: string) => !img.includes(props.s3BaseUrl))
-// })
 </script>
 
 <template>
@@ -260,7 +219,12 @@ function removeImage(idx: number) {
         </div>
       </div>
       <div class="flex gap-2">
-        <Input v-model="newImage" :placeholder="$t('product.form.addImageUrl')" class="flex-1" />
+        <Input
+          v-model="newImage"
+          @blur="() => addImage()"
+          :placeholder="$t('product.form.addImageUrl')"
+          class="flex-1"
+        />
         <Button type="button" @click="addImage" variant="outline">
           {{ $t('product.form.addImage') }}
         </Button>
@@ -326,9 +290,8 @@ function removeImage(idx: number) {
       </FormItem>
     </FormField>
     <div class="mb-4">
-      <label class="block font-semibold mb-1">Spécifications</label>
+      <label class="block font-semibold mb-1">{{ $t('product.form.specs') }}</label>
 
-      <!-- Specs sélectionnés -->
       <ul class="flex flex-wrap gap-2 mb-4">
         <li v-for="id in values.specs || []" :key="id" class="flex items-center gap-2">
           <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -345,34 +308,33 @@ function removeImage(idx: number) {
         </li>
       </ul>
 
-      <!-- Sélection en deux étapes -->
       <div class="space-y-3">
-        <!-- Étape 1: Sélection du type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >1. Choisir le type de spécification</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{
+            $t('product.form.specStep1')
+          }}</label>
           <select
             v-model="selectedSpecType"
             @change="onSpecTypeChange"
             class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">Sélectionner un type...</option>
+            <option value="">{{ $t('product.form.selectSpecType') }}</option>
             <option v-for="(_, typeLabel) in specsByType" :key="typeLabel" :value="typeLabel">
               {{ typeLabel }}
             </option>
           </select>
         </div>
 
-        <!-- Étape 2: Sélection de la valeur -->
         <div v-if="selectedSpecType">
-          <label class="block text-sm font-medium text-gray-700 mb-1">2. Choisir la valeur</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{
+            $t('product.form.specStep2')
+          }}</label>
           <div class="flex gap-2">
             <select
               v-model="selectedSpecValue"
               class="border border-gray-300 rounded-md px-3 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">Sélectionner une valeur...</option>
+              <option value="">{{ $t('product.form.selectSpecValue') }}</option>
               <option
                 v-for="spec in availableSpecValues"
                 :key="spec.id"
@@ -388,15 +350,19 @@ function removeImage(idx: number) {
               :disabled="!selectedSpecValue"
               class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded-md font-medium transition-colors"
             >
-              Ajouter
+              {{ $t('common.add') }}
             </button>
           </div>
         </div>
       </div>
     </div>
+
     <FormField v-slot="{ componentField }" name="description" :validate-on-blur="!isFieldDirty">
       <FormItem>
-        <FormLabel>{{ $t('product.form.description') }}</FormLabel>
+        <FormLabel>
+          {{ $t('product.form.description') }}
+          <InfoCard :title="$t('product.form.descriptionTips')" />
+        </FormLabel>
         <FormControl>
           <Textarea
             v-bind="componentField"
@@ -408,73 +374,7 @@ function removeImage(idx: number) {
         <FormMessage />
       </FormItem>
     </FormField>
-    <!-- <div class="mb-2">
-      <label class="block font-semibold mb-1">Features</label>
-      <div
-        v-for="(feature, fIdx) in localForm.features"
-        :key="fIdx"
-        class="mb-2 border rounded p-2 bg-white"
-      >
-        <div class="flex gap-2 mb-1 items-center">
-          <input
-            v-model="feature.title"
-            class="border px-2 py-1 rounded flex-1"
-            placeholder="Feature Title"
-          />
-          <button type="button" @click="removeFeature(fIdx)" class="text-red-500">
-            Remove Feature
-          </button>
-        </div>
-        <div
-          v-for="(item, itemIdx) in feature.items"
-          :key="itemIdx"
-          class="flex gap-2 mb-1 items-center"
-        >
-          <input
-            v-model="feature.items[itemIdx]"
-            class="border px-2 py-1 rounded flex-1"
-            placeholder="Item"
-          />
-          <button type="button" @click="removeFeatureItem(fIdx, itemIdx)" class="text-red-500">
-            Remove Item
-          </button>
-        </div>
-        <button type="button" @click="addFeatureItem(fIdx)" class="text-blue-500">Add Item</button>
-      </div>
-      <div class="flex gap-2 mt-2">
-        <input
-          v-model="newFeatureTitle"
-          placeholder="New feature title..."
-          class="border px-2 py-1 rounded flex-1"
-        />
-        <button
-          type="button"
-          @click="addFeature()"
-          class="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Add Feature
-        </button>
-      </div>
-    </div> -->
     <div class="flex gap-2 mt-2">
-      <!-- <button
-        v-if="hasExternalImages"
-        type="button"
-        @click="uploadImage()"
-        class="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-      >
-        Upload Image
-      </button> -->
-
-      <!-- <button
-        v-if="localForm.status === ProductStatus.IMPORTED"
-        type="button"
-        @click="publish()"
-        class="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-      >
-        Publish
-      </button> -->
-
       <Button type="submit" size="lg" class="w-full">
         {{ $t('product.form.createProduct') }}
       </Button>

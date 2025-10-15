@@ -28,8 +28,8 @@ const form = ref({
 
 const messages = ref({ success: '', errorsBag: {} })
 
-function createProduct() {
-  router.post('/admin/product', form.value)
+function createProduct(values: any) {
+  router.post('/admin/product', values)
   messages.value.success = 'Product created successfully'
 }
 </script>
