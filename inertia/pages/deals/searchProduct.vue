@@ -10,10 +10,11 @@ import { IconArrowLeftAlt } from '@iconify-prerendered/vue-material-symbols'
 
 const props = defineProps<{
   categories: CategoryDto[]
-  specs: SpecDto[]
+  specs?: SpecDto[]
   products: ProductDto[]
   deal: DealDto
   meta: MetaDto
+  search?: string
 }>()
 
 const page = usePage()
@@ -21,7 +22,7 @@ const queryString = page.url.split('?')[1] || ''
 const searchParams = new URLSearchParams(queryString)
 const queryParams = Object.fromEntries(searchParams.entries())
 const specsParams = queryParams.specs?.split(',').map(Number) || []
-const categoryParams = queryParams.category ? Number(queryParams.category) : null
+const categoryParams = queryParams.category
 const product = ref<ProductDto | null>(null)
 
 function handleChange(ids: number[]) {
@@ -70,6 +71,28 @@ function handleCreateProduct() {
 function goBack() {
   router.get(`/deals/${props.deal.id}/edit`)
 }
+
+function handleChangeSearch(search: string) {
+  const url = new URL(window.location.href)
+  const category = url.searchParams.get('category')
+  const specs = url.searchParams.get('specs')
+
+  let searchUrl = `/deals/${props.deal.id}/search-product/${search}`
+  const params = new URLSearchParams()
+
+  if (category) {
+    params.append('category', category)
+  }
+  if (specs) {
+    params.append('specs', specs)
+  }
+
+  if (params.toString()) {
+    searchUrl += `?${params.toString()}`
+  }
+
+  router.get(searchUrl)
+}
 </script>
 
 <template>
@@ -84,8 +107,11 @@ function goBack() {
         :selected-ids="specsParams"
         :category="categoryParams"
         :categories="categories"
+        :show-search="true"
+        :search="search"
         @change="handleChange"
         @change:category="handleChangeCategory"
+        @change:search="handleChangeSearch"
         class="min-w-64"
       />
     </div>

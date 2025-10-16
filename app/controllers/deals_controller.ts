@@ -67,6 +67,7 @@ export default class DealsController {
 
   // [GET] /deals/:id/search-product
   async searchProduct({ inertia, request, params }: HttpContext) {
+    const search = params.search || ''
     const dealId = Number(params.id)
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
@@ -82,9 +83,10 @@ export default class DealsController {
       )
     }
     const deal = await this.dealService.one(dealId)
-    const products = await this.productService.byCategory({
+    const products = await this.productService.search({
       category: category?.id,
       specs: specsIds,
+      name: search,
       page,
     })
     return inertia.render('deals/searchProduct', {
@@ -93,6 +95,7 @@ export default class DealsController {
       products: ProductDto.fromArray(Array.from(products)),
       meta: new MetaDto(products.getMeta()),
       deal: new DealDto(deal),
+      search: search,
     })
   }
 

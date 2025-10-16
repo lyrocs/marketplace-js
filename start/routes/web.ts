@@ -57,6 +57,9 @@ router
         router
           .get('/deals/:id/search-product', [DealsCtrl, 'searchProduct'])
           .as('deals.search-product')
+        router
+          .get('/deals/:id/search-product/:search', [DealsCtrl, 'searchProduct'])
+          .as('deals.search-product.search')
         router.post('/deals/:id/add-product', [DealsCtrl, 'addProduct']).as('deals.add-product')
         router.post('/deals/:id', [DealsCtrl, 'update']).as('deals.update')
         router.post('/deals/:id/images', [DealsCtrl, 'addImages']).as('deals.add-images')

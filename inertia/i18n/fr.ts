@@ -43,6 +43,7 @@ export default {
       createProduct: 'Créer le produit',
       descriptionTips: 'Ajoutez un lien vers la fiche produit officielle pour plus de clarté.',
       specs: 'Spécifications',
+      searchName: 'Recherche par nom',
       selectSpecType: 'Sélectionner un type...',
       specStep1: '1. Choisir le type de spécification',
       specStep2: '2. Choisir la valeur',
@@ -62,6 +63,7 @@ export default {
     back: 'Retour',
     add: 'Ajouter',
     selectSpecType: 'Sélectionner un type...',
+    search: 'Rechercher',
   },
   home: {
     title: 'La marketplace des passionnés de drones FPV',

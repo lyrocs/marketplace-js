@@ -5,13 +5,15 @@ import { computed, ref, watch } from 'vue'
 import FilterCard from '~/components/filters/FilterCard/FilterCard.vue'
 
 const props = defineProps<{
-  specs: SpecDto[]
+  specs?: SpecDto[]
   selectedIds: number[]
   categories: CategoryDto[]
-  category?: number
-  statuses: string[]
+  category?: string
+  statuses?: string[]
   selectedStatus?: string
   inline?: boolean
+  showSearch?: boolean
+  search?: string
 }>()
 
 const specsByType = computed(() => {
@@ -31,9 +33,10 @@ const emit = defineEmits<{
   (e: 'change', ids: number[]): void
   (e: 'change:category', id: number): void
   (e: 'change:status', status: string): void
+  (e: 'change:search', search: string): void
 }>()
 
-const selectedCategory = ref<number | null>(props.category || null)
+const selectedCategory = ref<string | null>(props.category || null)
 const selectedStatus = ref<string | null>(props.selectedStatus || null)
 
 function handleAddSpec(id: number) {
@@ -59,6 +62,12 @@ function handleStatusChange(value: string) {
   emit('change:status', value)
 }
 
+const search = ref(props.search || '')
+
+function handleSearch() {
+  emit('change:search', search.value)
+}
+
 // watch selectedCategory
 watch(selectedCategory, (value) => {
   if (value !== null) {
@@ -71,6 +80,14 @@ watch(selectedCategory, (value) => {
   <aside class="lg:col-span-1">
     <div class="space-y-8">
       <div :class="inline ? 'flex flex-row flex-wrap gap-4' : 'flex flex-col gap-4'">
+        <template v-if="showSearch">
+          <FilterCard :title="$t('product.form.searchName')">
+            <Input v-model="search" placeholder="Search" />
+            <Button @click="handleSearch" class="w-full">
+              {{ $t('common.search') }}
+            </Button>
+          </FilterCard>
+        </template>
         <template v-if="statuses">
           <component :is="inline ? 'div' : FilterCard" title="Status">
             <Select v-model="selectedStatus" @update:model-value="handleStatusChange">
@@ -95,7 +112,11 @@ watch(selectedCategory, (value) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem v-for="option in categories" :key="option.id" :value="option.id">
+                  <SelectItem
+                    v-for="option in categories"
+                    :key="option.id"
+                    :value="option.id.toString()"
+                  >
                     {{ option.name }}
                   </SelectItem>
                 </SelectGroup>

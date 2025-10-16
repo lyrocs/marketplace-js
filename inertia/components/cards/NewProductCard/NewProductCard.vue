@@ -5,9 +5,13 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="new-product-card group">
-    <div class="new-product-card-image">
-      <div class="new-product-card-icon">
+  <div
+    class="flex flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-200 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:shadow-xl group"
+  >
+    <div
+      class="h-48 w-full flex items-center justify-center bg-gray-50 transition-colors duration-300 group-hover:bg-blue-50"
+    >
+      <div class="text-gray-400 group-hover:text-blue-500 transition-colors duration-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="48"
@@ -24,12 +28,16 @@ const emit = defineEmits<{
         </svg>
       </div>
     </div>
-    <div class="new-product-card-content">
-      <h3 class="new-product-card-title">{{ $t('product.createNew') }}</h3>
-      <div class="new-product-card-description">
-        <p>{{ $t('product.createNewDescription') }}</p>
+    <div class="flex grow flex-col p-4">
+      <h3
+        class="my-2 h-14 text-lg font-bold text-gray-800 hover:text-slate-600 overflow-hidden flex items-center justify-center"
+      >
+        {{ $t('product.createNew') }}
+      </h3>
+      <div class="flex-1 flex items-center justify-center text-center">
+        <p class="text-sm text-gray-600">{{ $t('product.createNewDescription') }}</p>
       </div>
-      <div class="new-product-card-actions">
+      <div class="flex-1 flex flex-col items-center justify-end gap-2 mt-4">
         <Button @click="emit('create')" variant="default" class="w-full">
           {{ $t('product.createProduct') }}
         </Button>
@@ -37,37 +45,3 @@ const emit = defineEmits<{
     </div>
   </div>
 </template>
-
-<style scoped>
-.new-product-card {
-  @apply flex flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-200 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:shadow-xl;
-}
-
-.new-product-card-image {
-  @apply h-48 w-full flex items-center justify-center bg-gray-50 transition-colors duration-300 group-hover:bg-blue-50;
-}
-
-.new-product-card-icon {
-  @apply text-gray-400 group-hover:text-blue-500 transition-colors duration-300;
-}
-
-.new-product-card-content {
-  @apply flex grow flex-col p-4;
-}
-
-.new-product-card-title {
-  @apply my-2 h-14 text-lg font-bold text-gray-800 hover:text-slate-600 overflow-hidden flex items-center justify-center;
-}
-
-.new-product-card-description {
-  @apply flex-1 flex items-center justify-center text-center;
-}
-
-.new-product-card-description p {
-  @apply text-sm text-gray-600;
-}
-
-.new-product-card-actions {
-  @apply flex-1 flex flex-col items-center justify-end gap-2 mt-4;
-}
-</style>
