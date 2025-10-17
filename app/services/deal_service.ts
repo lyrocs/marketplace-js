@@ -59,14 +59,17 @@ export class DealService {
   async search({
     specs = [],
     category = undefined,
+    name = undefined,
     page = 1,
-  }: { specs?: number[]; category?: number; page?: number } = {}) {
+  }: { specs?: number[]; category?: number; name?: string; page?: number } = {}) {
     const products = Deal.query()
       .preload('user')
       .preload('products', (productQuery) => {
         productQuery.preload('category').preload('specs')
       })
-
+    if (name) {
+      products.where('title', 'ilike', `%${name}%`)
+    }
     products.whereHas('products', (productQuery) => {
       if (category) {
         productQuery.where('category_id', category)

@@ -107,7 +107,6 @@ function handleChangeSearch(search: string) {
         :selected-ids="specsParams"
         :category="categoryParams"
         :categories="categories"
-        :show-search="true"
         :search="search"
         @change="handleChange"
         @change:category="handleChangeCategory"

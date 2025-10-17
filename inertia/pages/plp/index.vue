@@ -16,6 +16,7 @@ const props = defineProps<{
   specs: SpecDto[]
   category: string
   isDeal: boolean
+  search?: string
 }>()
 
 const page = usePage()
@@ -60,6 +61,17 @@ function handleChangeCategory(id: number) {
   const category = props.categories.find((category) => category.id === id)
   router.get(`/products/${category?.key}${props.isDeal ? '/deal' : ''}`)
 }
+
+function handleChangeSearch(search: string) {
+  const url = new URL(window.location.href)
+  url.searchParams.delete('page')
+  if (search) {
+    url.searchParams.set('search', search)
+  } else {
+    url.searchParams.delete('search')
+  }
+  router.get(url)
+}
 </script>
 
 <template>
@@ -88,8 +100,10 @@ function handleChangeCategory(id: number) {
         :selected-ids="specsParams"
         :category="currentCategory?.id || undefined"
         :categories="categories"
+        :search="search"
         @change="handleChange"
         @change:category="handleChangeCategory"
+        @change:search="handleChangeSearch"
       />
       <div class="mt-8 lg:col-span-2 xl:col-span-3 2xl:col-span-4 lg:mt-0">
         <div

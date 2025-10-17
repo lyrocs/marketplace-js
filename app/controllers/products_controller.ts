@@ -20,6 +20,7 @@ export default class ProductsController {
     const categoryName = params.category.toUpperCase()
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
+    const search = queryString.search || ''
     const page = queryString.page || 1
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
     const categories = await this.categoryService.all()
@@ -30,9 +31,10 @@ export default class ProductsController {
     const specsData = await this.specService.byTypes(
       (category?.specTypes.map((specType: any) => specType.key) as any) || []
     )
-    const products = await this.productService.byCategory({
+    const products = await this.productService.search({
       category: category?.id || undefined,
       specs: specsIds,
+      name: search,
       page,
     })
     return inertia.render('plp/index', {
@@ -42,6 +44,7 @@ export default class ProductsController {
       specs: specsData.map((spec: any) => new SpecDto(spec)),
       isDeal: false,
       category: params.category.toUpperCase(),
+      search,
     })
   }
 

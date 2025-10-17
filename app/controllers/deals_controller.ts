@@ -165,6 +165,7 @@ export default class DealsController {
     const queryString = request.qs()
     const specs = queryString.specs?.split(',') || []
     const page = queryString.page || 1
+    const search = queryString.search || ''
     const specsIds = Array.isArray(specs) ? specs.map(Number) : [Number(specs)]
     const categories = await this.categoryService.all()
     const category = await this.categoryService.getByKey(categoryName)
@@ -177,6 +178,7 @@ export default class DealsController {
     const deals = await this.dealService.search({
       category: category?.id || undefined,
       specs: specsIds,
+      name: search,
       page,
     })
 
@@ -187,6 +189,7 @@ export default class DealsController {
       specs: specsData.map((spec: any) => new SpecDto(spec)),
       category: params.category.toUpperCase(),
       isDeal: true,
+      search,
     })
   }
 

@@ -8,7 +8,6 @@ interface Props {
   selectedIds: number[]
   categories: CategoryDto[]
   category?: string
-  showSearch?: boolean
   search?: string
 }
 
@@ -33,7 +32,7 @@ const emit = defineEmits<{
       :selected-ids="selectedIds"
       :categories="categories"
       :category="category"
-      :show-search="showSearch"
+      :show-search="true"
       :search="search"
     />
   </div>
