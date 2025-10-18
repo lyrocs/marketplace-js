@@ -23,69 +23,32 @@ const getCurrencySymbol = (currency: string) => {
 </script>
 
 <template>
-  <div class="shop-list-container">
-    <h3 class="shop-list-title">{{ title }}</h3>
-    <div class="shop-list">
+  <div class="rounded-xl bg-white p-6 shadow-lg">
+    <h3 class="mb-4 text-lg font-bold text-gray-800">{{ title }}</h3>
+    <div class="space-y-3">
       <a
         v-for="shop in shops"
         :key="shop.id"
         :href="shop.url"
-        class="shop-item"
+        class="flex items-center gap-4 rounded-lg border p-3 hover:bg-slate-50"
       >
-        <span class="shop-name">{{ shop.name }}</span>
         <span
-          class="shop-availability"
-          :class="shop.available ? 'shop-available' : 'shop-unavailable'"
+          class="inline-block w-fit rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-800"
+          >{{ shop.name }}</span
+        >
+        <span
+          class="inline-block w-fit rounded-full px-2 py-0.5 text-xs font-semibold"
+          :class="shop.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
         >
           {{ shop.available ? 'Disponible' : 'Non disponible' }}
         </span>
-        <div class="shop-price-container">
-          <p class="shop-price">{{ shop.price }} {{ getCurrencySymbol(shop.currency) }}</p>
+        <div class="grow text-right">
+          <p class="text-xl font-bold text-slate-800">
+            {{ shop.price }} {{ getCurrencySymbol(shop.currency) }}
+          </p>
         </div>
         <i class="ri-external-link-line text-slate-400"></i>
       </a>
     </div>
   </div>
 </template>
-
-<style scoped>
-.shop-list-container {
-  @apply rounded-xl bg-white p-6 shadow-lg;
-}
-
-.shop-list-title {
-  @apply mb-4 text-lg font-bold text-gray-800;
-}
-
-.shop-list {
-  @apply space-y-3;
-}
-
-.shop-item {
-  @apply flex items-center gap-4 rounded-lg border p-3 hover:bg-slate-50;
-}
-
-.shop-name {
-  @apply inline-block w-fit rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-800;
-}
-
-.shop-availability {
-  @apply inline-block w-fit rounded-full px-2 py-0.5 text-xs font-semibold;
-}
-
-.shop-available {
-  @apply bg-green-100 text-green-800;
-}
-
-.shop-unavailable {
-  @apply bg-red-100 text-red-800;
-}
-
-.shop-price-container {
-  @apply grow text-right;
-}
-
-.shop-price {
-  @apply text-xl font-bold text-slate-800;
-}
-</style>

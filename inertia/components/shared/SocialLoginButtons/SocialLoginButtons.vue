@@ -13,12 +13,12 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="social-login-grid">
+  <div class="grid grid-cols-2 gap-4">
     <a
       v-for="provider in providers"
       :key="provider.name"
       :href="provider.href"
-      class="social-login-button"
+      class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-slate-600"
     >
       <!-- Google Icon -->
       <svg v-if="provider.icon === 'google'" class="size-5" aria-hidden="true" viewBox="0 0 24 24">
@@ -42,7 +42,13 @@ defineProps<Props>()
       </svg>
 
       <!-- Facebook Icon -->
-      <svg v-else-if="provider.icon === 'facebook'" class="size-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+      <svg
+        v-else-if="provider.icon === 'facebook'"
+        class="size-6"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path
           d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.988H8.05V12h2.388V9.785c0-2.358 1.41-3.655 3.54-3.655 1.012 0 2.067.18 2.067.18v2.51h-1.229c-1.15 0-1.52.723-1.52 1.464V12h2.828l-.455 2.891h-2.373v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10Z"
         />
@@ -52,13 +58,3 @@ defineProps<Props>()
     </a>
   </div>
 </template>
-
-<style scoped>
-.social-login-grid {
-  @apply grid grid-cols-2 gap-4;
-}
-
-.social-login-button {
-  @apply flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-slate-600;
-}
-</style>

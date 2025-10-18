@@ -11,30 +11,10 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="auth-header">
-    <h2 class="auth-title">{{ title }}</h2>
-    <p class="auth-subtitle">{{ subtitle }}</p>
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      {{ title }}
+    </h2>
+    <p class="mt-1 text-center text-gray-600">{{ subtitle }}</p>
   </div>
 </template>
-
-<style scoped>
-.auth-header {
-  @apply sm:mx-auto sm:w-full sm:max-w-md;
-}
-
-.auth-logo {
-  @apply block text-center text-3xl font-bold text-gray-800;
-}
-
-.auth-logo-accent {
-  @apply text-slate-600;
-}
-
-.auth-title {
-  @apply mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900;
-}
-
-.auth-subtitle {
-  @apply mt-1 text-center text-gray-600;
-}
-</style>

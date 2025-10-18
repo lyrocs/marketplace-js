@@ -20,37 +20,18 @@ const iconColorClasses = {
 </script>
 
 <template>
-  <div class="stats-card">
-    <div class="stats-card-content">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div class="flex items-center justify-between">
       <div>
-        <p class="stats-card-label">{{ label }}</p>
-        <p class="stats-card-value" :class="valueColor">{{ value }}</p>
+        <p class="text-sm font-medium text-gray-600">{{ label }}</p>
+        <p class="text-2xl font-bold" :class="valueColor">{{ value }}</p>
       </div>
-      <div class="stats-card-icon" :class="iconColorClasses[iconColor]">
+      <div
+        class="w-8 h-8 rounded-lg flex items-center justify-center"
+        :class="iconColorClasses[iconColor]"
+      >
         <slot />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.stats-card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
-}
-
-.stats-card-content {
-  @apply flex items-center justify-between;
-}
-
-.stats-card-label {
-  @apply text-sm font-medium text-gray-600;
-}
-
-.stats-card-value {
-  @apply text-2xl font-bold;
-}
-
-.stats-card-icon {
-  @apply w-8 h-8 rounded-lg flex items-center justify-center;
-}
-</style>

@@ -25,72 +25,38 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="product-ref-card">
-    <h2 class="product-ref-title">{{ title }}</h2>
-    <p class="product-ref-subtitle">{{ subtitle }}</p>
-    <div class="product-ref-list">
-      <div v-for="product in products" :key="product.id" class="product-ref-item">
+  <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <h2 class="text-2xl font-bold text-gray-800">{{ title }}</h2>
+    <p class="text-sm text-gray-500 mt-1">{{ subtitle }}</p>
+    <div class="mt-6 space-y-4">
+      <div
+        v-for="product in products"
+        :key="product.id"
+        class="flex items-center gap-4 border border-slate-200 rounded-lg p-3 hover:bg-slate-50 hover:shadow-sm transition-all"
+      >
         <img
           v-if="product.images?.[0]"
           :src="product.images[0]"
           :alt="product.name"
-          class="product-ref-image"
+          class="w-20 h-20 flex-shrink-0 bg-gray-200 rounded-md object-cover"
         />
-        <div class="product-ref-info">
-          <span v-if="product.brand" class="product-ref-brand">{{ product.brand }}</span>
-          <h4 class="product-ref-name">{{ product.name }}</h4>
-          <p v-if="product.description" class="product-ref-description">{{ product.description }}</p>
+        <div class="flex-grow">
+          <span v-if="product.brand" class="text-xs font-semibold text-gray-500">{{
+            product.brand
+          }}</span>
+          <h4 class="font-bold text-gray-800 leading-tight">{{ product.name }}</h4>
+          <p v-if="product.description" class="text-sm text-gray-600 mt-1 hidden sm:block">
+            {{ product.description }}
+          </p>
         </div>
-        <a href="#" class="product-ref-link" title="Voir la fiche officielle">
+        <a
+          href="#"
+          class="flex-shrink-0 ml-4 text-slate-400 hover:text-slate-700"
+          title="Voir la fiche officielle"
+        >
           <IconArrowForwardIos class="text-3xl" />
         </a>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.product-ref-card {
-  @apply bg-white rounded-xl shadow-lg p-6 md:p-8;
-}
-
-.product-ref-title {
-  @apply text-2xl font-bold text-gray-800;
-}
-
-.product-ref-subtitle {
-  @apply text-sm text-gray-500 mt-1;
-}
-
-.product-ref-list {
-  @apply mt-6 space-y-4;
-}
-
-.product-ref-item {
-  @apply flex items-center gap-4 border border-slate-200 rounded-lg p-3 hover:bg-slate-50 hover:shadow-sm transition-all;
-}
-
-.product-ref-image {
-  @apply w-20 h-20 flex-shrink-0 bg-gray-200 rounded-md object-cover;
-}
-
-.product-ref-info {
-  @apply flex-grow;
-}
-
-.product-ref-brand {
-  @apply text-xs font-semibold text-gray-500;
-}
-
-.product-ref-name {
-  @apply font-bold text-gray-800 leading-tight;
-}
-
-.product-ref-description {
-  @apply text-sm text-gray-600 mt-1 hidden sm:block;
-}
-
-.product-ref-link {
-  @apply flex-shrink-0 ml-4 text-slate-400 hover:text-slate-700;
-}
-</style>

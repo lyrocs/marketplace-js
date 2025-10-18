@@ -11,7 +11,9 @@ const props = defineProps<{
   user: UserDto
   matrixHost: string
   unreadMessagesCount: number
-  discussions: (DiscussionDto & { messages?: Array<{ sender: string; body: string; ts: number }> })[]
+  discussions: (DiscussionDto & {
+    messages?: Array<{ sender: string; body: string; ts: number }>
+  })[]
 }>()
 
 // State
@@ -19,7 +21,7 @@ const state = ref<ChatState>({
   selectedRoomId: null,
   searchQuery: '',
   isLoading: false,
-  error: null
+  error: null,
 })
 
 // Matrix composable
@@ -30,7 +32,7 @@ const {
   rooms: matrixRooms,
   connect,
   sendMessage: sendMatrixMessage,
-  loadMore
+  loadMore,
 } = useMatrix({
   user: props.user,
   matrixHost: props.matrixHost,
@@ -44,29 +46,31 @@ const {
     if (chatRooms.value.length > 0 && !state.value.selectedRoomId) {
       handleRoomSelect(chatRooms.value[0].matrixRoomId)
     }
-  }
+  },
 })
 
 // Computed properties
 const chatRooms = computed<ChatRoomType[]>(() => {
   // Merge discussions with matrix rooms data
-  return props.discussions.map(discussion => {
-    const matrixRoom = matrixRooms.value.find(r => r.roomId === discussion.matrixRoomId)
+  return props.discussions.map((discussion) => {
+    const matrixRoom = matrixRooms.value.find((r) => r.roomId === discussion.matrixRoomId)
     const messages = matrixRoom?.messages || discussion.messages || []
 
     return {
       ...discussion,
       messages,
       loaded: matrixRoom?.loaded || false,
-      lastActivity: messages.length > 0 ? Math.max(...messages.map(m => m.ts)) : 0,
-      unreadCount: discussion.status.find(status => status.userId === props.user.id)?.newMessages ? 1 : 0
+      lastActivity: messages.length > 0 ? Math.max(...messages.map((m) => m.ts)) : 0,
+      unreadCount: discussion.status.find((status) => status.userId === props.user.id)?.newMessages
+        ? 1
+        : 0,
     }
   })
 })
 
 const currentRoom = computed(() => {
   if (!state.value.selectedRoomId) return null
-  return chatRooms.value.find(room => room.matrixRoomId === state.value.selectedRoomId) || null
+  return chatRooms.value.find((room) => room.matrixRoomId === state.value.selectedRoomId) || null
 })
 
 const isLoading = computed(() => {
@@ -82,7 +86,7 @@ const handleRoomSelect = async (roomId: string) => {
   state.value.selectedRoomId = roomId
   state.value.error = null
   if (props.unreadMessagesCount > 0) {
-    const selectedRoom = chatRooms.value.find(room => room.matrixRoomId === roomId)
+    const selectedRoom = chatRooms.value.find((room) => room.matrixRoomId === roomId)
     if (!selectedRoom) {
       return
     }
@@ -145,33 +149,30 @@ watch(error, (newError) => {
 </script>
 
 <template>
-  <main class="chat-main">
+  <main class="w-full mx-auto">
     <ErrorBanner v-if="error" :error="error" @dismiss="state.error = null" />
 
-    <div class="chat-container">
+    <div class="bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden">
       <ChatHeader :is-connected="isConnected" :is-loading="isLoading" :has-error="!!error" />
 
-      <div class="chat-layout">
-        <ChatList :rooms="chatRooms" :selected-room-id="state.selectedRoomId" :current-user="props.user"
-          :search-query="state.searchQuery" @room-select="handleRoomSelect" @search="handleSearch" />
+      <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden">
+        <ChatList
+          :rooms="chatRooms"
+          :selected-room-id="state.selectedRoomId"
+          :current-user="props.user"
+          :search-query="state.searchQuery"
+          @room-select="handleRoomSelect"
+          @search="handleSearch"
+        />
 
-        <ChatRoom :room="currentRoom" :current-user="props.user" :is-loading="isLoading"
-          @send-message="handleSendMessage" @load-more="handleLoadMore" />
+        <ChatRoom
+          :room="currentRoom"
+          :current-user="props.user"
+          :is-loading="isLoading"
+          @send-message="handleSendMessage"
+          @load-more="handleLoadMore"
+        />
       </div>
     </div>
   </main>
 </template>
-
-<style scoped>
-.chat-main {
-  @apply w-full mx-auto;
-}
-
-.chat-container {
-  @apply bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden;
-}
-
-.chat-layout {
-  @apply grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden;
-}
-</style>

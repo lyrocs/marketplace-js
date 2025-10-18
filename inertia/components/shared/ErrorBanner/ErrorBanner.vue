@@ -16,40 +16,14 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="error-banner">
-    <IconCloudAlertOutline class="error-icon" />
-    <div class="error-content">
-      <p class="error-title">{{ title }}</p>
-      <p class="error-message">{{ error }}</p>
+  <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+    <IconCloudAlertOutline class="text-red-500 text-xl flex-shrink-0" />
+    <div class="flex-grow">
+      <p class="text-red-800 font-medium">{{ title }}</p>
+      <p class="text-red-600 text-sm">{{ error }}</p>
     </div>
-    <button @click="emit('dismiss')" class="error-dismiss">
+    <button @click="emit('dismiss')" class="text-red-500 hover:text-red-700 transition-colors">
       <IconCloseSmall class="text-xl" />
     </button>
   </div>
 </template>
-
-<style scoped>
-.error-banner {
-  @apply mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3;
-}
-
-.error-icon {
-  @apply text-red-500 text-xl flex-shrink-0;
-}
-
-.error-content {
-  @apply flex-grow;
-}
-
-.error-title {
-  @apply text-red-800 font-medium;
-}
-
-.error-message {
-  @apply text-red-600 text-sm;
-}
-
-.error-dismiss {
-  @apply text-red-500 hover:text-red-700 transition-colors;
-}
-</style>
