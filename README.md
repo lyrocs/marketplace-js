@@ -1,6 +1,6 @@
 # Marketplace JS
 
-A modern, full-stack marketplace application built with AdonisJS, Vue 3, and TypeScript. This application provides a robust platform for creating and managing an online marketplace with features like product listings, user authentication, and more.
+A modern, full-stack marketplace application built with AdonisJS, Vue 3, and TypeScript. This open-source platform combines a **product catalog with price comparison** and a **C2C marketplace** for second-hand listings.
 
 ## 🖥️ Demo
 
@@ -8,12 +8,13 @@ Try the live demo: [https://marketplace.lyrocs.ovh/](https://marketplace.lyrocs.
 
 ## ✨ Key Features
 
-- **Product Listings**: Browse a catalog of products from various sellers.
-- **User-Managed Deals**: Allow users to create, manage, and promote their own product deals.
-- **Real-Time Chat**: Integrated chat system for seamless communication between buyers and sellers, powered by the Matrix protocol.
-- **Secure Authentication**: Robust and secure user authentication with role-based access control (users and admins).
-- **Admin Panel**: A dedicated dashboard for administrators to manage users, listings, and other platform settings.
-- **Responsive Design**: Fully responsive and mobile-friendly interface for a great user experience on any device.
+- **Product Catalog**: Browse products with categories, brands, and detailed specifications.
+- **Price Comparison**: Compare prices from multiple shops/retailers for each product.
+- **C2C Marketplace**: Users can create and manage their own deals/listings.
+- **Real-Time Chat**: Integrated chat system for buyer-seller communication (Matrix protocol).
+- **Secure Authentication**: Email/password + OAuth (Google, Facebook) with role-based access control.
+- **Admin Panel**: Full backoffice to manage products, categories, brands, specs, users, and deals.
+- **Responsive Design**: Mobile-friendly interface built with Tailwind CSS and Shadcn/Vue.
 
 ## 🛠️ Tech Stack
 

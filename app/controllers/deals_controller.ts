@@ -129,7 +129,8 @@ export default class DealsController {
     const data = request.all()
     const images = data.images
     for (const image of images) {
-      const key = image.split('https://kwadmarket-images.s3.amazonaws.com/').pop()
+      const baseUrl = process.env.S3_BASE_URL || ''
+      const key = image.replace(baseUrl + '/', '')
       await drive.use().delete(key)
     }
     for (const imageUrl of images) {

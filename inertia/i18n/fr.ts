@@ -66,9 +66,9 @@ export default {
     search: 'Rechercher',
   },
   home: {
-    title: 'La marketplace des passionnés de drones FPV',
+    title: 'La marketplace des passionnés',
     description:
-      'Découvrez les meilleurs produits des boutiques françaises et trouvez des offres exclusives entre particuliers pour vos drones et pièces détachées FPV',
+      'Découvrez les meilleurs produits des boutiques et trouvez des offres exclusives entre particuliers',
     searchPlaceholder: 'Que recherchez-vous ?',
     exploreDeals: 'Explorer les annonces',
     exploreProducts: 'Consulter le catalogue',

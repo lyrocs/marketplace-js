@@ -1,10 +1,15 @@
 {
   "name": "marketplace-js",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
+  "private": false,
   "type": "module",
   "license": "ISC",
-  "author": "Lyrocs",
+  "author": "",
+  "description": "Open-source marketplace with product catalog, price comparison, and C2C listings",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",

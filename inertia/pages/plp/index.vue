@@ -81,8 +81,8 @@ function handleChangeSearch(search: string) {
       :description="$t('plp.description')"
       :background-image="
         isDeal
-          ? 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-deal.png'
-          : 'https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/banner-new.png'
+          ? '/images/banner-deal.jpg'
+          : '/images/banner-catalog.jpg'
       "
     >
       <ToggleSwitch

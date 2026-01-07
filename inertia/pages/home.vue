@@ -22,7 +22,7 @@ const props = defineProps<{
     <HeroSection
       :title="$t('home.title')"
       :description="$t('home.description')"
-      background-image="https://kwadmarket-images.s3.eu-west-3.amazonaws.com/public/home-banner.jpeg"
+      background-image="/images/home-banner.jpg"
       :search-placeholder="$t('home.searchPlaceholder')"
     />
 
