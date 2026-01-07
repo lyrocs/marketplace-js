@@ -29,9 +29,12 @@ export default class MatrixProvider {
    * The process has been started
    */
   async ready() {
-    const matrix = await this.app.container.make(MatrixContractService)
-    await matrix.start()
-    // console.log('Matrix provider ready', matrix)
+    try {
+      const matrix = await this.app.container.make(MatrixContractService)
+      await matrix.start()
+    } catch (error) {
+      console.warn('Matrix service failed to start:', error.message)
+    }
   }
 
   /**
