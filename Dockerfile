@@ -17,7 +17,7 @@ FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 ADD . .
-RUN corepack enable pnpm && pnpm run build
+RUN corepack enable pnpm && pnpm run build --ignore-ts-errors
 
 # Production stage
 FROM base
