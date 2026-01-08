@@ -19,6 +19,7 @@ COPY --from=deps /app/node_modules /app/node_modules
 ADD package.json pnpm-lock.yaml ./
 ADD . .
 RUN corepack enable pnpm && pnpm run build --ignore-ts-errors
+RUN rm -f /app/build/vite.config.js
 
 # Production stage
 FROM base
