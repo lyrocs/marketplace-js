@@ -42,10 +42,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring the mail package
   |----------------------------------------------------------
   */
-  SMTP_HOST: Env.schema.string(),
-  SMTP_PORT: Env.schema.string(),
-  SMTP_USERNAME: Env.schema.string(),
-  SMTP_PASSWORD: Env.schema.string(),
+  SMTP_HOST: Env.schema.string.optional(),
+  SMTP_PORT: Env.schema.string.optional(),
+  SMTP_USERNAME: Env.schema.string.optional(),
+  SMTP_PASSWORD: Env.schema.string.optional(),
 
   /*
   |----------------------------------------------------------
@@ -59,20 +59,28 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring ally package
   |----------------------------------------------------------
   */
-  GOOGLE_CLIENT_ID: Env.schema.string(),
-  GOOGLE_CLIENT_SECRET: Env.schema.string(),
-  FACEBOOK_CLIENT_ID: Env.schema.string(),
-  FACEBOOK_CLIENT_SECRET: Env.schema.string(),
+  GOOGLE_CLIENT_ID: Env.schema.string.optional(),
+  GOOGLE_CLIENT_SECRET: Env.schema.string.optional(),
+  FACEBOOK_CLIENT_ID: Env.schema.string.optional(),
+  FACEBOOK_CLIENT_SECRET: Env.schema.string.optional(),
 
   /*
   |----------------------------------------------------------
   | Variables for configuring the drive package
   |----------------------------------------------------------
   */
-  DRIVE_DISK: Env.schema.enum(['s3'] as const),
-  AWS_ACCESS_KEY_ID: Env.schema.string(),
-  AWS_SECRET_ACCESS_KEY: Env.schema.string(),
-  AWS_REGION: Env.schema.string(),
-  S3_BUCKET: Env.schema.string(),
-  S3_BASE_URL: Env.schema.string(),
+  DRIVE_DISK: Env.schema.enum.optional(['s3'] as const),
+  AWS_ACCESS_KEY_ID: Env.schema.string.optional(),
+  AWS_SECRET_ACCESS_KEY: Env.schema.string.optional(),
+  AWS_REGION: Env.schema.string.optional(),
+  S3_BUCKET: Env.schema.string.optional(),
+  S3_BASE_URL: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring analytics
+  |----------------------------------------------------------
+  */
+  ANALYTICS_WEBSITE_ID: Env.schema.string.optional(),
+  ANALYTICS_BASE_URL: Env.schema.string.optional(),
 })

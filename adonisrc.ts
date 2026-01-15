@@ -65,6 +65,7 @@ export default defineConfig({
   preloads: [
     () => import('#start/kernel'),
     () => import('#start/routes/web'),
+    () => import('#start/view'),
   ],
 
   /*
