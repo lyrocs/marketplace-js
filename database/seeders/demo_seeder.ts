@@ -195,6 +195,7 @@ export default class DemoSeeder extends BaseSeeder {
       // Autofocus Points
       { specTypeId: specTypeMap['AUTOFOCUS_POINTS'], value: '153 points' },
       { specTypeId: specTypeMap['AUTOFOCUS_POINTS'], value: '425 points' },
+      { specTypeId: specTypeMap['AUTOFOCUS_POINTS'], value: '493 points' },
       { specTypeId: specTypeMap['AUTOFOCUS_POINTS'], value: '693 points' },
       { specTypeId: specTypeMap['AUTOFOCUS_POINTS'], value: '759 points' },
       // Shutter Speed
