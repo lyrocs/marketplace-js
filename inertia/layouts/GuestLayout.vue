@@ -84,13 +84,12 @@ onUnmounted(() => {
     <!-- Mobile Menu Overlay -->
     <div
       v-if="showMobileMenu"
-      class="fixed left-0 top-16 z-50 flex h-screen w-screen flex-col bg-background lg:hidden"
+      class="fixed left-0 top-16 z-50 flex w-screen flex-col bg-background lg:hidden"
     >
       <MenuMobile :categories="categories" />
 
       <!-- Mobile User Actions -->
       <div class="mb-16 flex flex-1 flex-col items-center justify-end gap-4 p-4">
-        <div class="w-full border-t border-slate-200"></div>
         <UserActions :user="user" :unread-messages-count="unreadMessagesCount" />
       </div>
     </div>
