@@ -39,7 +39,7 @@ const totalProducts = computed(() => {
     <div class="relative overflow-hidden">
       <img
         :src="firstProductImage"
-        class="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-110"
+        class="h-48 w-full object-contain transition-transform duration-500 group-hover:scale-110"
         :alt="`${deal.title} deal image`"
       />
 

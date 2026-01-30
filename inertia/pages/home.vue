@@ -54,7 +54,7 @@ const props = defineProps<{
       <section class="mt-20">
         <h2 class="text-center text-3xl font-bold">{{ $t('home.recentDeals') }}</h2>
         <div class="mt-8 flex flex-wrap">
-          <div v-for="deal in deals" :key="deal.id" class="md:w-1/2 lg:w-1/3 xl:w-1/4   p-3">
+          <div v-for="deal in deals" :key="deal.id" class="md:w-1/2 xl:w-1/3 2xl:w-1/4   p-3">
             <DealCard :deal="deal" />
           </div>
         </div>
