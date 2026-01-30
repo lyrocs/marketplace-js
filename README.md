@@ -67,7 +67,13 @@ Try the live demo: [https://marketplace.lyrocs.ovh/](https://marketplace.lyrocs.
    node ace migration:run
    ```
 
-6. Start the development server:
+6. Run database seeder:
+
+   ```bash
+   node ace db:seed
+   ```
+
+7. Start the development server:
 
    ```bash
    pnpm dev
