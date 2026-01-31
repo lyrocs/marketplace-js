@@ -122,7 +122,7 @@ const submitForm = () => {
     .post(`/deals/${props.deal.id}`, {
       // forceFormData: true,
       onSuccess: () => {
-        // Handle success - Inertia will automatically handle the redirect if the response includes one
+        router.visit(`/deals/${props.deal.id}`)
       },
       onError: (errors: Record<string, string>) => {
         // Handle errors - Inertia will automatically set the error bag
@@ -414,7 +414,7 @@ const saveAndAddProduct = () => {
           type="submit"
           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
-          {{ deal.id ? 'Update Deal' : 'Create Deal' }}
+          Confirm
         </Button>
       </div>
     </form>
