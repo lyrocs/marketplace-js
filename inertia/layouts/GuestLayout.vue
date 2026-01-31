@@ -74,9 +74,9 @@ onUnmounted(() => {
           <IconCloseRounded v-else class="h-6 w-6" />
         </button>
 
-        <!-- Desktop User Actions -->
+        <!-- Desktop User Button -->
         <div class="hidden lg:block">
-          <UserActions :user="user" :unread-messages-count="unreadMessagesCount" />
+          <UserButton :user="user" :unread-messages-count="unreadMessagesCount" />
         </div>
       </div>
     </header>
@@ -88,10 +88,8 @@ onUnmounted(() => {
     >
       <MenuMobile :categories="categories" />
 
-      <!-- Mobile User Actions -->
-      <div class="mb-16 flex flex-1 flex-col items-center justify-end gap-4 p-4">
-        <UserActions :user="user" :unread-messages-count="unreadMessagesCount" />
-      </div>
+      <!-- Mobile User Button -->
+      <UserButton :user="user" :unread-messages-count="unreadMessagesCount" inline />
     </div>
 
     <!-- Main Content -->
