@@ -290,21 +290,21 @@ const saveAndAddProduct = () => {
             <div
               v-for="(product, index) in products"
               :key="product.id"
-              class="flex items-center justify-between p-3 border-b"
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border-b gap-3"
             >
-              <div class="flex items-center space-x-4">
+              <div class="flex items-start space-x-4 min-w-0 flex-1">
                 <img
                   v-if="product.images?.[0]"
                   :src="product.images[0]"
                   :alt="product.name"
-                  class="w-12 h-12 object-cover rounded"
+                  class="w-12 h-12 object-cover rounded flex-shrink-0"
                 />
-                <div>
-                  <h3 class="font-medium">{{ product.name }}</h3>
-                  <p class="text-sm text-gray-500">{{ product.description }}</p>
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-medium truncate">{{ product.name }}</h3>
+                  <p class="text-sm text-gray-500 line-clamp-2">{{ product.description }}</p>
                 </div>
               </div>
-              <div class="flex items-center space-x-4">
+              <div class="flex items-center justify-end space-x-4 flex-shrink-0">
                 <QuantityInput
                   v-model="form.products[index].quantity"
                   @update:model-value="updateQuantity(product.id, $event)"
