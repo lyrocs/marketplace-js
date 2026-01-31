@@ -23,7 +23,7 @@ const form = useForm({
   invoiceAvailable: props.deal.invoiceAvailable || false,
   sellingReason: props.deal.sellingReason || '',
   canBeDelivered: props.deal.canBeDelivered || false,
-  features: props.deal.features || [],
+  features: props.deal.features?.length ? props.deal.features : [{ label: '', value: '' }],
   condition: props.deal.condition || 'GOOD',
   products:
     props.deal.products?.map((p) => ({
@@ -114,28 +114,38 @@ watch(() => form.canBeDelivered, (newVal) => {
 })
 
 const submitForm = () => {
-  form.post(`/deals/${props.deal.id}`, {
-    // forceFormData: true,
-    onSuccess: () => {
-      // Handle success - Inertia will automatically handle the redirect if the response includes one
-    },
-    onError: (errors: Record<string, string>) => {
-      // Handle errors - Inertia will automatically set the error bag
-      console.error('Error submitting form:', errors)
-    },
-  })
+  form
+    .transform((data) => ({
+      ...data,
+      features: data.features.filter((f: { label: string; value: string }) => f.label.trim() || f.value.trim()),
+    }))
+    .post(`/deals/${props.deal.id}`, {
+      // forceFormData: true,
+      onSuccess: () => {
+        // Handle success - Inertia will automatically handle the redirect if the response includes one
+      },
+      onError: (errors: Record<string, string>) => {
+        // Handle errors - Inertia will automatically set the error bag
+        console.error('Error submitting form:', errors)
+      },
+    })
 }
 
 const saveAndAddProduct = () => {
-  form.post(`/deals/${props.deal.id}`, {
-    preserveScroll: true,
-    onSuccess: () => {
-      router.visit(`/deals/${props.deal.id}/search-product`)
-    },
-    onError: (errors: Record<string, string>) => {
-      console.error('Error saving form:', errors)
-    },
-  })
+  form
+    .transform((data) => ({
+      ...data,
+      features: data.features.filter((f: { label: string; value: string }) => f.label.trim() || f.value.trim()),
+    }))
+    .post(`/deals/${props.deal.id}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        router.visit(`/deals/${props.deal.id}/search-product`)
+      },
+      onError: (errors: Record<string, string>) => {
+        console.error('Error saving form:', errors)
+      },
+    })
 }
 </script>
 
