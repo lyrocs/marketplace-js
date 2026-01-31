@@ -52,24 +52,6 @@ const details = computed(() => {
   }
 })
 
-const specsData = computed(() => [
-    { label: 'Temps de vol', value: '34 min' },
-    { label: 'Portée', value: '10 km' },
-    { label: 'Capteur', value: '48MP' },
-    { label: 'Poids', value: '570 g' },
-])
-
-const similarDeals = [
-    {
-        id: 1,
-        title: 'Combo Drone DJI FPV',
-        price: 850,
-        currency: '€',
-        images: ['https://placehold.co/300x300/64748b/white?text=DJI+FPV'],
-        location: 'Bordeaux, France',
-    },
-]
-
 const getConditionClass = (condition: string) => {
   const classMap: Record<string, string> = {
     'NEW': 'bg-green-100 text-green-800',
@@ -166,14 +148,6 @@ const makeOffer = () => {
 
                      <SpecsList :specs="deal.features?.map(f => ({ label: f.label, value: f.value })) || []" />
                 </div>
-            </div>
-        </div>
-        <div class="mt-16 pt-8 border-t">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">
-                Autres annonces qui pourraient vous intéresser
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <SimilarDealCard v-for="sdeal in similarDeals" :key="sdeal.id" :deal="sdeal" />
             </div>
         </div>
     </main>
