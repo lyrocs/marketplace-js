@@ -16,8 +16,6 @@ import { createProductValidator } from '#validators/deal'
 import drive from '@adonisjs/drive/services/main'
 import { cuid } from '@adonisjs/core/helpers'
 import { DiscussionService } from '#services/discussion_service'
-import { MatrixContractService } from '#contracts/matrix_service'
-import { UserService } from '#services/user_service'
 
 @inject()
 export default class DealsController {
@@ -27,9 +25,7 @@ export default class DealsController {
     private productService: ProductService,
     private brandService: BrandService,
     private dealService: DealService,
-    private discussionService: DiscussionService,
-    private matrix: MatrixContractService,
-    private userService: UserService
+    private discussionService: DiscussionService
   ) {}
 
   // [GET] /deals/:id
@@ -207,29 +203,11 @@ export default class DealsController {
       return null
     }
     const sellerId = deal.user_id
-    const seller = await this.userService.one(sellerId)
-    if (!seller) {
-      return null
-    }
     const existingDiscussion = await this.discussionService.getDiscussion(dealId, user.id, sellerId)
     if (existingDiscussion) {
       return response.redirect().toRoute('chat.list')
     }
-
-    const roomId = await this.matrix.createRoom({
-      name: `Deal ${dealId} - ${sellerId} - ${user.name}`,
-      buyerName: user.matrixLogin || '',
-      sellerName: seller.matrixLogin || '',
-    })
-    const discussion = await this.discussionService.createDiscussion(
-      dealId,
-      user.id,
-      sellerId,
-      roomId
-    )
-    if (!discussion || !discussion.matrixRoomId) {
-      return null
-    }
+    await this.discussionService.createDiscussion(dealId, user.id, sellerId)
     return response.redirect().toRoute('chat.list')
   }
 

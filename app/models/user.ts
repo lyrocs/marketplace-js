@@ -39,15 +39,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare role: UserRole
 
-  @column()
-  declare matrixLogin: string | null
-
-  @column()
-  declare matrixPassword: string | null
-
-  @column()
-  declare matrixToken: string | null
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

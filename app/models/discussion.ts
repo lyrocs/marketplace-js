@@ -5,6 +5,7 @@ import type { DateTime } from 'luxon'
 import Deal from '#models/deal'
 import User from '#models/user'
 import DiscussionStatus from '#models/discussion_status'
+import Message from '#models/message'
 
 export default class Discussion extends BaseModel {
   @column({ isPrimary: true })
@@ -18,9 +19,6 @@ export default class Discussion extends BaseModel {
 
   @column()
   declare sellerId: string
-
-  @column()
-  declare matrixRoomId: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -39,4 +37,7 @@ export default class Discussion extends BaseModel {
 
   @hasMany(() => DiscussionStatus, { foreignKey: 'discussionId' })
   declare status: HasMany<typeof DiscussionStatus>
+
+  @hasMany(() => Message, { foreignKey: 'discussionId' })
+  declare messages: HasMany<typeof Message>
 }

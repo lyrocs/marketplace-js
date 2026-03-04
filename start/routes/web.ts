@@ -76,6 +76,8 @@ router
     // CHAT
     router.get('/chat', [ChatCtrl, 'list']).as('chat.list')
     router.post('/chat/:id/read', [ChatCtrl, 'read']).as('chat.read')
+    router.post('/chat/:id/messages', [ChatCtrl, 'send']).as('chat.send')
+    router.get('/chat/:id/messages', [ChatCtrl, 'messages']).as('chat.messages')
     // PROFILE
     router.get('/profile', [ProfileCtrl, 'show']).as('profile.show')
     router.put('/profile', [ProfileCtrl, 'update']).as('profile.update')

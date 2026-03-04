@@ -4,31 +4,30 @@ import ChatList from './ChatList.vue'
 
 describe('ChatList', () => {
   const mockCurrentUser = {
-    id: 1,
+    id: '1',
     name: 'John Doe',
-    matrixLogin: '@john:matrix.org',
   }
 
   const mockRooms = [
     {
-      matrixRoomId: 'room1',
+      id: 1,
       deal: {
         id: 1,
         title: 'Laptop',
         price: 1000,
       },
       buyer: {
-        id: 1,
+        id: '1',
         name: 'John Doe',
       },
       seller: {
-        id: 2,
+        id: '2',
         name: 'Jane Smith',
       },
       messages: [
         {
-          id: '1',
-          sender: '@john:matrix.org',
+          id: 1,
+          senderId: '1',
           body: 'Hello',
           ts: Date.now(),
         },
@@ -43,7 +42,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -63,7 +62,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -81,7 +80,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -99,7 +98,7 @@ describe('ChatList', () => {
       props: {
         rooms: [],
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -118,7 +117,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect,
       },
       global: {
@@ -131,7 +130,7 @@ describe('ChatList', () => {
     const room = wrapper.findAll('.cursor-pointer')[0]
     await room.trigger('click')
 
-    expect(onRoomSelect).toHaveBeenCalledWith('room1')
+    expect(onRoomSelect).toHaveBeenCalledWith(1)
   })
 
   it('highlights selected room', () => {
@@ -139,7 +138,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: 'room1',
+        selectedRoomId: 1,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -158,7 +157,7 @@ describe('ChatList', () => {
       props: {
         rooms: mockRooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -183,7 +182,7 @@ describe('ChatList', () => {
       props: {
         rooms: roomsWithUnread,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
       },
       global: {
@@ -203,14 +202,14 @@ describe('ChatList', () => {
         deal: { ...mockRooms[0].deal, title: 'Laptop' },
       },
       {
-        matrixRoomId: 'room2',
+        id: 2,
         deal: {
           id: 2,
           title: 'Phone',
           price: 500,
         },
         buyer: mockCurrentUser,
-        seller: { id: 3, name: 'Bob' },
+        seller: { id: '3', name: 'Bob' },
         messages: [],
         lastActivity: Date.now(),
         unreadCount: 0,
@@ -221,7 +220,7 @@ describe('ChatList', () => {
       props: {
         rooms,
         currentUser: mockCurrentUser,
-        selectedRoomId: '',
+        selectedRoomId: null,
         onRoomSelect: vi.fn(),
         searchQuery: 'Laptop',
       },

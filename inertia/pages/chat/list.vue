@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
-import { useMatrix } from '~/composables/useMatrix'
+import { onUnmounted, ref, computed } from 'vue'
+import { useChat } from '~/composables/useChat'
 import { router } from '@inertiajs/vue3'
 import type UserDto from '#dtos/user'
 import type DiscussionDto from '#dtos/discussion'
@@ -9,11 +9,8 @@ import type { ChatRoom as ChatRoomType, ChatState } from '~/types/chat'
 // Props
 const props = defineProps<{
   user: UserDto
-  matrixHost: string
   unreadMessagesCount: number
-  discussions: (DiscussionDto & {
-    messages?: Array<{ sender: string; body: string; ts: number }>
-  })[]
+  discussions: DiscussionDto[]
 }>()
 
 // State
@@ -24,42 +21,37 @@ const state = ref<ChatState>({
   error: null,
 })
 
-// Matrix composable
+// Chat composable
 const {
-  isConnected,
-  isLoading: matrixLoading,
-  error: matrixError,
-  rooms: matrixRooms,
-  connect,
-  sendMessage: sendMatrixMessage,
-  loadMore,
-} = useMatrix({
-  user: props.user,
-  matrixHost: props.matrixHost,
-  onError: (error) => {
-    state.value.error = error.message
-    console.error('Matrix error:', error)
-  },
-  onConnected: () => {
-    console.log('Matrix client connected successfully')
-    // Auto-select first room if available
-    if (chatRooms.value.length > 0 && !state.value.selectedRoomId) {
-      handleRoomSelect(chatRooms.value[0].matrixRoomId)
-    }
-  },
-})
+  isLoading: chatLoading,
+  error: chatError,
+  rooms: chatRoomMessages,
+  sendMessage: sendChatMessage,
+  selectRoom,
+  seedRoom,
+  stopPolling,
+} = useChat({ user: props.user })
 
 // Computed properties
 const chatRooms = computed<ChatRoomType[]>(() => {
-  // Merge discussions with matrix rooms data
   return props.discussions.map((discussion) => {
-    const matrixRoom = matrixRooms.value.find((r) => r.roomId === discussion.matrixRoomId)
-    const messages = matrixRoom?.messages || discussion.messages || []
+    // Use live messages if the room has been seeded/fetched, otherwise fall back
+    // to server-preloaded messages. Live messages are always preferred because
+    // they include any newly sent/received messages.
+    const liveMessages = chatRoomMessages.value[discussion.id]
+    const messages = liveMessages !== undefined
+      ? liveMessages
+      : (discussion.messages ?? []).map((m) => ({
+          id: m.id,
+          senderId: m.senderId,
+          body: m.body,
+          ts: new Date(m.createdAt).getTime(),
+        }))
 
     return {
       ...discussion,
       messages,
-      loaded: matrixRoom?.loaded || false,
+      loaded: false,
       lastActivity: messages.length > 0 ? Math.max(...messages.map((m) => m.ts)) : 0,
       unreadCount: discussion.status.find((status) => status.userId === props.user.id)?.newMessages
         ? 1
@@ -69,33 +61,33 @@ const chatRooms = computed<ChatRoomType[]>(() => {
 })
 
 const currentRoom = computed(() => {
-  if (!state.value.selectedRoomId) return null
-  return chatRooms.value.find((room) => room.matrixRoomId === state.value.selectedRoomId) || null
+  if (state.value.selectedRoomId === null) return null
+  return chatRooms.value.find((room) => room.id === state.value.selectedRoomId) || null
 })
 
-const isLoading = computed(() => {
-  return state.value.isLoading || matrixLoading.value
-})
+const isLoading = computed(() => state.value.isLoading || chatLoading.value)
 
-const error = computed(() => {
-  return state.value.error || matrixError.value
-})
+const error = computed(() => state.value.error || chatError.value)
 
 // Methods
-const handleRoomSelect = async (roomId: string) => {
+const handleRoomSelect = async (roomId: number) => {
   state.value.selectedRoomId = roomId
   state.value.error = null
+
+  // Seed with server-preloaded messages BEFORE fetching, so history is never
+  // lost even if the network fetch fails or takes time.
+  const discussion = props.discussions.find((d) => d.id === roomId)
+  if (discussion?.messages) {
+    seedRoom(roomId, discussion.messages)
+  }
+
+  await selectRoom(roomId)
+
   if (props.unreadMessagesCount > 0) {
-    const selectedRoom = chatRooms.value.find((room) => room.matrixRoomId === roomId)
-    if (!selectedRoom) {
-      return
+    const selectedRoom = chatRooms.value.find((room) => room.id === roomId)
+    if (selectedRoom?.unreadCount) {
+      router.post(`/chat/${roomId}/read`)
     }
-    const discussionId = selectedRoom.id
-    const unreadMessagesCount = selectedRoom.unreadCount
-    if (!unreadMessagesCount) {
-      return
-    }
-    router.post(`/chat/${discussionId}/read`)
   }
 }
 
@@ -104,47 +96,25 @@ const handleSearch = (query: string) => {
 }
 
 const handleSendMessage = async (message: string) => {
-  if (!state.value.selectedRoomId || !isConnected.value) {
-    throw new Error('No room selected or not connected')
+  if (state.value.selectedRoomId === null) {
+    throw new Error('No room selected')
   }
 
   try {
     state.value.isLoading = true
-    await sendMatrixMessage(state.value.selectedRoomId, message)
-  } catch (error) {
-    console.error('Failed to send message:', error)
-    state.value.error = error instanceof Error ? error.message : 'Failed to send message'
-    throw error
+    await sendChatMessage(state.value.selectedRoomId, message)
+  } catch (err) {
+    console.error('Failed to send message:', err)
+    state.value.error = err instanceof Error ? err.message : 'Failed to send message'
+    throw err
   } finally {
     state.value.isLoading = false
   }
 }
 
-const handleLoadMore = async (roomId: string) => {
-  await loadMore(roomId)
-}
 // Lifecycle
-onMounted(async () => {
-  try {
-    state.value.isLoading = true
-    await connect()
-  } catch (error) {
-    console.error('Failed to connect to Matrix:', error)
-    state.value.error = error instanceof Error ? error.message : 'Failed to connect'
-  } finally {
-    state.value.isLoading = false
-  }
-})
-
-// Watch for errors and clear them after some time
-watch(error, (newError) => {
-  if (newError) {
-    setTimeout(() => {
-      if (state.value.error === newError) {
-        state.value.error = null
-      }
-    }, 5000)
-  }
+onUnmounted(() => {
+  stopPolling()
 })
 </script>
 
@@ -153,7 +123,7 @@ watch(error, (newError) => {
     <ErrorBanner v-if="error" :error="error" @dismiss="state.error = null" />
 
     <div class="bg-white rounded-xl shadow-lg h-[85vh] flex flex-col overflow-hidden">
-      <ChatHeader :is-connected="isConnected" :is-loading="isLoading" :has-error="!!error" />
+      <ChatHeader :is-connected="true" :is-loading="isLoading" :has-error="!!error" />
 
       <div class="grid grid-cols-1 md:grid-cols-4 h-full overflow-hidden">
         <ChatList
@@ -170,7 +140,6 @@ watch(error, (newError) => {
           :current-user="props.user"
           :is-loading="isLoading"
           @send-message="handleSendMessage"
-          @load-more="handleLoadMore"
         />
       </div>
     </div>

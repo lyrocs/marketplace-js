@@ -22,7 +22,7 @@ const sortedMessages = computed(() => {
     .sort((a, b) => a.ts - b.ts)
     .map(message => ({
       ...message,
-      isOwn: message.sender === props.currentUser.matrixLogin
+      isOwn: message.senderId === props.currentUser.id
     }))
 })
 
@@ -121,11 +121,6 @@ onUpdated(() => {
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-700"></div>
       </div>
 
-      <div v-if="!room.loaded && sortedMessages.length >= 8" class="flex justify-center items-center h-32">
-        <Button @click="props.onLoadMore(room.matrixRoomId)" class="w-full">
-          Load More
-        </Button>
-      </div>
       <!-- Messages -->
       <div v-for="message in sortedMessages" :key="message.id || `${message.sender}-${message.ts}`"
         class="flex items-end gap-3" :class="{ 'justify-end': message.isOwn }">

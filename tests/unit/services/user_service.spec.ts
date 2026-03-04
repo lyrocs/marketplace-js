@@ -152,7 +152,7 @@ test.group('UserService', (group) => {
     )
   })
 
-  test('should create Google account with user', async ({ assert }) => {
+  test('should create Google account', async ({ assert }) => {
     const userData = {
       id: 'google-user-123',
       email: `google-${Date.now()}@example.com`,
@@ -165,18 +165,11 @@ test.group('UserService', (group) => {
       }
     }
 
-    const matrixUser = {
-      username: 'matrix-user-123',
-      password: 'matrix-password-123'
-    }
-
-    const user = await userService.createGoogleAccount(userData, matrixUser)
+    const user = await userService.createGoogleAccount(userData)
 
     assert.equal(user.email, userData.email)
     assert.equal(user.name, userData.name)
     assert.equal(user.image, userData.image)
-    assert.equal(user.matrixLogin, matrixUser.username)
-    assert.equal(user.matrixPassword, matrixUser.password)
 
     // Verify account was created
     const account = await Account.query()
@@ -188,37 +181,6 @@ test.group('UserService', (group) => {
     assert.equal(account?.user_id, user.id)
     assert.equal(account?.access_token, userData.token.token)
     assert.equal(account?.id_token, userData.token.id_token)
-  })
-
-  test('should create Google account without matrix user', async ({ assert }) => {
-    const userData = {
-      id: 'google-user-no-matrix-123',
-      email: `google-no-matrix-${Date.now()}@example.com`,
-      name: 'Google User No Matrix',
-      image: 'https://example.com/google-avatar.jpg',
-      token: {
-        token: 'google-access-token',
-        expires_at: Math.floor(Date.now() / 1000) + 3600, // Unix timestamp in seconds
-        id_token: 'google-id-token'
-      }
-    }
-
-    const user = await userService.createGoogleAccount(userData, null)
-
-    assert.equal(user.email, userData.email)
-    assert.equal(user.name, userData.name)
-    assert.equal(user.image, userData.image)
-    assert.isUndefined(user.matrixLogin)
-    assert.isUndefined(user.matrixPassword)
-
-    // Verify account was created
-    const account = await Account.query()
-      .where('provider_account_id', userData.id)
-      .first()
-
-    assert.isNotNull(account)
-    assert.equal(account?.provider, 'google')
-    assert.equal(account?.user_id, user.id)
   })
 
   test('should handle special characters in user data', async ({ assert }) => {
@@ -347,16 +309,9 @@ test.group('UserService', (group) => {
       }
     }
 
-    const matrixUser = {
-      username: 'complex-matrix-user',
-      password: 'complex-matrix-password-with-special-chars'
-    }
-
-    const user = await userService.createGoogleAccount(userData, matrixUser)
+    const user = await userService.createGoogleAccount(userData)
 
     assert.equal(user.email, userData.email)
-    assert.equal(user.matrixLogin, matrixUser.username)
-    assert.equal(user.matrixPassword, matrixUser.password)
 
     // Verify account was created with complex token data
     const account = await Account.query()

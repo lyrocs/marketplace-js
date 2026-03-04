@@ -8,8 +8,6 @@ export default class UserDto extends BaseModelDto {
   declare email: string
   declare image: string | null
   declare password: string
-  declare matrixLogin: string | null
-  declare matrixPassword: string | null
   declare createdAt: string
   declare updatedAt: string | null
   declare isAdmin: boolean
@@ -25,8 +23,6 @@ export default class UserDto extends BaseModelDto {
     this.email = user.email
     this.image = user.image
     this.password = user.password
-    this.matrixLogin = user.matrixLogin ?? null
-    this.matrixPassword = user.matrixPassword ?? null
     this.createdAt = user.createdAt.toISO()!
     this.updatedAt = user.updatedAt?.toISO()!
     this.isAdmin = user.role === UserRole.ADMIN

@@ -34,13 +34,11 @@ export class UserService {
     return user
   }
 
-  async createGoogleAccount(userData: any, matrixUser: any) {
+  async createGoogleAccount(userData: any) {
     const user = await User.create({
       email: userData.email,
       name: userData.name,
       image: userData.image,
-      matrixLogin: matrixUser?.username,
-      matrixPassword: matrixUser?.password,
     })
 
     await Account.create({
@@ -59,12 +57,10 @@ export class UserService {
     return user
   }
 
-  async createFacebookAccount(userData: any, matrixUser: any) {
+  async createFacebookAccount(userData: any) {
     const user = await User.create({
       email: userData.email,
       name: userData.original.first_name,
-      matrixLogin: matrixUser?.username,
-      matrixPassword: matrixUser?.password,
     })
 
     await Account.create({

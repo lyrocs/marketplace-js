@@ -4,36 +4,35 @@ import ChatRoom from './ChatRoom.vue'
 
 describe('ChatRoom', () => {
   const mockCurrentUser = {
-    id: 1,
+    id: '1',
     name: 'John Doe',
-    matrixLogin: '@john:matrix.org',
   }
 
   const mockRoom = {
-    matrixRoomId: 'room1',
+    id: 1,
     deal: {
       id: 1,
       title: 'Laptop',
       price: 1000,
     },
     buyer: {
-      id: 1,
+      id: '1',
       name: 'John Doe',
     },
     seller: {
-      id: 2,
+      id: '2',
       name: 'Jane Smith',
     },
     messages: [
       {
-        id: '1',
-        sender: '@john:matrix.org',
+        id: 1,
+        senderId: '1',
         body: 'Hello',
         ts: Date.now(),
       },
       {
-        id: '2',
-        sender: '@jane:matrix.org',
+        id: 2,
+        senderId: '2',
         body: 'Hi there',
         ts: Date.now() + 1000,
       },
@@ -48,7 +47,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -68,7 +66,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -88,7 +85,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -109,7 +105,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -131,7 +126,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: true,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -156,7 +150,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -176,7 +169,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -196,7 +188,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {
@@ -216,7 +207,6 @@ describe('ChatRoom', () => {
         currentUser: mockCurrentUser,
         isLoading: false,
         onSendMessage: vi.fn(),
-        onLoadMore: vi.fn(),
       },
       global: {
         stubs: {

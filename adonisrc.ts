@@ -48,10 +48,6 @@ export default defineConfig({
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@adonisjs/drive/drive_provider'),
-    {
-      file: () => import('#providers/matrix_provider'),
-      environment: ['web'],
-    },
   ],
 
   /*

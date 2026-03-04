@@ -36,21 +36,17 @@ export class TestUtils {
   /**
    * Create a test user
    */
-  static async createUser(data: Partial<{ 
-    name: string; 
-    email: string; 
+  static async createUser(data: Partial<{
+    name: string;
+    email: string;
     password?: string;
     role?: string;
-    matrixLogin?: string;
-    matrixPassword?: string;
   }> = {}) {
     return User.create({
       name: data.name || `Test User ${Date.now()}`,
       email: data.email || `test${Date.now()}@example.com`,
       password: data.password || 'password123',
       role: data.role || 'USER',
-      matrixLogin: data.matrixLogin || `test-user-${Date.now()}`,
-      matrixPassword: data.matrixPassword || 'password123'
     })
   }
 

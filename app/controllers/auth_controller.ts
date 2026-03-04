@@ -5,14 +5,12 @@ import User from '#models/user'
 import limiter from '@adonisjs/limiter/services/main'
 import { UserService } from '#services/user_service'
 import UserRole from '#enums/roles'
-import { MatrixContractService } from '#contracts/matrix_service'
 import { PasswordResetService } from '#services/password_reset_service'
 import { forgotPasswordValidator, resetPasswordValidator } from '#validators/password_reset'
 
 @inject()
 export default class HomeController {
   constructor(
-    private matrixService: MatrixContractService,
     private userService: UserService,
     private passwordResetService: PasswordResetService
   ) {}
@@ -70,15 +68,6 @@ export default class HomeController {
       }
       const user = await User.create(userData)
       await auth.use('web').login(user)
-      const matrixUser = await this.matrixService.createUser()
-      if (!matrixUser) {
-        return 'Unable to create matrix user'
-      }
-      const newUser = await this.userService.update(user.id, {
-        matrixLogin: matrixUser.username,
-        matrixPassword: matrixUser.password,
-      })
-      await auth.use('web').login(newUser)
       return response.redirect().toRoute('home')
     } catch (error) {
       session.flashErrors({ errorMsg: 'Invalid email or password' })
@@ -176,11 +165,7 @@ export default class HomeController {
         // replace true by  !!request.input('remember_me')
         await auth.use('web').login(existingAccount.user, true)
       } catch {
-        const matrixUser = await this.matrixService.createUser()
-        if (!matrixUser) {
-          return 'Unable to create matrix user'
-        }
-        const newUser = await this.userService.createGoogleAccount(user, matrixUser)
+        const newUser = await this.userService.createGoogleAccount(user)
         await auth.use('web').login(newUser, true)
       }
       return response.redirect().toRoute('home')
@@ -219,11 +204,7 @@ export default class HomeController {
         const existingAccount = await this.userService.getAccount(user.id)
         await auth.use('web').login(existingAccount.user, true)
       } catch {
-        const matrixUser = await this.matrixService.createUser()
-        if (!matrixUser) {
-          return 'Unable to create matrix user'
-        }
-        const newUser = await this.userService.createFacebookAccount(user, matrixUser)
+        const newUser = await this.userService.createFacebookAccount(user)
         await auth.use('web').login(newUser, true)
       }
       return response.redirect().toRoute('home')

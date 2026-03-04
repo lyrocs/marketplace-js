@@ -2,8 +2,8 @@ import type DiscussionDto from '#dtos/discussion'
 import type UserDto from '#dtos/user'
 
 export interface ChatMessage {
-  id?: string
-  sender: string
+  id?: number
+  senderId: string
   body: string
   ts: number
   isOwn?: boolean
@@ -23,10 +23,10 @@ export interface ChatUser extends UserDto {
 
 export interface ChatListProps {
   rooms: ChatRoom[]
-  selectedRoomId: string | null
+  selectedRoomId: number | null
   currentUser: ChatUser
   searchQuery?: string
-  onRoomSelect: (roomId: string) => void
+  onRoomSelect: (roomId: number) => void
   onSearch?: (query: string) => void
 }
 
@@ -35,7 +35,6 @@ export interface ChatRoomProps {
   currentUser: ChatUser
   isLoading?: boolean
   onSendMessage: (message: string) => void
-  onLoadMore?: (roomId: string) => void
 }
 
 export interface MessageInputProps {
@@ -45,7 +44,7 @@ export interface MessageInputProps {
 }
 
 export interface ChatState {
-  selectedRoomId: string | null
+  selectedRoomId: number | null
   searchQuery: string
   isLoading: boolean
   error: string | null

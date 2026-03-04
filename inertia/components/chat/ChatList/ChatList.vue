@@ -80,10 +80,10 @@ const getContactName = (room: ChatRoom): string => {
 
     <!-- Conversations List -->
     <div class="flex-grow overflow-y-auto">
-      <div v-for="room in sortedRooms" :key="room.matrixRoomId"
+      <div v-for="room in sortedRooms" :key="room.id"
         class="p-4 flex gap-4 cursor-pointer transition-colors hover:bg-slate-100" :class="{
-          'bg-slate-100 border-l-4 border-slate-700 bg-white': selectedRoomId === room.matrixRoomId
-        }" @click="props.onRoomSelect(room.matrixRoomId)">
+          'bg-slate-100 border-l-4 border-slate-700 bg-white': selectedRoomId === room.id
+        }" @click="props.onRoomSelect(room.id)">
         <!-- Avatar placeholder -->
         <div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
           <span class="text-slate-600 font-medium text-sm">

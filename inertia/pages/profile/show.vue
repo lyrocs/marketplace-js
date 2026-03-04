@@ -298,10 +298,6 @@ const removeImage = async () => {
                 <span class="font-medium">ID Utilisateur:</span>
                 <span class="ml-2 font-mono text-xs">{{ user.id }}</span>
               </div>
-              <div>
-                <span class="font-medium">Matrix Login:</span>
-                <span class="ml-2">{{ user.matrixLogin || 'Non configuré' }}</span>
-              </div>
             </div>
           </div>
         </div>

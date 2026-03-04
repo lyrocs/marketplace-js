@@ -1,5 +1,6 @@
 import Discussion from '#models/discussion'
 import DiscussionStatus from '#models/discussion_status'
+import Message from '#models/message'
 
 export class DiscussionService {
 
@@ -11,8 +12,10 @@ export class DiscussionService {
       .preload('buyer')
       .preload('seller')
       .preload('status')
+      .preload('messages', (q) => q.orderBy('id', 'asc').limit(50).preload('sender'))
     return discussions
   }
+
   async getDiscussion(dealId: number, buyerId: string, sellerId: string) {
     const discussion = await Discussion.query()
       .where('deal_id', dealId)
@@ -24,7 +27,8 @@ export class DiscussionService {
     }
     return discussion
   }
-  async createDiscussion(dealId: number, buyerId: string, sellerId: string, roomId: string) {
+
+  async createDiscussion(dealId: number, buyerId: string, sellerId: string) {
     const existingDiscussion = await Discussion.query()
       .where('deal_id', dealId)
       .where('buyer_id', buyerId)
@@ -38,22 +42,40 @@ export class DiscussionService {
       dealId: dealId,
       buyerId: buyerId,
       sellerId: sellerId,
-      matrixRoomId: roomId,
     })
     return newDiscussion
   }
 
+  async createMessage(discussionId: number, senderId: string, body: string) {
+    const message = await Message.create({
+      discussionId,
+      senderId,
+      body,
+    })
+    await this.setNewMessage(discussionId, senderId)
+    return message
+  }
+
+  async getMessages(discussionId: number, afterId?: number) {
+    const query = Message.query()
+      .where('discussion_id', discussionId)
+      .orderBy('id', 'asc')
+      .preload('sender')
+    if (afterId) {
+      query.where('id', '>', afterId)
+    }
+    return query
+  }
+
   // set new message bool on discussion_statuses
-  async setNewMessage(roomId: string, sender: string) {
+  async setNewMessage(discussionId: number, senderId: string) {
     const discussion = await Discussion.query()
-      .where('matrix_room_id', roomId)
-      .preload('buyer')
-      .preload('seller')
+      .where('id', discussionId)
       .first()
     if (!discussion) {
       return null
     }
-    const target = sender === discussion.buyer.matrixLogin ? discussion.sellerId : discussion.buyerId
+    const target = senderId === discussion.buyerId ? discussion.sellerId : discussion.buyerId
     const discussionStatus = await DiscussionStatus.query()
       .where('discussion_id', discussion.id)
       .where('user_id', target)
