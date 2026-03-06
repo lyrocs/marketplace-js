@@ -2,6 +2,12 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import Deal from '#models/deal'
 
+declare module '@adonisjs/core/http' {
+  interface HttpContext {
+    deal?: InstanceType<typeof Deal>
+  }
+}
+
 export default class DealOwnerMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
     const dealId = ctx.params.id

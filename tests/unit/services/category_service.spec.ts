@@ -38,13 +38,13 @@ test.group('CategoryService Unit Tests', (group) => {
 
   test('should create category with spec types', async ({ assert }) => {
     // Create spec types first
-    const specType1 = await SpecType.create({
+    await SpecType.create({
       label: 'Color',
       key: 'COLOR',
       description: 'string'
     })
-    
-    const specType2 = await SpecType.create({
+
+    await SpecType.create({
       label: 'Size',
       key: 'SIZE',
       description: 'string'
@@ -157,8 +157,8 @@ test.group('CategoryService Unit Tests', (group) => {
     const retrievedCategory = await categoryService.getByKey('GET-BY-KEY-CATEGORY')
 
     assert.isNotNull(retrievedCategory)
-    assert.equal(retrievedCategory.id, category.id)
-    assert.equal(retrievedCategory.name, 'Get By Key Category')
+    assert.equal(retrievedCategory!.id, category.id)
+    assert.equal(retrievedCategory!.name, 'Get By Key Category')
   })
 
   test('should return null for non-existent key', async ({ assert }) => {
@@ -195,13 +195,13 @@ test.group('CategoryService Unit Tests', (group) => {
 
   test('should update category spec types', async ({ assert }) => {
     // Create spec types
-    const specType1 = await SpecType.create({
+    await SpecType.create({
       label: 'Original Spec',
       key: 'ORIGINAL_SPEC',
       description: 'string'
     })
-    
-    const specType2 = await SpecType.create({
+
+    await SpecType.create({
       label: 'New Spec',
       key: 'NEW_SPEC',
       description: 'number'
@@ -217,7 +217,7 @@ test.group('CategoryService Unit Tests', (group) => {
     })
 
     // Update with different spec types
-    const updatedCategory = await categoryService.update(category.id, {
+    await categoryService.update(category.id, {
       name: 'Updated Spec Category',
       key: 'updated-spec-category',
       description: 'Updated category',
@@ -265,7 +265,7 @@ test.group('CategoryService Unit Tests', (group) => {
     // Should be able to find by uppercase key
     const foundCategory = await categoryService.getByKey('CASE-TEST-CATEGORY')
     assert.isNotNull(foundCategory)
-    assert.equal(foundCategory.id, category.id)
+    assert.equal(foundCategory!.id, category.id)
   })
 
   test('should handle parent ID conversion', async ({ assert }) => {

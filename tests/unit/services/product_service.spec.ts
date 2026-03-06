@@ -1,11 +1,8 @@
 import { test } from '@japa/runner'
 import { ProductService } from '#services/product_service'
 import Product from '#models/product'
-import Category from '#models/category'
-import Brand from '#models/brand'
 import Spec from '#models/spec'
 import SpecType from '#models/spec_type'
-import Shop from '#models/shop'
 import { TestUtils } from '#tests/helpers/test-utils'
 
 test.group('ProductService', (group) => {
@@ -140,18 +137,18 @@ test.group('ProductService', (group) => {
       brandId: brand.id, 
       categoryId: category1.id 
     })
-    const product2 = await TestUtils.createProduct({ 
-      name: 'Novel', 
-      brandId: brand.id, 
-      categoryId: category2.id 
+    await TestUtils.createProduct({
+      name: 'Novel',
+      brandId: brand.id,
+      categoryId: category2.id
     })
 
     const products = await productService.byCategory({ category: category1.id })
 
-    assert.isArray(products.rows)
-    assert.isTrue(products.rows.length >= 1)
+    assert.isArray(products.all())
+    assert.isTrue(products.all().length >= 1)
     
-    const foundProduct = products.rows.find(p => p.id === product1.id)
+    const foundProduct = products.all().find(p => p.id === product1.id)
     assert.isNotNull(foundProduct)
     assert.equal(foundProduct?.category_id, category1.id)
   })
@@ -177,10 +174,10 @@ test.group('ProductService', (group) => {
 
     const activeProducts = await productService.byCategory({ status: 'ACTIVE' })
 
-    assert.isArray(activeProducts.rows)
-    assert.isTrue(activeProducts.rows.length >= 1)
+    assert.isArray(activeProducts.all())
+    assert.isTrue(activeProducts.all().length >= 1)
     
-    const foundProduct = activeProducts.rows.find(p => p.id === product1.id)
+    const foundProduct = activeProducts.all().find(p => p.id === product1.id)
     assert.isNotNull(foundProduct)
     assert.equal(foundProduct?.status, 'ACTIVE')
   })
@@ -189,23 +186,23 @@ test.group('ProductService', (group) => {
     const brand = await TestUtils.createBrand()
     const category = await TestUtils.createCategory()
     
-    const product1 = await TestUtils.createProduct({ 
-      name: 'Laptop Computer', 
-      brandId: brand.id, 
-      categoryId: category.id 
+    await TestUtils.createProduct({
+      name: 'Laptop Computer',
+      brandId: brand.id,
+      categoryId: category.id
     })
-    const product2 = await TestUtils.createProduct({ 
-      name: 'Desktop Computer', 
-      brandId: brand.id, 
-      categoryId: category.id 
+    await TestUtils.createProduct({
+      name: 'Desktop Computer',
+      brandId: brand.id,
+      categoryId: category.id
     })
 
     const searchResults = await productService.search({ name: 'Computer' })
 
-    assert.isArray(searchResults.rows)
-    assert.isTrue(searchResults.rows.length >= 2)
+    assert.isArray(searchResults.all())
+    assert.isTrue(searchResults.all().length >= 2)
     
-    const productNames = searchResults.rows.map(p => p.name)
+    const productNames = searchResults.all().map(p => p.name)
     assert.include(productNames, 'Laptop Computer')
     assert.include(productNames, 'Desktop Computer')
   })
@@ -220,18 +217,18 @@ test.group('ProductService', (group) => {
       brandId: brand.id, 
       categoryId: category1.id 
     })
-    const product2 = await TestUtils.createProduct({ 
-      name: 'Novel', 
-      brandId: brand.id, 
-      categoryId: category2.id 
+    await TestUtils.createProduct({
+      name: 'Novel',
+      brandId: brand.id,
+      categoryId: category2.id
     })
 
     const searchResults = await productService.search({ category: category1.id })
 
-    assert.isArray(searchResults.rows)
-    assert.isTrue(searchResults.rows.length >= 1)
+    assert.isArray(searchResults.all())
+    assert.isTrue(searchResults.all().length >= 1)
     
-    const foundProduct = searchResults.rows.find(p => p.id === product1.id)
+    const foundProduct = searchResults.all().find(p => p.id === product1.id)
     assert.isNotNull(foundProduct)
     assert.equal(foundProduct?.category_id, category1.id)
   })
@@ -474,10 +471,10 @@ test.group('ProductService', (group) => {
 
     const searchResults = await productService.search({ name: 'laptop' })
 
-    assert.isArray(searchResults.rows)
-    assert.isTrue(searchResults.rows.length >= 1)
+    assert.isArray(searchResults.all())
+    assert.isTrue(searchResults.all().length >= 1)
     
-    const foundProduct = searchResults.rows.find(p => p.id === product.id)
+    const foundProduct = searchResults.all().find(p => p.id === product.id)
     assert.isNotNull(foundProduct)
   })
 
@@ -516,8 +513,8 @@ test.group('ProductService', (group) => {
   test('should handle empty search results', async ({ assert }) => {
     const searchResults = await productService.search({ name: 'NonExistentProduct' })
 
-    assert.isArray(searchResults.rows)
-    assert.lengthOf(searchResults.rows, 0)
+    assert.isArray(searchResults.all())
+    assert.lengthOf(searchResults.all(), 0)
   })
 
   test('should handle products with complex features', async ({ assert }) => {
@@ -543,9 +540,9 @@ test.group('ProductService', (group) => {
     const product = await productService.create(productData)
 
     assert.deepEqual(product.features, complexFeatures)
-    assert.lengthOf(product.features, 3)
-    assert.equal(product.features[0].title, 'Technical Specifications')
-    assert.lengthOf(product.features[0].items, 3)
+    assert.lengthOf(product.features!, 3)
+    assert.equal(product.features![0].title, 'Technical Specifications')
+    assert.lengthOf(product.features![0].items, 3)
   })
 
   test('should maintain data integrity when updating product', async ({ assert }) => {

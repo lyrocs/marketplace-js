@@ -2,6 +2,7 @@ import Brand from '#models/brand'
 import Category from '#models/category'
 import Product from '#models/product'
 import User from '#models/user'
+import UserRole from '#enums/roles'
 import Deal from '#models/deal'
 import Shop from '#models/shop'
 import Spec from '#models/spec'
@@ -41,12 +42,13 @@ export class TestUtils {
     email: string;
     password?: string;
     role?: string;
+    image?: string;
   }> = {}) {
     return User.create({
       name: data.name || `Test User ${Date.now()}`,
       email: data.email || `test${Date.now()}@example.com`,
       password: data.password || 'password123',
-      role: data.role || 'USER',
+      role: (data.role as UserRole) || UserRole.USER,
     })
   }
 
@@ -65,8 +67,8 @@ export class TestUtils {
     return Product.create({
       name: data.name || `Test Product ${Date.now()}`,
       description: data.description || 'Test product description',
-      brand_id: brand.id,
-      category_id: category.id,
+      brand_id: brand!.id,
+      category_id: category!.id,
       status: 'DRAFT'
     })
   }
@@ -89,7 +91,7 @@ export class TestUtils {
       description: data.description || 'Test deal description',
       price: data.price || 100,
       currency: data.currency || 'EUR',
-      user_id: user.id,
+      user_id: user!.id,
       status: data.status || 'DRAFT'
     })
   }

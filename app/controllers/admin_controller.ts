@@ -167,7 +167,7 @@ export default class ImportController {
       session.flashErrors({ errorMsg })
       return response.redirect().back()
     }
-    const filteredUrls = imageUrls.filter((url: string) => !url.includes(env.get('S3_BASE_URL')))
+    const filteredUrls = imageUrls.filter((url: string) => !url.includes(env.get('S3_BASE_URL') ?? ''))
     if (filteredUrls.length === 0) {
       const errorMsg = 'No new images to upload'
       session.flashErrors({ errorMsg })
@@ -204,7 +204,7 @@ export default class ImportController {
   }
 
   // [PUT] /admin/product/:id
-  async updateProduct({ request, response, session, inertia }: HttpContext) {
+  async updateProduct({ request, response, inertia }: HttpContext) {
     try {
       const data = await request.validateUsing(adminProductValidator)
       const id = Number(request.param('id'))

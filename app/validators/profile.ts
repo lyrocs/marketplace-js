@@ -1,4 +1,5 @@
 import vine from '@vinejs/vine'
+import type { Infer } from '@vinejs/vine/types'
 
 export const updateProfileValidator = vine.compile(
   vine.object({
@@ -7,4 +8,4 @@ export const updateProfileValidator = vine.compile(
   })
 )
 
-export type UpdateProfileInput = typeof updateProfileValidator[typeof vine.TYPE]
+export type UpdateProfileInput = Infer<typeof updateProfileValidator>

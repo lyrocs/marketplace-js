@@ -430,7 +430,7 @@ export default class DemoSeeder extends BaseSeeder {
         specTypeMap['LENS_MOUNT'],
       ])
 
-    const accessoriesCategory = await Category.create({
+    await Category.create({
       name: 'Accessories',
       key: 'ACCESSORIES',
       description: 'Bags, straps, and camera accessories',
@@ -950,144 +950,144 @@ export default class DemoSeeder extends BaseSeeder {
 
     // Sony WH-1000XM5 shops
     await Shop.createMany([
-      { product_id: sonyWH1000XM5.id, name: 'Amazon', url: 'https://amazon.com/sony-wh1000xm5', price: 349.99, currency: 'USD', available: true },
-      { product_id: sonyWH1000XM5.id, name: 'Best Buy', url: 'https://bestbuy.com/sony-wh1000xm5', price: 379.99, currency: 'USD', available: true },
-      { product_id: sonyWH1000XM5.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-wh1000xm5', price: 348.00, currency: 'USD', available: true },
+      { productId: sonyWH1000XM5.id, name: 'Amazon', url: 'https://amazon.com/sony-wh1000xm5', price: 349.99, currency: 'USD', available: true },
+      { productId: sonyWH1000XM5.id, name: 'Best Buy', url: 'https://bestbuy.com/sony-wh1000xm5', price: 379.99, currency: 'USD', available: true },
+      { productId: sonyWH1000XM5.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-wh1000xm5', price: 348.00, currency: 'USD', available: true },
     ])
 
     // Sennheiser HD660S2 shops
     await Shop.createMany([
-      { product_id: sennheiserHD660S2.id, name: 'Amazon', url: 'https://amazon.com/sennheiser-hd660s2', price: 499.95, currency: 'USD', available: true },
-      { product_id: sennheiserHD660S2.id, name: 'Thomann', url: 'https://thomann.de/sennheiser-hd660s2', price: 449.00, currency: 'EUR', available: true },
+      { productId: sennheiserHD660S2.id, name: 'Amazon', url: 'https://amazon.com/sennheiser-hd660s2', price: 499.95, currency: 'USD', available: true },
+      { productId: sennheiserHD660S2.id, name: 'Thomann', url: 'https://thomann.de/sennheiser-hd660s2', price: 449.00, currency: 'EUR', available: true },
     ])
 
     // Beyerdynamic DT1990 Pro
     await Shop.createMany([
-      { product_id: beyerdynamicDT1990Pro.id, name: 'Amazon', url: 'https://amazon.com/beyerdynamic-dt1990', price: 549.00, currency: 'USD', available: true },
-      { product_id: beyerdynamicDT1990Pro.id, name: 'Sweetwater', url: 'https://sweetwater.com/beyerdynamic-dt1990', price: 549.00, currency: 'USD', available: true },
+      { productId: beyerdynamicDT1990Pro.id, name: 'Amazon', url: 'https://amazon.com/beyerdynamic-dt1990', price: 549.00, currency: 'USD', available: true },
+      { productId: beyerdynamicDT1990Pro.id, name: 'Sweetwater', url: 'https://sweetwater.com/beyerdynamic-dt1990', price: 549.00, currency: 'USD', available: true },
     ])
 
     // Shure SM7B shops
     await Shop.createMany([
-      { product_id: shureSM7B.id, name: 'Amazon', url: 'https://amazon.com/shure-sm7b', price: 399.00, currency: 'USD', available: true },
-      { product_id: shureSM7B.id, name: 'Sweetwater', url: 'https://sweetwater.com/shure-sm7b', price: 399.00, currency: 'USD', available: true },
-      { product_id: shureSM7B.id, name: 'Guitar Center', url: 'https://guitarcenter.com/shure-sm7b', price: 399.00, currency: 'USD', available: false },
+      { productId: shureSM7B.id, name: 'Amazon', url: 'https://amazon.com/shure-sm7b', price: 399.00, currency: 'USD', available: true },
+      { productId: shureSM7B.id, name: 'Sweetwater', url: 'https://sweetwater.com/shure-sm7b', price: 399.00, currency: 'USD', available: true },
+      { productId: shureSM7B.id, name: 'Guitar Center', url: 'https://guitarcenter.com/shure-sm7b', price: 399.00, currency: 'USD', available: false },
     ])
 
     // Rode NT-USB+
     await Shop.createMany([
-      { product_id: rodeNTUSB.id, name: 'Amazon', url: 'https://amazon.com/rode-nt-usb-plus', price: 169.00, currency: 'USD', available: true },
-      { product_id: rodeNTUSB.id, name: 'B&H Photo', url: 'https://bhphoto.com/rode-nt-usb-plus', price: 169.00, currency: 'USD', available: true },
+      { productId: rodeNTUSB.id, name: 'Amazon', url: 'https://amazon.com/rode-nt-usb-plus', price: 169.00, currency: 'USD', available: true },
+      { productId: rodeNTUSB.id, name: 'B&H Photo', url: 'https://bhphoto.com/rode-nt-usb-plus', price: 169.00, currency: 'USD', available: true },
     ])
 
     // Audio-Technica AT2020
     await Shop.createMany([
-      { product_id: audioTechnicaAT2020.id, name: 'Amazon', url: 'https://amazon.com/audio-technica-at2020', price: 99.00, currency: 'USD', available: true },
-      { product_id: audioTechnicaAT2020.id, name: 'Sweetwater', url: 'https://sweetwater.com/audio-technica-at2020', price: 99.00, currency: 'USD', available: true },
+      { productId: audioTechnicaAT2020.id, name: 'Amazon', url: 'https://amazon.com/audio-technica-at2020', price: 99.00, currency: 'USD', available: true },
+      { productId: audioTechnicaAT2020.id, name: 'Sweetwater', url: 'https://sweetwater.com/audio-technica-at2020', price: 99.00, currency: 'USD', available: true },
     ])
 
     // Focusrite Scarlett 2i2
     await Shop.createMany([
-      { product_id: focusriteScarlett2i2.id, name: 'Amazon', url: 'https://amazon.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
-      { product_id: focusriteScarlett2i2.id, name: 'Sweetwater', url: 'https://sweetwater.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
-      { product_id: focusriteScarlett2i2.id, name: 'Guitar Center', url: 'https://guitarcenter.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
+      { productId: focusriteScarlett2i2.id, name: 'Amazon', url: 'https://amazon.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
+      { productId: focusriteScarlett2i2.id, name: 'Sweetwater', url: 'https://sweetwater.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
+      { productId: focusriteScarlett2i2.id, name: 'Guitar Center', url: 'https://guitarcenter.com/focusrite-scarlett-2i2', price: 189.99, currency: 'USD', available: true },
     ])
 
     // Universal Audio Apollo Twin
     await Shop.createMany([
-      { product_id: universalAudioApollo.id, name: 'Sweetwater', url: 'https://sweetwater.com/ua-apollo-twin', price: 1299.00, currency: 'USD', available: true },
-      { product_id: universalAudioApollo.id, name: 'B&H Photo', url: 'https://bhphoto.com/ua-apollo-twin', price: 1299.00, currency: 'USD', available: true },
+      { productId: universalAudioApollo.id, name: 'Sweetwater', url: 'https://sweetwater.com/ua-apollo-twin', price: 1299.00, currency: 'USD', available: true },
+      { productId: universalAudioApollo.id, name: 'B&H Photo', url: 'https://bhphoto.com/ua-apollo-twin', price: 1299.00, currency: 'USD', available: true },
     ])
 
     // Yamaha HS8
     await Shop.createMany([
-      { product_id: yamahaHS8.id, name: 'Amazon', url: 'https://amazon.com/yamaha-hs8', price: 349.99, currency: 'USD', available: true },
-      { product_id: yamahaHS8.id, name: 'Sweetwater', url: 'https://sweetwater.com/yamaha-hs8', price: 349.99, currency: 'USD', available: true },
+      { productId: yamahaHS8.id, name: 'Amazon', url: 'https://amazon.com/yamaha-hs8', price: 349.99, currency: 'USD', available: true },
+      { productId: yamahaHS8.id, name: 'Sweetwater', url: 'https://sweetwater.com/yamaha-hs8', price: 349.99, currency: 'USD', available: true },
     ])
 
     // Sony A7 IV
     await Shop.createMany([
-      { product_id: sonyA7IV.id, name: 'Amazon', url: 'https://amazon.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
-      { product_id: sonyA7IV.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
-      { product_id: sonyA7IV.id, name: 'Adorama', url: 'https://adorama.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
+      { productId: sonyA7IV.id, name: 'Amazon', url: 'https://amazon.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
+      { productId: sonyA7IV.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
+      { productId: sonyA7IV.id, name: 'Adorama', url: 'https://adorama.com/sony-a7iv', price: 2498.00, currency: 'USD', available: true },
     ])
 
     // Canon R6 II
     await Shop.createMany([
-      { product_id: canonR6II.id, name: 'Amazon', url: 'https://amazon.com/canon-r6-ii', price: 2499.00, currency: 'USD', available: true },
-      { product_id: canonR6II.id, name: 'B&H Photo', url: 'https://bhphoto.com/canon-r6-ii', price: 2499.00, currency: 'USD', available: true },
+      { productId: canonR6II.id, name: 'Amazon', url: 'https://amazon.com/canon-r6-ii', price: 2499.00, currency: 'USD', available: true },
+      { productId: canonR6II.id, name: 'B&H Photo', url: 'https://bhphoto.com/canon-r6-ii', price: 2499.00, currency: 'USD', available: true },
     ])
 
     // Fujifilm X-T5
     await Shop.createMany([
-      { product_id: fujifilmXT5.id, name: 'Amazon', url: 'https://amazon.com/fujifilm-xt5', price: 1699.00, currency: 'USD', available: true },
-      { product_id: fujifilmXT5.id, name: 'B&H Photo', url: 'https://bhphoto.com/fujifilm-xt5', price: 1699.00, currency: 'USD', available: true },
+      { productId: fujifilmXT5.id, name: 'Amazon', url: 'https://amazon.com/fujifilm-xt5', price: 1699.00, currency: 'USD', available: true },
+      { productId: fujifilmXT5.id, name: 'B&H Photo', url: 'https://bhphoto.com/fujifilm-xt5', price: 1699.00, currency: 'USD', available: true },
     ])
 
     // Nikon Z8
     await Shop.createMany([
-      { product_id: nikonZ8.id, name: 'Amazon', url: 'https://amazon.com/nikon-z8', price: 3996.95, currency: 'USD', available: true },
-      { product_id: nikonZ8.id, name: 'B&H Photo', url: 'https://bhphoto.com/nikon-z8', price: 3996.95, currency: 'USD', available: true },
-      { product_id: nikonZ8.id, name: 'Adorama', url: 'https://adorama.com/nikon-z8', price: 3996.95, currency: 'USD', available: false },
+      { productId: nikonZ8.id, name: 'Amazon', url: 'https://amazon.com/nikon-z8', price: 3996.95, currency: 'USD', available: true },
+      { productId: nikonZ8.id, name: 'B&H Photo', url: 'https://bhphoto.com/nikon-z8', price: 3996.95, currency: 'USD', available: true },
+      { productId: nikonZ8.id, name: 'Adorama', url: 'https://adorama.com/nikon-z8', price: 3996.95, currency: 'USD', available: false },
     ])
 
     // Sony 24-70mm GM II
     await Shop.createMany([
-      { product_id: sony2470GM2.id, name: 'Amazon', url: 'https://amazon.com/sony-2470-gm2', price: 2298.00, currency: 'USD', available: true },
-      { product_id: sony2470GM2.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-2470-gm2', price: 2298.00, currency: 'USD', available: true },
+      { productId: sony2470GM2.id, name: 'Amazon', url: 'https://amazon.com/sony-2470-gm2', price: 2298.00, currency: 'USD', available: true },
+      { productId: sony2470GM2.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-2470-gm2', price: 2298.00, currency: 'USD', available: true },
     ])
 
     // Canon RF 85mm f/1.2
     await Shop.createMany([
-      { product_id: canon85f12.id, name: 'Amazon', url: 'https://amazon.com/canon-rf-85-12', price: 2699.00, currency: 'USD', available: true },
-      { product_id: canon85f12.id, name: 'B&H Photo', url: 'https://bhphoto.com/canon-rf-85-12', price: 2699.00, currency: 'USD', available: true },
+      { productId: canon85f12.id, name: 'Amazon', url: 'https://amazon.com/canon-rf-85-12', price: 2699.00, currency: 'USD', available: true },
+      { productId: canon85f12.id, name: 'B&H Photo', url: 'https://bhphoto.com/canon-rf-85-12', price: 2699.00, currency: 'USD', available: true },
     ])
 
     // Sigma 35mm f/1.4 Art
     await Shop.createMany([
-      { product_id: sigma35f14Art.id, name: 'Amazon', url: 'https://amazon.com/sigma-35-14-art', price: 899.00, currency: 'USD', available: true },
-      { product_id: sigma35f14Art.id, name: 'B&H Photo', url: 'https://bhphoto.com/sigma-35-14-art', price: 899.00, currency: 'USD', available: true },
+      { productId: sigma35f14Art.id, name: 'Amazon', url: 'https://amazon.com/sigma-35-14-art', price: 899.00, currency: 'USD', available: true },
+      { productId: sigma35f14Art.id, name: 'B&H Photo', url: 'https://bhphoto.com/sigma-35-14-art', price: 899.00, currency: 'USD', available: true },
     ])
 
     // Tamron 70-180mm
     await Shop.createMany([
-      { product_id: tamron70180.id, name: 'Amazon', url: 'https://amazon.com/tamron-70180', price: 1199.00, currency: 'USD', available: true },
-      { product_id: tamron70180.id, name: 'B&H Photo', url: 'https://bhphoto.com/tamron-70180', price: 1199.00, currency: 'USD', available: true },
+      { productId: tamron70180.id, name: 'Amazon', url: 'https://amazon.com/tamron-70180', price: 1199.00, currency: 'USD', available: true },
+      { productId: tamron70180.id, name: 'B&H Photo', url: 'https://bhphoto.com/tamron-70180', price: 1199.00, currency: 'USD', available: true },
     ])
 
     // Godox AD600 Pro
     await Shop.createMany([
-      { product_id: godoxAD600Pro.id, name: 'Amazon', url: 'https://amazon.com/godox-ad600-pro', price: 899.00, currency: 'USD', available: true },
-      { product_id: godoxAD600Pro.id, name: 'B&H Photo', url: 'https://bhphoto.com/godox-ad600-pro', price: 899.00, currency: 'USD', available: true },
+      { productId: godoxAD600Pro.id, name: 'Amazon', url: 'https://amazon.com/godox-ad600-pro', price: 899.00, currency: 'USD', available: true },
+      { productId: godoxAD600Pro.id, name: 'B&H Photo', url: 'https://bhphoto.com/godox-ad600-pro', price: 899.00, currency: 'USD', available: true },
     ])
 
     // Godox SL-60W
     await Shop.createMany([
-      { product_id: godoxSL60W.id, name: 'Amazon', url: 'https://amazon.com/godox-sl60w', price: 139.00, currency: 'USD', available: true },
+      { productId: godoxSL60W.id, name: 'Amazon', url: 'https://amazon.com/godox-sl60w', price: 139.00, currency: 'USD', available: true },
     ])
 
     // Manfrotto MT055
     await Shop.createMany([
-      { product_id: manfrottoMT055.id, name: 'Amazon', url: 'https://amazon.com/manfrotto-mt055', price: 439.88, currency: 'USD', available: true },
-      { product_id: manfrottoMT055.id, name: 'B&H Photo', url: 'https://bhphoto.com/manfrotto-mt055', price: 439.88, currency: 'USD', available: true },
+      { productId: manfrottoMT055.id, name: 'Amazon', url: 'https://amazon.com/manfrotto-mt055', price: 439.88, currency: 'USD', available: true },
+      { productId: manfrottoMT055.id, name: 'B&H Photo', url: 'https://bhphoto.com/manfrotto-mt055', price: 439.88, currency: 'USD', available: true },
     ])
 
     // Peak Design Travel Tripod
     await Shop.createMany([
-      { product_id: peakDesignTravel.id, name: 'Peak Design', url: 'https://peakdesign.com/travel-tripod', price: 599.95, currency: 'USD', available: true },
-      { product_id: peakDesignTravel.id, name: 'Amazon', url: 'https://amazon.com/peak-design-tripod', price: 599.95, currency: 'USD', available: true },
+      { productId: peakDesignTravel.id, name: 'Peak Design', url: 'https://peakdesign.com/travel-tripod', price: 599.95, currency: 'USD', available: true },
+      { productId: peakDesignTravel.id, name: 'Amazon', url: 'https://amazon.com/peak-design-tripod', price: 599.95, currency: 'USD', available: true },
     ])
 
     // Blackmagic Pocket 6K
     await Shop.createMany([
-      { product_id: blackmagicPocket6K.id, name: 'Amazon', url: 'https://amazon.com/blackmagic-pocket-6k', price: 2495.00, currency: 'USD', available: true },
-      { product_id: blackmagicPocket6K.id, name: 'B&H Photo', url: 'https://bhphoto.com/blackmagic-pocket-6k', price: 2495.00, currency: 'USD', available: true },
+      { productId: blackmagicPocket6K.id, name: 'Amazon', url: 'https://amazon.com/blackmagic-pocket-6k', price: 2495.00, currency: 'USD', available: true },
+      { productId: blackmagicPocket6K.id, name: 'B&H Photo', url: 'https://bhphoto.com/blackmagic-pocket-6k', price: 2495.00, currency: 'USD', available: true },
     ])
 
     // Sony FX3
     await Shop.createMany([
-      { product_id: sonyFX3.id, name: 'Amazon', url: 'https://amazon.com/sony-fx3', price: 3898.00, currency: 'USD', available: true },
-      { product_id: sonyFX3.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-fx3', price: 3898.00, currency: 'USD', available: true },
+      { productId: sonyFX3.id, name: 'Amazon', url: 'https://amazon.com/sony-fx3', price: 3898.00, currency: 'USD', available: true },
+      { productId: sonyFX3.id, name: 'B&H Photo', url: 'https://bhphoto.com/sony-fx3', price: 3898.00, currency: 'USD', available: true },
     ])
 
     // ========================================
@@ -1119,7 +1119,7 @@ export default class DemoSeeder extends BaseSeeder {
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
     })
 
-    const adminUser = await User.create({
+    await User.create({
       name: 'Admin Demo',
       email: 'admin@demo.marketplace.com',
       password: 'admin123456',

@@ -42,7 +42,7 @@ test.group('UserService', (group) => {
   })
 
   test('should get first user', async ({ assert }) => {
-    const user = await TestUtils.createUser({
+    await TestUtils.createUser({
       email: `first-${Date.now()}@example.com`,
       name: 'First User'
     })
@@ -121,7 +121,7 @@ test.group('UserService', (group) => {
       name: 'Account User'
     })
 
-    const account = await Account.create({
+    await Account.create({
       user_id: user.id,
       provider: 'google',
       provider_account_id: 'google-123',

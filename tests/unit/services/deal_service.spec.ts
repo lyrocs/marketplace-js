@@ -1,11 +1,7 @@
 import { test } from '@japa/runner'
 import { DealService } from '#services/deal_service'
 import Deal from '#models/deal'
-import Product from '#models/product'
 import DealProduct from '#models/deal_product'
-import User from '#models/user'
-import Brand from '#models/brand'
-import Category from '#models/category'
 import DealStatus from '#enums/deal_status'
 import { TestUtils } from '#tests/helpers/test-utils'
 
@@ -141,9 +137,9 @@ test.group('DealService', (group) => {
       limit: 10
     })
 
-    assert.isArray(publishedDeals.rows)
-    assert.equal(publishedDeals.rows.length, 1)
-    assert.equal(publishedDeals.rows[0].status, DealStatus.PUBLISHED)
+    assert.isArray(publishedDeals.all())
+    assert.equal(publishedDeals.all().length, 1)
+    assert.equal(publishedDeals.all()[0].status, DealStatus.PUBLISHED)
   })
 
   test('should update deal with complete data', async ({ assert }) => {
@@ -221,8 +217,8 @@ test.group('DealService', (group) => {
       .first()
 
     assert.isNotNull(dealProduct)
-    assert.equal(dealProduct.deal_id, deal.id)
-    assert.equal(dealProduct.product_id, product.id)
+    assert.equal(dealProduct!.deal_id, deal.id)
+    assert.equal(dealProduct!.product_id, product.id)
   })
 
   test('should add image to deal', async ({ assert }) => {
@@ -248,7 +244,7 @@ test.group('DealService', (group) => {
 
     const updatedDeal = await Deal.find(deal.id)
     assert.isArray(updatedDeal?.images)
-    assert.lengthOf(updatedDeal?.images, 2)
+    assert.lengthOf(updatedDeal!.images!, 2)
     assert.include(updatedDeal?.images, imageUrl1)
     assert.include(updatedDeal?.images, imageUrl2)
   })
@@ -265,7 +261,7 @@ test.group('DealService', (group) => {
 
     const updatedDeal = await Deal.find(deal.id)
     assert.isArray(updatedDeal?.images)
-    assert.lengthOf(updatedDeal?.images, 1)
+    assert.lengthOf(updatedDeal!.images!, 1)
     assert.include(updatedDeal?.images, imageUrl2)
     assert.notInclude(updatedDeal?.images, imageUrl1)
   })
@@ -339,8 +335,8 @@ test.group('DealService', (group) => {
 
     const results = await dealService.search({ category: category1.id })
 
-    assert.isArray(results.rows)
-    assert.isTrue(results.rows.length >= 1)
+    assert.isArray(results.all())
+    assert.isTrue(results.all().length >= 1)
   })
 
   test('should search deals by specs', async ({ assert }) => {
@@ -360,13 +356,13 @@ test.group('DealService', (group) => {
     // In a real scenario, you'd need to create specs and link them to products
     const results = await dealService.search({ specs: [] })
 
-    assert.isArray(results.rows)
+    assert.isArray(results.all())
   })
 
   test('should handle empty search results', async ({ assert }) => {
     const results = await dealService.search({ category: 99999 })
-    assert.isArray(results.rows)
-    assert.lengthOf(results.rows, 0)
+    assert.isArray(results.all())
+    assert.lengthOf(results.all(), 0)
   })
 
   test('should handle deal with no products', async ({ assert }) => {

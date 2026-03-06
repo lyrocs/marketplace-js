@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import { BrandService } from '#services/brand_service'
 import Brand from '#models/brand'
-import testUtils from '@adonisjs/core/services/test_utils'
 
 test.group('BrandService', (group) => {
   let brandService: BrandService

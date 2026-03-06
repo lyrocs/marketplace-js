@@ -14,7 +14,7 @@ export class UserService {
     return user
   }
 
-  async getAccount(accoutId: number) {
+  async getAccount(accoutId: string) {
     const account = await Account.query()
       .where('provider_account_id', accoutId)
       .preload('user')

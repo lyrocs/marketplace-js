@@ -1,14 +1,13 @@
 import { configure } from '@japa/runner'
-import { fileSystem } from '@japa/file-system'
-import { specReporter } from '@japa/spec-reporter'
 
 /**
  * Configure test suites and reporters
  */
 configure({
   files: ['tests/**/*.spec.ts'],
-  plugins: [fileSystem()],
-  reporters: [specReporter()],
+  reporters: {
+    activated: ['spec'],
+  },
   suites: [
     {
       name: 'unit',
